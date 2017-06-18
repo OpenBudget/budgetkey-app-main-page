@@ -7,6 +7,8 @@ import {HttpModule} from "@angular/http";
 import { AppComponent }  from './app.component';
 
 import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
+import { BudgetPanel } from './budgetpanel.component';
+import { CategoryComponent } from './category.component';
 
 @NgModule({
   imports:      [
@@ -15,7 +17,9 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
     BudgetKeyCommonModule
   ],
   declarations: [
-    AppComponent
+    AppComponent,
+    CategoryComponent,
+    BudgetPanel    
   ],
   providers: [
   ],

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { BudgetPanel } from './budgetpanel.component';
 import { GREETING } from './config';
 
 @Component({
@@ -21,6 +21,7 @@ import { GREETING } from './config';
             <h1>{{greeting}}</h1>    
             <img src="assets/img/smiley.jpg">
         </div>      
+        <budget-panel></budget-panel>
       </budgetkey-container>
   `,
 })
