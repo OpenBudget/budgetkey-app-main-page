@@ -17,10 +17,6 @@ import { GREETING } from './config';
   `],
   template: `
       <budgetkey-container>
-        <div class="container-fluid">
-            <h1>{{greeting}}</h1>    
-            <img src="assets/img/smiley.jpg">
-        </div>      
         <budget-panel></budget-panel>
       </budgetkey-container>
   `,

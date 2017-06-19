@@ -1,6 +1,12 @@
 var gulp = require('gulp');
 var shell = require('gulp-shell');
 var clean = require('gulp-clean');
+var gulpif = require('gulp-if');
+var useref = require('gulp-useref');
+var rev = require('gulp-rev');
+var revReplace = require('gulp-rev-replace');
+var uglify = require('gulp-uglify');
+var minifyCss = require('gulp-clean-css');
 var htmlreplace = require('gulp-html-replace');
 var runSequence = require('run-sequence');
 var Builder = require('systemjs-builder');
@@ -14,7 +20,7 @@ var vendorBundleName = bundleHash + '.vendor.bundle.js';
 
 // This is main task for production use
 gulp.task('dist', function(done) {
-  runSequence('clean', 'compile_ts', 'bundle', 'copy_assets', 'copy_common_assets',
+  runSequence('clean', 'compile_ts', 'bundle', 'bundle:3rd-party', 'copy_assets', 'copy_common_assets',
     function() {
       done();
     }
@@ -27,6 +33,16 @@ gulp.task('bundle', ['bundle:vendor', 'bundle:app'], function () {
       'app': mainBundleName,
       'vendor': vendorBundleName
     }))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('bundle:3rd-party', function () {
+  return gulp.src('./dist/index.html')
+    .pipe(useref({
+      searchPath: '.'
+    }))
+    .pipe(gulpif('*.js', rev()))
+    .pipe(revReplace())
     .pipe(gulp.dest('./dist'));
 });
 

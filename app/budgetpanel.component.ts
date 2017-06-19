@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 export interface Category {
     id: number;
     categoryName: string;
-    subCategoryNames: Array<string>;
+    subCategories: Array<Array<any>>;
 }
 
 @Component({
@@ -45,13 +45,15 @@ export class BudgetPanel implements OnInit {
         var tempCategories = {};
         responeCategories.value.forEach((aggregate: any) => {            
             if (tempCategories[aggregate.func_cls_title_1]){
-                tempCategories[aggregate.func_cls_title_1].push(aggregate.func_cls_title_2);
+                if (aggregate.net_allocated > 0) {
+                    tempCategories[aggregate.func_cls_title_1].push([aggregate.func_cls_title_2, Math.round(aggregate.net_allocated/1000000)]);
+                }
             }else{
                 tempCategories[aggregate.func_cls_title_1] = [];
             }
         });
         Object.keys(tempCategories).forEach((key, index) =>{
-            this.categories.push({ id: index + 1, categoryName: key, subCategoryNames: tempCategories[key] });
+            this.categories.push({ id: index + 1, categoryName: key, subCategories: tempCategories[key] });
         });
       })      
   }

@@ -55,10 +55,10 @@ export class CategoryComponent {
 
     var pack = d3.pack()
         .size([diameter - margin, diameter - margin])
-        .padding(2);
+        .padding(5);
 
-    var childern: any = this.category.subCategoryNames.map((sub) => {
-      return { "name": sub, "size": 8833 };
+    var childern: any = this.category.subCategories.map((sub) => {
+      return { "name": sub[0], "size": sub[1] };
     })
 
     var root: any = {
@@ -80,13 +80,22 @@ export class CategoryComponent {
       .attr("class", function(d: any) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
       .style("fill", function(d: any) { return d.children ? color(d.depth) : null; });      
 
-    var text = g.selectAll("text")
+    g.selectAll(".text-name")
     .data(nodes)
     .enter().append("text")
-      .attr("class", "label")
+      .attr("class", "label text-name")
+      .attr("dy", 0)
       .style("fill-opacity", function(d: any) { return d.parent === root ? 1 : 0; })
       .style("display", function(d: any) { return d.parent === root ? "inline" : "none"; })
       .text(function(d: any) { return d.data.name; });
+    g.selectAll(".text-amount")
+      .data(nodes)
+      .enter().append("text")
+      .attr("class", "label text-amount")
+      .attr("dy", '1em')
+      .style("fill-opacity", function(d: any) { return d.parent === root ? 1 : 0; })
+      .style("display", function(d: any) { return d.parent === root ? "inline" : "none"; })
+      .text(function(d: any) { return Math.ceil(d.data.size/10)/100+' מיליארד ₪'; });
 
     var node = g.selectAll("circle,text");    
 
