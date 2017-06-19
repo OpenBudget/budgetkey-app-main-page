@@ -44,12 +44,11 @@ export class BudgetPanel implements OnInit {
         this.categories = [];
         var tempCategories = {};
         responeCategories.value.forEach((aggregate: any) => {            
-            if (tempCategories[aggregate.func_cls_title_1]){
-                if (aggregate.net_allocated > 0) {
-                    tempCategories[aggregate.func_cls_title_1].push([aggregate.func_cls_title_2, Math.round(aggregate.net_allocated/1000000)]);
-                }
-            }else{
-                tempCategories[aggregate.func_cls_title_1] = [];
+            if (!tempCategories[aggregate.func_cls_title_1]) {
+              tempCategories[aggregate.func_cls_title_1] = [];
+            }
+            if (aggregate.net_allocated > 0) {
+                  tempCategories[aggregate.func_cls_title_1].push([aggregate.func_cls_title_2, Math.round(aggregate.net_allocated/1000000)]);
             }
         });
         Object.keys(tempCategories).forEach((key, index) =>{
