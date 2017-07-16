@@ -4,28 +4,9 @@
     <title>מפתח התקציב</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
   </head>
 
   <body>
     <my-app>Loading...</my-app>
-
-    <!-- build:js 3rd-party.js -->
-    <script src="node_modules/d3v4/build/d3.min.js"></script>
-    <!-- endbuild -->
-
-    <!-- build:vendor -->
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <script src="systemjs.config.js"></script>
-    <!-- endbuild -->
-
-    <!-- build:app -->
-    <script>
-      System.import('app/vendor').then(function() {
-        System.import('app').catch(function(err){ console.error(err); });
-      });
-    </script>
-    <!-- endbuild -->
-
   </body>
 </html>

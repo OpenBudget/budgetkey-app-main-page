@@ -1,17 +1,29 @@
+import 'karma-test-shim';
+
+import { By } from '@angular/platform-browser';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { HttpModule } from '@angular/http';
+import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
+import { BudgetPanel } from './budgetpanel.component';
+import { CategoryComponent } from './category.component';
 import { AppComponent } from './app.component';
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By }           from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-
 describe('AppComponent', function () {
-  let de: DebugElement;
   let comp: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ AppComponent ]
+    return TestBed.configureTestingModule({
+      imports: [
+        BudgetKeyCommonModule,
+        HttpModule
+      ],
+      declarations: [
+        AppComponent,
+        CategoryComponent,
+        BudgetPanel
+      ]
     })
     .compileComponents();
   }));
@@ -19,15 +31,12 @@ describe('AppComponent', function () {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     comp = fixture.componentInstance;
-    de = fixture.debugElement.query(By.css('h1'));
   });
 
   it('should create component', () => expect(comp).toBeDefined() );
 
-  it('should have expected <h1> text', () => {
+  it('should render some charts', () => {
     fixture.detectChanges();
-    const h1 = de.nativeElement;
-    expect(h1.innerText).toMatch(/angular/i,
-      '<h1> should say something about "Angular"');
+    expect(By.css('.category svg').length).toBeGreaterThan(0);
   });
 });
