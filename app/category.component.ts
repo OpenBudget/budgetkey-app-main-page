@@ -1,7 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Category } from './budgetpanel.component';
-
-declare let d3: any
+import * as d3 from 'd3';
 
 @Component({
   selector: 'category',
@@ -32,82 +31,81 @@ declare let d3: any
     }
   `],
   template: `
-    <div class="category">   
+    <div class='category'>   
       <p>{{ category.categoryName }}</p>
       <svg id="category{{category.id.toString()}}" width="300" height="300"></svg>
     </div>
   `,
   encapsulation: ViewEncapsulation.None
 })
-export class CategoryComponent {  
+export class CategoryComponent {
   @Input()
-  category: Category;  
+  category: Category;
   ngAfterViewInit() {
-    var svg = d3.select('#category' + this.category.id.toString()),
+    let svg = d3.select('#category' + this.category.id.toString()),
     margin = 20,
-    diameter = +svg.attr("width"),
-    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+    diameter = +svg.attr('width'),
+    g = svg.append('g').attr('transform', 'translate(' + diameter / 2 + ',' + diameter / 2 + ')');
 
-    var color = d3.scaleLinear()
+    let color = d3.scaleLinear()
     .domain([-1, 5])
-    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
-    .interpolate(d3.interpolateHcl);
+    // <any> to shut tslint up
+    .range([<any>'hsl(152,80%,80%)', <any>'hsl(228,30%,40%)'])
+    .interpolate(<any>d3.interpolateHcl);
 
-    var pack = d3.pack()
+    let pack = d3.pack()
         .size([diameter - margin, diameter - margin])
         .padding(5);
 
-    var childern: any = this.category.subCategories.map((sub) => {
-      return { "name": sub[0], "size": sub[1] };
-    })
+    let childern: any = this.category.subCategories.map((sub) => {
+      return { 'name': sub[0], 'size': sub[1] };
+    });
 
-    var root: any = {
-    "name": "display",
-    "children": childern
-    };    
+    let root: any = {
+    'name': 'display',
+    'children': childern
+    };
 
     root = d3.hierarchy(root)
       .sum(function(d: any) { return d.size; })
       .sort(function(a: any, b: any) { return b.value - a.value; });
 
-    var focus = root,
-      nodes = pack(root).descendants(),
-      view;  
-   
-    var circle = g.selectAll("circle")
-    .data(nodes)
-    .enter().append("circle")
-      .attr("class", function(d: any) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-      .style("fill", function(d: any) { return d.children ? color(d.depth) : null; });      
+    let nodes = pack(root).descendants();
+    let view;
 
-    g.selectAll(".text-name")
+    let circle = g.selectAll('circle')
     .data(nodes)
-    .enter().append("text")
-      .attr("class", "label text-name")
-      .attr("dy", 0)
-      .style("fill-opacity", function(d: any) { return d.parent === root ? 1 : 0; })
-      .style("display", function(d: any) { return d.parent === root ? "inline" : "none"; })
+    .enter().append('circle')
+      .attr('class', function(d: any) { return d.parent ? d.children ? 'node' : 'node node--leaf' : 'node node--root'; })
+      .style('fill', function(d: any) { return d.children ? color(d.depth) : null; });
+
+    g.selectAll('.text-name')
+    .data(nodes)
+    .enter().append('text')
+      .attr('class', 'label text-name')
+      .attr('dy', 0)
+      .style('fill-opacity', function(d: any) { return d.parent === root ? 1 : 0; })
+      .style('display', function(d: any) { return d.parent === root ? 'inline' : 'none'; })
       .text(function(d: any) { return d.data.name; });
-    g.selectAll(".text-amount")
+    g.selectAll('.text-amount')
       .data(nodes)
-      .enter().append("text")
-      .attr("class", "label text-amount")
-      .attr("dy", '1em')
-      .style("fill-opacity", function(d: any) { return d.parent === root ? 1 : 0; })
-      .style("display", function(d: any) { return d.parent === root ? "inline" : "none"; })
-      .text(function(d: any) { return Math.ceil(d.data.size/10)/100+' מיליארד ₪'; });
+      .enter().append('text')
+      .attr('class', 'label text-amount')
+      .attr('dy', '1em')
+      .style('fill-opacity', function(d: any) { return d.parent === root ? 1 : 0; })
+      .style('display', function(d: any) { return d.parent === root ? 'inline' : 'none'; })
+      .text(function(d: any) { return Math.ceil(d.data.size / 10) / 100 + ' מיליארד ₪'; });
 
-    var node = g.selectAll("circle,text");    
+    let node = g.selectAll('circle,text');
 
-    svg
-      .style("background", color(-1));  
+    svg.style('background', color(-1));
 
-    zoomTo([root.x, root.y, root.r * 2 + margin]);   
-      
+    zoomTo([root.x, root.y, root.r * 2 + margin]);
+
     function zoomTo(v: any) {
-        var k = diameter / v[2]; view = v;
-        node.attr("transform", function(d: any) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
-        circle.attr("r", function(d: any) { return d.r * k; });
+      let k = diameter / v[2]; view = v;
+      node.attr('transform', function(d: any) { return 'translate(' + (d.x - v[0]) * k + ',' + (d.y - v[1]) * k + ')'; });
+      circle.attr('r', function(d: any) { return d.r * k; });
     }
 
   }
