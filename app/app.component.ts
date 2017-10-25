@@ -1,23 +1,35 @@
 import { Component } from '@angular/core';
+import { BudgetKeyMainPage } from './services';
 
 @Component({
   selector: 'my-app',
-  styles: [`
-    budgetkey-container {
-        background-color: #cfc;
-        display: block;
-    }
-    
-    .container-fluid {
-        padding: 10px;
-        max-width: 1024px;
-    }
-  `],
   template: `
       <budgetkey-container>
-        <budget-panel></budget-panel>
+        <div class="container-fluid">
+          <budgetkey-main-page-header></budgetkey-main-page-header>
+          <budgetkey-main-page-summary [amount]="totalAmount"></budgetkey-main-page-summary>
+          <div class="text-center">
+            <category-visualization *ngFor="let category of categories"
+              [category]="category"></category-visualization>
+          </div>
+          <map-visualization></map-visualization>
+        </div>  
       </budgetkey-container>
   `,
 })
-export class AppComponent  {
+export class AppComponent {
+
+  categories: any[];
+  totalAmount: number = 0;
+
+  constructor(private mainPage: BudgetKeyMainPage) {
+    this.mainPage.getBubblesData().then(bubbles => {
+      this.categories = bubbles;
+      this.totalAmount = 0;
+      this.categories.forEach((category: any) => {
+        this.totalAmount += category.amount;
+      });
+    });
+  }
+
 }
