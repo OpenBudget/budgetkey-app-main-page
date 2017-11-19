@@ -1,6 +1,13 @@
 .category-visualization {
   display: inline-block;
   position: relative;
+  opacity: 1;
+  transition: opacity 100ms ease 0ms;
+
+  &.invisible {
+    visibility: visible;
+    opacity: 0;
+  }
 
   svg {
     display: inline-block;

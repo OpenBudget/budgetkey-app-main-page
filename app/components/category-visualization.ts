@@ -69,7 +69,7 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
 @Component({
   selector: 'category-visualization',
   template: `
-    <div #wrapper class="category-visualization" [ngClass]="theme">   
+    <div #wrapper class="category-visualization invisible" [ngClass]="theme">   
       <svg #container width="300" height="300"></svg>
       <div class="text-center">
         <span class="legend">

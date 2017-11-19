@@ -1,5 +1,7 @@
 import { Component, Input, Inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
+import * as _ from 'lodash';
+import * as d3 from 'd3';
 import { UtilsService } from '../services';
 
 @Component({
@@ -79,8 +81,18 @@ export class SummaryComponent {
   @Input() amount: number = 0;
   @ViewChild('container') container: ElementRef;
 
+  private _isCollapsed = false;
+
   isActive: boolean = false;
-  isCollapsed: boolean = false;
+  get isCollapsed(): boolean {
+    return this._isCollapsed;
+  }
+  set isCollapsed(value: boolean) {
+    if (this._isCollapsed !== value) {
+      this._isCollapsed = value;
+      this._isCollapsed ? this.animateIn() : this.animateOut();
+    }
+  }
 
   constructor(@Inject(DOCUMENT) private document: Document, private utils: UtilsService) { }
 
@@ -90,6 +102,144 @@ export class SummaryComponent {
 
   valueSuffix(value: number): string {
     return this.utils.getValueSuffix(value);
+  }
+
+  animateIn() {
+    const source = {
+      node: d3.select(this.container.nativeElement),
+      background: '#FF5A5F',
+      bounds: (() => {
+        const bounds = this.container.nativeElement.getBoundingClientRect();
+        const size = 350;
+        return {
+          left: (bounds.left + bounds.right) / 2 - size / 2,
+          top: bounds.bottom - size,
+          right: (bounds.left + bounds.right) / 2 + size / 2,
+          bottom: bounds.bottom,
+          width: size,
+          height: size,
+        };
+      })(),
+    };
+
+    let targets: any = this.document.querySelectorAll('.category-visualization');
+    targets = _.map(targets, (element: any) => {
+      const bounds = element.querySelector('svg').getBoundingClientRect();
+      const x = (bounds.left + bounds.right) / 2;
+      const y = (bounds.top + bounds.bottom) / 2;
+      const r = 50;
+      return {
+        node: d3.select(element),
+        bounds: {
+          left: x - r,
+          top: y - r,
+          right: x + r,
+          bottom: y + r,
+          width: r * 2,
+          height: r * 2,
+        },
+      };
+    });
+
+    const layer = d3.select(document.body).append('div');
+    layer.selectAll('div')
+      .data(targets)
+      .enter()
+      .append('div')
+      .style('background', source.background)
+      .style('border-radius', '50%')
+      .style('position', 'fixed')
+      .style('opacity', 1)
+      .style('left', source.bounds.left + 'px')
+      .style('top', source.bounds.top + 'px')
+      .style('width', source.bounds.width + 'px')
+      .style('height', source.bounds.height + 'px')
+      .transition()
+      .duration(200)
+      .ease(d3.easePolyOut)
+      .style('opacity', 0)
+      .style('left', (d: any) => d.bounds.left + 'px')
+      .style('top', (d: any) => d.bounds.top + 'px')
+      .style('width', (d: any) => d.bounds.width + 'px')
+      .style('height', (d: any) => d.bounds.height + 'px')
+      .on('end', _.debounce(() => {
+        layer.remove();
+      }, 1));
+
+    // Trigger animation after 100ms of placeholder's animation start
+    setTimeout(() => {
+      _.each(targets, (item: any) => {
+        item.node.classed('invisible', false);
+      });
+    }, 100);
+  }
+
+  animateOut() {
+    const source = {
+      node: d3.select(this.container.nativeElement),
+      background: '#FF5A5F',
+      bounds: (() => {
+        const bounds = this.container.nativeElement.getBoundingClientRect();
+        const size = 250;
+        return {
+          left: (bounds.left + bounds.right) / 2 - size / 2,
+          top: bounds.bottom - size,
+          right: (bounds.left + bounds.right) / 2 + size / 2,
+          bottom: bounds.bottom,
+          width: size,
+          height: size,
+        };
+      })()
+    };
+
+    let targets: any = this.document.querySelectorAll('.category-visualization');
+    targets = _.map(targets, (element: any) => {
+      const bounds = element.querySelector('svg').getBoundingClientRect();
+      const x = (bounds.left + bounds.right) / 2;
+      const y = (bounds.top + bounds.bottom) / 2;
+      const r = 50;
+      return {
+        node: d3.select(element),
+        bounds: {
+          left: x - r,
+          top: y - r,
+          right: x + r,
+          bottom: y + r,
+          width: r * 2,
+          height: r * 2,
+        },
+      };
+    });
+
+    // Immediately initiate animations on targets
+    _.each(targets, (item: any) => {
+      item.node.classed('invisible', true);
+    });
+
+    const layer = d3.select(document.body).append('div');
+    layer.selectAll('div')
+      .data(targets)
+      .enter()
+      .append('div')
+      .style('background', source.background)
+      .style('border-radius', '50%')
+      .style('position', 'fixed')
+      .style('opacity', 0)
+      .style('left', (d: any) => d.bounds.left + 'px')
+      .style('top', (d: any) => d.bounds.top + 'px')
+      .style('width', (d: any) => d.bounds.width + 'px')
+      .style('height', (d: any) => d.bounds.height + 'px')
+      .transition()
+      .duration(200)
+      .ease(d3.easePolyOut)
+      .style('opacity', 0.5)
+      .style('left', source.bounds.left + 'px')
+      .style('top', source.bounds.top + 'px')
+      .style('width', source.bounds.width + 'px')
+      .style('height', source.bounds.height + 'px')
+      .on('end', _.debounce(() => {
+        layer.remove();
+      }, 1));
   }
 
   @HostListener('window:scroll')

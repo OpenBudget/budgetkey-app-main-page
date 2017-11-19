@@ -1,6 +1,7 @@
 .budgetkey-main-summary-container {
 
   @size: 350px;
+  @height: ~'calc(50vh + 175px)';
 
   .description {
     display: flex;
@@ -22,9 +23,9 @@
 
   .change-year {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    height: 100vh;
+    height: @height;
     opacity: 0;
     transition: opacity 150ms ease-out 0ms;
     font-size: 18px;
@@ -36,6 +37,12 @@
       border-top: 2px dotted #CBCFD6;
       margin: 10px 0 0 0;
       padding: 10px 0 0 0;
+    }
+
+    .prev-year, .next-year {
+      height: @size;
+      display: flex;
+      align-items: center;
     }
 
     .prev-year {
@@ -50,9 +57,9 @@
 
   .amount {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    height: 100vh;
+    height: @height;
 
     .title {
       font-size: 24px;
@@ -161,12 +168,12 @@
 
   &.collapsed {
     .change-year {
-      align-items: flex-end;
-
       .prev-year {
+        height: auto;
         padding-right: 30px;
       }
       .next-year {
+        height: auto;
         padding-left: 30px;
       }
     }
