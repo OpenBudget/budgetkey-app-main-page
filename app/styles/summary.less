@@ -1,23 +1,32 @@
+.description {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 1;
+  margin-top: 40px;
+  transition: opacity 150ms ease-out 0ms;
+
+  & > span {
+    max-width: 720px;
+    flex: 0 0 auto;
+    font-size: 24px;
+    color: #FF5A5F;
+    text-align: center;
+  }
+}
+
+
 .budgetkey-main-summary-container {
 
   @size: 350px;
-  @height: ~'calc(50vh + 175px)';
+  @height: ~'calc(50vh + 100px)';
 
   .description {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
     height: 50vh;
-    opacity: 1;
-    transition: opacity 150ms ease-out 0ms;
     margin-top: 100px;
 
     & > span {
       max-width: 500px;
-      flex: 0 0 auto;
-      font-size: 24px;
-      color: #FF5A5F;
-      text-align: center;
     }
   }
 
@@ -71,8 +80,8 @@
       opacity: 0;
       transition: all 150ms ease-out 0ms;
 
-      :last-child:before,
-      :last-child:after {
+      :nth-child(2):before,
+      :nth-child(2):after {
         content: ' — ';
       }
     }
@@ -186,15 +195,19 @@
         text-align: left;
         line-height: 1em;
         margin-left: 40px;
+        div {
+          display: inline;
+        }
 
-        :last-child {
+        :nth-child(2) {
           color: #FF5A5F;
         }
-        :last-child:before {
-          content: 'לשנת ';
+        :nth-child(2):before {
+          //content: 'לשנת ';
+          content: none;
           color: #333;
         }
-        :last-child:after {
+        :nth-child(2):after {
           content: none;
         }
       }

@@ -10,7 +10,7 @@ import { UtilsService } from '../services';
 @Component({
   selector: 'category-info-popup',
   template: `
-    <div class="category-info-popup text-right" [ngStyle]="{left: bubble.left + 'px', bottom: bubble.top + 'px'}">
+    <div class="category-info-popup text-right step" [ngStyle]="{left: bubble.left + 'px', bottom: bubble.top + 'px'}" data-id="category-visualisation">
       <h3>{{ bubble.name }}</h3>
       <div class="brief">
         <span>{{ formatAmount(bubble.value) }} ₪</span>
@@ -69,7 +69,7 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
 @Component({
   selector: 'category-visualization',
   template: `
-    <div #wrapper class="category-visualization invisible" [ngClass]="theme">   
+    <div #wrapper class="category-visualization" [ngClass]="theme">   
       <svg #container width="300" height="300"></svg>
       <div class="text-center">
         <span class="legend">
@@ -98,9 +98,9 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   constructor(private utils: UtilsService) {}
 
-  private createContainer(svg: any, diameter: number) {
+  private createContainer(svg: any, diameter_w: number, diameter_h: number) {
     return svg.append('g')
-      .attr('transform', 'translate(' + diameter / 2 + ',' + diameter / 2 + ')');
+      .attr('transform', 'translate(' + diameter_w / 2 + ',' + diameter_h / 2 + ')');
   }
 
   private renderCircles(container: any, nodes: any[]) {
@@ -266,17 +266,18 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     let svg = d3.select(this.svg.nativeElement);
-    let diameter = +svg.attr('width');
+    let diameter_w = +svg.attr('width');
+    let diameter_h = +svg.attr('height');
     let margin = 150;
     let padding = 10;
 
     const {root, nodes} = this.prepareNodes(
       this.category.name, this.category.values,
-      diameter, margin, padding);
-    const circles = this.renderCircles(this.createContainer(svg, diameter), nodes);
-    const legendLines = this.renderLegendLines(this.createContainer(svg, diameter), nodes);
+      diameter_w, margin, padding);
+    const circles = this.renderCircles(this.createContainer(svg, diameter_w, diameter_h), nodes);
+    const legendLines = this.renderLegendLines(this.createContainer(svg, diameter_w, diameter_h), nodes);
     const legendLabels = this.renderLegendLabels(
-      this.createContainer(svg, diameter),
+      this.createContainer(svg, diameter_w, diameter_h),
       root, nodes, margin, padding
     );
 

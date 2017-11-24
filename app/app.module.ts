@@ -13,7 +13,7 @@ import {
   CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent
 } from './components';
 
-import { BudgetKeyMainPageService, UtilsService } from './services';
+import { BudgetKeyMainPageService, UtilsService, ScrollyService } from './services';
 
 import { KeysPipe } from './pipes';
 
@@ -42,6 +42,7 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
   ],
   providers: [
     BudgetKeyMainPageService,
+    ScrollyService,
     UtilsService,
     {provide: MAPBOXGL_TOKEN, useValue: mapboxgl}
   ],

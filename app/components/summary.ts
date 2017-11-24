@@ -2,12 +2,13 @@ import { Component, Input, Inject, HostListener, ViewChild, ElementRef } from '@
 import { DOCUMENT } from '@angular/platform-browser';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { UtilsService } from '../services';
+import { UtilsService, ScrollyService } from '../services';
+import {ScrollyListener} from "../services/scrolly";
 
 @Component({
   selector: 'budgetkey-main-page-summary',
   template: `
-    <div class="budgetkey-main-summary-container" 
+    <div class="budgetkey-main-summary-container step" data-id="summary-description" 
       [ngClass]="{active: isActive, collapsed: isCollapsed}">
       <div class="description">
         <span>
@@ -18,21 +19,22 @@ import { UtilsService } from '../services';
       </div>
       <div class="row">
         <div class="col-xs-2">
-          <div class="change-year">
-            <div class="next-year">
-              <div *ngIf="!isCollapsed">
-                <div>תקציב המדינה<br>המאושר לשנת</div>
-                <div class="year">2018</div>
-              </div>
-              <div *ngIf="isCollapsed">תקציב המדינה<br>לשנת 2018</div>
-            </div>  
-          </div>
+          <!--<div class="change-year">-->
+            <!--<div class="next-year">-->
+              <!--<div *ngIf="!isCollapsed">-->
+                <!--<div>תקציב המדינה<br>המאושר לשנת</div>-->
+                <!--<div class="year">2018</div>-->
+              <!--</div>-->
+              <!--<div *ngIf="isCollapsed">תקציב המדינה<br>לשנת 2018</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
         <div class="col-xs-8">
           <div #container class="amount">
             <div class="title">
-              <div>תקציב המדינה המאושר</div>
+              <div>תקציב המדינה המאושר לשנת</div>
               <div>2017</div>
+              <div>הוא</div>
             </div>
             <div class="container">
               <div class="scroll-down">
@@ -63,38 +65,114 @@ import { UtilsService } from '../services';
           </div>
         </div>
         <div class="col-xs-2">
-          <div class="change-year">
-            <div class="prev-year">
-              <div *ngIf="!isCollapsed">
-                <div>תקציב המדינה<br>המעודכן לשנת</div>
-                <div class="year">2016</div>
-              </div>
-              <div *ngIf="isCollapsed">תקציב המדינה<br>לשנת 2016</div>
-            </div>  
-          </div>
+          <!--<div class="change-year">-->
+            <!--<div class="prev-year">-->
+              <!--<div *ngIf="!isCollapsed">-->
+                <!--<div>תקציב המדינה<br>המעודכן לשנת</div>-->
+                <!--<div class="year">2016</div>-->
+              <!--</div>-->
+              <!--<div *ngIf="isCollapsed">תקציב המדינה<br>לשנת 2016</div>-->
+            <!--</div>-->
+          <!--</div>-->
         </div>
       </div>
     </div>
+    <div class="transition-layer" #transitionLayer></div>
   `
 })
-export class SummaryComponent {
+export class SummaryComponent implements ScrollyListener {
   @Input() amount: number = 0;
   @ViewChild('container') container: ElementRef;
+  @ViewChild('transitionLayer') transitionLayer: ElementRef;
 
   private _isCollapsed = false;
 
   isActive: boolean = false;
+  private transitionSource: any;
+  private transitionTargets: Array<any>;
+
   get isCollapsed(): boolean {
     return this._isCollapsed;
   }
+
   set isCollapsed(value: boolean) {
-    if (this._isCollapsed !== value) {
-      this._isCollapsed = value;
-      this._isCollapsed ? this.animateIn() : this.animateOut();
+    this._isCollapsed = value;
+  }
+
+  onScrolly(id: string, progress: number) {
+    if (id === 'summary-description') {
+      this.isActive = progress > 0.3;
+      if (progress >= 0.7) {
+        this.isCollapsed = true;
+        this.animate((progress - 0.7)/0.3);
+      } else {
+        this.isCollapsed = false;
+        this.animate(0);
+      }
     }
   }
 
-  constructor(@Inject(DOCUMENT) private document: Document, private utils: UtilsService) { }
+  constructor(@Inject(DOCUMENT) private document: Document,
+              private utils: UtilsService,
+              private scroller: ScrollyService) {
+    this.scroller.subscribe(this);
+  }
+
+  ngAfterViewInit(){
+    setTimeout(() => {
+      let scroll = window.pageYOffset || document.documentElement.scrollTop;
+      this.transitionSource = {
+        node: d3.select(this.container.nativeElement),
+        background: '#FF5A5F',
+        bounds: (() => {
+          const bounds = this.container.nativeElement.getBoundingClientRect();
+          const size = 350;
+          return {
+            left: (bounds.left + bounds.right) / 2 - size / 2,
+            top: bounds.bottom - size + scroll,
+            right: (bounds.left + bounds.right) / 2 + size / 2,
+            bottom: bounds.bottom,
+            width: size,
+            height: size,
+          };
+        })(),
+      };
+
+      let transitionTargets = this.document.querySelectorAll('.category-visualization');
+      this.transitionTargets = _.map(transitionTargets, (element: any) => {
+        const bounds = element.querySelector('svg').getBoundingClientRect();
+        const x = (bounds.left + bounds.right) / 2;
+        const y = (bounds.top + bounds.bottom) / 2 + scroll;
+        const r = 50;
+        return {
+          node: d3.select(element),
+          bounds: {
+            left: x - r,
+            top: y - r,
+            right: x + r,
+            bottom: y + r,
+            width: r * 2,
+            height: r * 2,
+          },
+        };
+      });
+
+      const layer = d3.select(this.transitionLayer.nativeElement);
+      layer.selectAll('div')
+        .data(this.transitionTargets)
+        .enter()
+        .append('div')
+        .style('background', this.transitionSource.background)
+        .style('border-radius', '50%')
+        .style('position', 'absolute')
+        .style('opacity', 1)
+        .style('left', this.transitionSource.bounds.left + 'px')
+        .style('top', this.transitionSource.bounds.top + 'px')
+        .style('width', this.transitionSource.bounds.width + 'px')
+        .style('height', this.transitionSource.bounds.height + 'px')
+        .style('opacity', 0);
+    }, 100);
+  }
 
   formatValue(value: number): string {
     return this.utils.bareFormatValue(value, 0);
@@ -104,149 +182,15 @@ export class SummaryComponent {
     return this.utils.getValueSuffix(value);
   }
 
-  animateIn() {
-    const source = {
-      node: d3.select(this.container.nativeElement),
-      background: '#FF5A5F',
-      bounds: (() => {
-        const bounds = this.container.nativeElement.getBoundingClientRect();
-        const size = 350;
-        return {
-          left: (bounds.left + bounds.right) / 2 - size / 2,
-          top: bounds.bottom - size,
-          right: (bounds.left + bounds.right) / 2 + size / 2,
-          bottom: bounds.bottom,
-          width: size,
-          height: size,
-        };
-      })(),
-    };
-
-    let targets: any = this.document.querySelectorAll('.category-visualization');
-    targets = _.map(targets, (element: any) => {
-      const bounds = element.querySelector('svg').getBoundingClientRect();
-      const x = (bounds.left + bounds.right) / 2;
-      const y = (bounds.top + bounds.bottom) / 2;
-      const r = 50;
-      return {
-        node: d3.select(element),
-        bounds: {
-          left: x - r,
-          top: y - r,
-          right: x + r,
-          bottom: y + r,
-          width: r * 2,
-          height: r * 2,
-        },
-      };
-    });
-
-    const layer = d3.select(document.body).append('div');
+  animate(t: number) {
+    console.log('animate '+t);
+    const layer = d3.select(this.transitionLayer.nativeElement);
     layer.selectAll('div')
-      .data(targets)
-      .enter()
-      .append('div')
-      .style('background', source.background)
-      .style('border-radius', '50%')
-      .style('position', 'fixed')
-      .style('opacity', 1)
-      .style('left', source.bounds.left + 'px')
-      .style('top', source.bounds.top + 'px')
-      .style('width', source.bounds.width + 'px')
-      .style('height', source.bounds.height + 'px')
-      .transition()
-      .duration(200)
-      .ease(d3.easePolyOut)
-      .style('opacity', 0)
-      .style('left', (d: any) => d.bounds.left + 'px')
-      .style('top', (d: any) => d.bounds.top + 'px')
-      .style('width', (d: any) => d.bounds.width + 'px')
-      .style('height', (d: any) => d.bounds.height + 'px')
-      .on('end', _.debounce(() => {
-        layer.remove();
-      }, 1));
-
-    // Trigger animation after 100ms of placeholder's animation start
-    setTimeout(() => {
-      _.each(targets, (item: any) => {
-        item.node.classed('invisible', false);
-      });
-    }, 100);
-  }
-
-  animateOut() {
-    const source = {
-      node: d3.select(this.container.nativeElement),
-      background: '#FF5A5F',
-      bounds: (() => {
-        const bounds = this.container.nativeElement.getBoundingClientRect();
-        const size = 250;
-        return {
-          left: (bounds.left + bounds.right) / 2 - size / 2,
-          top: bounds.bottom - size,
-          right: (bounds.left + bounds.right) / 2 + size / 2,
-          bottom: bounds.bottom,
-          width: size,
-          height: size,
-        };
-      })()
-    };
-
-    let targets: any = this.document.querySelectorAll('.category-visualization');
-    targets = _.map(targets, (element: any) => {
-      const bounds = element.querySelector('svg').getBoundingClientRect();
-      const x = (bounds.left + bounds.right) / 2;
-      const y = (bounds.top + bounds.bottom) / 2;
-      const r = 50;
-      return {
-        node: d3.select(element),
-        bounds: {
-          left: x - r,
-          top: y - r,
-          right: x + r,
-          bottom: y + r,
-          width: r * 2,
-          height: r * 2,
-        },
-      };
-    });
-
-    // Immediately initiate animations on targets
-    _.each(targets, (item: any) => {
-      item.node.classed('invisible', true);
-    });
-
-    const layer = d3.select(document.body).append('div');
-    layer.selectAll('div')
-      .data(targets)
-      .enter()
-      .append('div')
-      .style('background', source.background)
-      .style('border-radius', '50%')
-      .style('position', 'fixed')
-      .style('opacity', 0)
-      .style('left', (d: any) => d.bounds.left + 'px')
-      .style('top', (d: any) => d.bounds.top + 'px')
-      .style('width', (d: any) => d.bounds.width + 'px')
-      .style('height', (d: any) => d.bounds.height + 'px')
-      .transition()
-      .duration(200)
-      .ease(d3.easePolyOut)
-      .style('opacity', 0.5)
-      .style('left', source.bounds.left + 'px')
-      .style('top', source.bounds.top + 'px')
-      .style('width', source.bounds.width + 'px')
-      .style('height', source.bounds.height + 'px')
-      .on('end', _.debounce(() => {
-        layer.remove();
-      }, 1));
-  }
-
-  @HostListener('window:scroll')
-  onWindowScroll() {
-    let clientHeight = this.document.documentElement.clientHeight;
-    let bounds = this.container.nativeElement.getBoundingClientRect();
-    this.isActive = bounds.top < clientHeight / 2;
-    this.isCollapsed = (bounds.top + bounds.bottom) / 2 <= 50;
+      // .data(this.transitionTargets)
+      .style('left', (d: any) => ((1-t)*this.transitionSource.bounds.left + t*d.bounds.left) + 'px')
+      .style('top', (d: any) => ((1-t)*this.transitionSource.bounds.top + t*d.bounds.top) + 'px')
+      .style('width', (d: any) => ((1-t)*this.transitionSource.bounds.width+ t*d.bounds.width) + 'px')
+      .style('height', (d: any) => ((1-t)*this.transitionSource.bounds.height + t*d.bounds.height) + 'px')
+      .style('opacity', t > 0 ? (t < 0.99 ? 0.7*(1-t)**0.2 : 0) : 0)
   }
 }

@@ -5,9 +5,9 @@ export const MAPBOXGL_ACCESS_TOKEN = 'pk.eyJ1IjoibXVzaG9uIiwiYSI6IjY1bHhhTkEifQ.
 export const MAPBOXGL_TOKEN = new OpaqueToken('mapboxgl');
 
 export const VALUE_SCALE = {
-  Billion: 1000000000,
-  Million: 1000000,
-  Thousand: 1000
+  מיליארד: 1000000000,
+  מיליון: 1000000,
+  אלפי: 1000
 };
 
 export const DEFAULT_LOCALE = 'he-IL';
