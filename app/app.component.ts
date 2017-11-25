@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { BudgetKeyMainPageService } from './services';
 import {ScrollyService} from "./services/scrolly";
+import {MushonKeyChart, MushonKeyFlowGroup, MushonKeyFlow} from "mushonkey/lib/components/MushonkeyComponent";
+import * as _ from 'lodash';
 
 @Component({
   selector: 'my-app',
@@ -21,7 +23,7 @@ import {ScrollyService} from "./services/scrolly";
                כל נושא כזה בנוי מאינספור ״תקנות תקציביות״ שונות...
                </span>
             </div>
-            <category-visualization *ngFor="let category of categories"
+            <category-visualization *ngFor="let category of funcCategories"
               [category]="category"></category-visualization>
             <div class="description">
                <span>            
@@ -34,7 +36,7 @@ import {ScrollyService} from "./services/scrolly";
                (1) תמיכה ברשויות וארגונים, (2) משכורות לעובדים ו(3) קניית מוצרים ושירותים
                </span>
             </div>
-            <category-visualization *ngFor="let category of econ_categories"
+            <category-visualization *ngFor="let category of econCategories"
               [category]="category"></category-visualization>
             <div class="description">
                <span>            
@@ -45,7 +47,7 @@ import {ScrollyService} from "./services/scrolly";
                 (1) מס הכנסה (ובתוכו בעיקר מס חברות), (2) מע״מ ו (3) גיוסים בשוק ההון.
                </span>
             </div>
-            <category-visualization *ngFor="let category of income_categories"
+            <category-visualization *ngFor="let category of incomeCategories"
               [category]="category"></category-visualization>
             <div class="description">
                <span>            
@@ -55,10 +57,12 @@ import {ScrollyService} from "./services/scrolly";
                <br/>
                אבל אנחנו לא נכנסים למינוס - כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.
                <br/>
-               להפרש בין ההוצאות להכנסות קוראים ״גרעון״. 
+               להפרש בין ההוצאות להכנסות קוראים ״גירעון״. 
                </span>
             </div>
-            <h4 style="direction:ltr">to be continued...</h4>
+            <div class="mushonkey-wrapper">
+                <mushonkey [chart]="deficitChart" *ngIf="deficitChart"></mushonkey>           
+            </div>
           </div>
           <!--map-visualization></map-visualization-->
         </div>  
@@ -67,22 +71,68 @@ import {ScrollyService} from "./services/scrolly";
 })
 export class AppComponent {
 
-  categories: any[];
-  econ_categories: any[];
-  income_categories: any[];
+  funcCategories: any[];
+  econCategories: any[];
+  incomeCategories: any[];
   totalAmount: number = 0;
+  private deficitChart: MushonKeyChart;
 
   constructor(private mainPage: BudgetKeyMainPageService,
               private scrolly: ScrollyService) {
     this.mainPage.getBubblesData().then((bubbles) => {
-      this.categories = bubbles.func;
-      this.econ_categories = bubbles.econ;
-      this.income_categories = bubbles.income;
+      this.funcCategories = bubbles.func;
+      this.econCategories = bubbles.econ;
+      this.incomeCategories = bubbles.income;
       this.totalAmount = 0;
-      this.categories.forEach((category: any) => {
+      this.funcCategories.forEach((category: any) => {
         this.totalAmount += category.amount;
       });
+      this.deficitChart = AppComponent.makeDeficitChart(bubbles.deficitChart);
     });
+  }
+
+  static makeFlow(amount: number, title: string) {
+    let amountStr =  Math.round(amount/1000000000)+' מיל׳';
+    title = title + ' ' + amountStr;
+    return new MushonKeyFlow(amount, title, null);
+  }
+
+  static makeDeficitChart(data: any) {
+
+    let children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_allocated)
+    let rest = data.budget - _.sum(
+        _.map(_.slice(children, 0, 4),
+              (d: any) => d.net_allocated)
+    );
+    let chart = new MushonKeyChart([
+        new MushonKeyFlowGroup(
+          true, [
+            AppComponent.makeFlow(children[0].net_allocated, children[0].title),
+          ], 'debt', -100, 0.7
+        ),
+        new MushonKeyFlowGroup(
+          true, [
+            AppComponent.makeFlow(children[1].net_allocated, children[1].title),
+            AppComponent.makeFlow(children[2].net_allocated, children[2].title),
+            AppComponent.makeFlow(children[3].net_allocated, children[3].title),
+            AppComponent.makeFlow(rest, 'משרדי ממשלה אחרים')
+          ], 'expenses', 20
+        ),
+        new MushonKeyFlowGroup(
+          false, [
+            AppComponent.makeFlow(data.income, 'הכנסות המדינה')
+          ], 'income', -100
+        ),
+        new MushonKeyFlowGroup(
+          false, [
+            AppComponent.makeFlow(data.budget - data.income, 'הגירעון')
+          ], 'deficit', 100, 0.7
+        )
+      ],
+      'תקציב המדינה',
+      200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
+    );
+    return chart;
   }
 
   ngAfterViewInit() {

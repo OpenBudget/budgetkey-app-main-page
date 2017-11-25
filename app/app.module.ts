@@ -18,6 +18,7 @@ import { BudgetKeyMainPageService, UtilsService, ScrollyService } from './servic
 import { KeysPipe } from './pipes';
 
 import { MAPBOXGL_TOKEN, MAPBOXGL_ACCESS_TOKEN } from './constants';
+import {MushonkeyModule} from "mushonkey";
 
 /* global mapboxgl */
 declare const mapboxgl: any;
@@ -29,7 +30,8 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
     BrowserModule,
     HttpModule,
     FormsModule,
-    BudgetKeyCommonModule
+    BudgetKeyCommonModule,
+    MushonkeyModule
   ],
   declarations: [
     KeysPipe,
