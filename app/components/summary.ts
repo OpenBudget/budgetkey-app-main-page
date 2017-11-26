@@ -33,7 +33,7 @@ import {ScrollyListener} from "../services/scrolly";
           <div #container class="amount">
             <div class="title">
               <div>תקציב המדינה המאושר לשנת</div>
-              <div>2017</div>
+              <div>{{year}}</div>
               <div>הוא</div>
             </div>
             <div class="container">
@@ -82,6 +82,7 @@ import {ScrollyListener} from "../services/scrolly";
 })
 export class SummaryComponent implements ScrollyListener {
   @Input() amount: number = 0;
+  @Input() year: number = 0;
   @ViewChild('container') container: ElementRef;
   @ViewChild('transitionLayer') transitionLayer: ElementRef;
 

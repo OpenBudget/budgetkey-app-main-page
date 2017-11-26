@@ -217,7 +217,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
       .size([diameter - margin, diameter - margin])
       .padding(padding);
 
-    let data = _.map(<any>values, (value, key) => ({name: key, size: value}));
+    let data = _.map(<any>values, (value: any, key) => ({name: key, size: value.amount, href: value.href}));
 
     let root: any = d3.hierarchy({name: title, children: data})
       .sum((d: any) => d.size)
@@ -298,6 +298,9 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
           value: datum.value,
           percent: datum.value / root.value * 100,
         };
+      })
+      .on('click', function (datum: any) {
+        window.location.href = datum.data.href;
       })
       .on('mouseout', () => {
         this.currentBubble = null;
