@@ -60,17 +60,17 @@ declare type RecordSet = {
 }
 
 function cached_get_url(url: string): PromiseLike<any> {
-  let filePath = crypto.createHash('md5').update(url).digest('hex') + '.json';
+  let filePath = 'build-cache/' + crypto.createHash('md5').update(url).digest('hex') + '.json';
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, 'utf8', (err, content) => {
       if(err) {
         console.log('Couldn\'t find '+filePath);
-        return fetch(url)
+        fetch(url)
         // Load data as JSON
           .then((response: Response) => response.text())
           .then((body: string) => {
             fs.writeFileSync(filePath, body);
-            return JSON.parse(body);
+            resolve(JSON.parse(body));
           });
       } else {
         console.log('Loaded from '+filePath);
