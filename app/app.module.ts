@@ -10,7 +10,8 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
 import { AppComponent }  from './app.component';
 import {
   HeaderComponent, SummaryComponent, MapVisualizationComponent,
-  CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent
+  CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent,
+  HeroComponent
 } from './components';
 
 import { BudgetKeyMainPageService, UtilsService, ScrollyService } from './services';
@@ -40,7 +41,8 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
     SummaryComponent,
     MapVisualizationComponent,
     CategoryVisualizationComponent,
-    CategoryVisualizationInfoPopupComponent
+    CategoryVisualizationInfoPopupComponent,
+    HeroComponent
   ],
   providers: [
     BudgetKeyMainPageService,

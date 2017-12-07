@@ -30,8 +30,10 @@ export class ScrollyService {
     let x: any;
     this.scroller.setup({
       step: '.step', // required
+      container: '.scroll', // required (for sticky)
+      graphic: '.sticky', // required (for sticky)
       offset: 0.2,   // optional, default = 0.5
-      debug: true,  // optional, default = false
+      debug: false,  // optional, default = false
       progress: true,  // optional, default = false
     })
       .onStepEnter((x: Event) => this.handleStepEnter(x))

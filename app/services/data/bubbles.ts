@@ -157,8 +157,9 @@ function deficitChart() {
   ]).then((data: any) => {
     return {
       budget: data[0].net_allocated,
-      children: data[0].children,
-      income: data[1].net_allocated
+      expenseChildren: data[0].children,
+      income: data[1].net_allocated,
+      incomeChildren: data[1].children
     };
   });
 }

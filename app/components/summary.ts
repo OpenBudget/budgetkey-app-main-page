@@ -105,7 +105,7 @@ export class SummaryComponent implements ScrollyListener {
       this.isActive = progress > 0.3;
       if (progress >= 0.7) {
         this.isCollapsed = true;
-        this.animate((progress - 0.7)/0.3);
+        this.animate((progress - 0.7)/0.3*1.6);
       } else {
         this.isCollapsed = false;
         this.animate(0);
@@ -139,7 +139,7 @@ export class SummaryComponent implements ScrollyListener {
         })(),
       };
 
-      let transitionTargets = this.document.querySelectorAll('.category-visualization');
+      let transitionTargets = this.document.querySelectorAll('.vis-kind-func');
       this.transitionTargets = _.map(transitionTargets, (element: any) => {
         const bounds = element.querySelector('svg').getBoundingClientRect();
         const x = (bounds.left + bounds.right) / 2;
@@ -184,14 +184,21 @@ export class SummaryComponent implements ScrollyListener {
   }
 
   animate(t: number) {
-    console.log('animate '+t);
+    function _(t: number, i: number, pow?: number) {
+      if (!pow) pow=1;
+      let ret = t - (6-i)*0.1;
+      if (ret<0) ret = 0;
+      if (ret>1) ret = 1;
+      ret = ret ** pow;
+      return ret;
+    }
     const layer = d3.select(this.transitionLayer.nativeElement);
     layer.selectAll('div')
       // .data(this.transitionTargets)
-      .style('left', (d: any) => ((1-t)*this.transitionSource.bounds.left + t*d.bounds.left) + 'px')
-      .style('top', (d: any) => ((1-t)*this.transitionSource.bounds.top + t*d.bounds.top) + 'px')
-      .style('width', (d: any) => ((1-t)*this.transitionSource.bounds.width+ t*d.bounds.width) + 'px')
-      .style('height', (d: any) => ((1-t)*this.transitionSource.bounds.height + t*d.bounds.height) + 'px')
-      .style('opacity', t > 0 ? (t < 0.99 ? 0.7*(1-t)**0.2 : 0) : 0)
+      .style('left', (d: any, i: number) => ((1-_(t,i))*this.transitionSource.bounds.left + _(t,i)*d.bounds.left) + 'px')
+      .style('top', (d: any, i: number) => ((1-_(t,i))*this.transitionSource.bounds.top + _(t,i)*d.bounds.top) + 'px')
+      .style('width', (d: any, i: number) => ((1-_(t,i,.20))*this.transitionSource.bounds.width+ _(t,i,.20)*d.bounds.width) + 'px')
+      .style('height', (d: any, i: number) => ((1-_(t,i,.20))*this.transitionSource.bounds.height + _(t,i,.20)*d.bounds.height) + 'px')
+      .style('opacity', (d: any, i: number) => _(t,i) > 0 ? (_(t,i) < 0.99 ? 0.7*(1-_(t,i))**0.2 : 0) : 0)
   }
 }

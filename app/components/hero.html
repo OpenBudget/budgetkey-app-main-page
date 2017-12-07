@@ -1,0 +1,16 @@
+<div class="sticky step" data-id="hero">
+    <div class="subtitles"
+         [style.top]="textTop +'px'"
+         [style.right]="textRight + 'px'"
+         [style.opacity]="textOpacity"
+         [innerHTML]="text"
+    >
+    </div>
+    <div #mushonkeyWrapper
+         class="chart"
+         [style.opacity]="chartOpacity">
+        <mushonkey #mushonkey [chart]="chart" *ngIf="chart">
+
+        </mushonkey>
+    </div>
+</div>

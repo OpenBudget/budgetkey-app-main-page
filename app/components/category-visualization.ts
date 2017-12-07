@@ -85,6 +85,7 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
 })
 export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
   @Input() category: any;
+  @Input() kind: any;
 
   @ViewChild('wrapper') rootElement: ElementRef;
   @ViewChild('container') svg: ElementRef;
@@ -262,6 +263,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.theme = CATEGORIES_THEMES[this.category.name] || '';
+    this.theme += ' vis-kind-'+this.kind;
   }
 
   ngAfterViewInit() {
@@ -274,6 +276,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
     const {root, nodes} = this.prepareNodes(
       this.category.name, this.category.values,
       diameter_w, margin, padding);
+    this.createContainer(svg, diameter_w, diameter_h);
     const circles = this.renderCircles(this.createContainer(svg, diameter_w, diameter_h), nodes);
     const legendLines = this.renderLegendLines(this.createContainer(svg, diameter_w, diameter_h), nodes);
     const legendLabels = this.renderLegendLabels(
