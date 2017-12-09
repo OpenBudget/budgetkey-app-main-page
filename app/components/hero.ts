@@ -24,6 +24,7 @@ interface Mutator {
 class TransitionStep implements Mutator {
   private start: number;
   private stop: number;
+  private active = false;
 
   constructor(private _duration: number,
               private _mutators: Array<Mutator>) {}
@@ -36,11 +37,21 @@ class TransitionStep implements Mutator {
   }
 
   mutate(hero: HeroComponent, t: number): void {
+    let m: Mutator;
     if (t>=this.start && t<=this.stop) {
+      this.active = true;
       t = (t-this.start) / (this.stop - this.start);
-      let m: Mutator;
       for (m of this._mutators) {
         m.mutate(hero, t);
+      }
+    } else if (this.active) {
+      this.active = false;
+      let p = 0;
+      if (t>this.stop) {
+        p = 1;
+      }
+      for (m of this._mutators) {
+        m.mutate(hero, p);
       }
     }
   }
@@ -65,14 +76,14 @@ class TransitionSteps implements Mutator {
 
 class HiglightText implements Mutator {
   constructor(private text: string,
-              private top: number,
-              private right: number) {}
+              private ease?: any) {
+    this.ease = ease || tweenie;
+  }
 
   mutate(hero: HeroComponent, t: number): void {
     hero.text = this.text;
-    hero.textTop = this.top;
-    hero.textRight = this.right;
-    hero.textOpacity = tweenie(t);
+    hero.textOpacity = this.ease(t);
+    console.log('HiglightText', t, hero.textOpacity);
   }
 }
 
@@ -88,8 +99,11 @@ class UpdateMushonkey implements Mutator {
 }
 
 class ChartIntroduce implements Mutator {
+  constructor(private increasing: boolean) {}
+
   mutate(hero: HeroComponent, t: number): void {
-    hero.chartOpacity = d3.easeExpOut(t);
+    hero.chartOpacity = d3.easeExpOut(this.increasing? t : 1-t);
+    console.log('ChartIntroduce', this.increasing, hero.chartOpacity);
   }
 }
 
@@ -117,18 +131,30 @@ class ConnectorIntroduce implements Mutator {
   }
 }
 
+class ConnectorToSublevel implements Mutator {
+  constructor(private klass: string, private index: number) {}
+
+  mutate(hero: HeroComponent, t: number): void {
+    let connectors: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('path');
+    connectors = Array.from(connectors);
+    connectors = connectors.filter((c) => c.classList.contains(this.klass));
+    let connector = connectors[this.index];
+    if (connector) {
+      let gap = t * 200;
+      if (gap > 20) {
+        gap = 20;
+      }
+      console.log('ConnectorToSublevel', t, gap);
+      connector.style.strokeDasharray = '10,'+gap;
+      connector.style.strokeDashoffset = '-'+(50*t);
+    }
+  }
+}
+
+
 @Component({
   selector: 'hero',
-  template: require('./hero.html'),
-  styles: [`
-.subtitles {
-    display: block;
-    position: sticky;
-    font-size: 24px;
-    color: #FF5A5F;
-}
-    `
-  ]
+  template: require('./hero.html')
 })
 export class HeroComponent implements ScrollyListener {
 
@@ -137,10 +163,8 @@ export class HeroComponent implements ScrollyListener {
 
   private ts: TransitionSteps;
 
-  text: string;
-  textTop: number = 0;
-  textRight: number = 0;
-  textOpacity: number = 0;
+  text: string = 'זה בעצם די פשוט&#8230;';
+  textOpacity: number = 1;
   chart: MushonKeyChart;
   chartOpacity: number = 0;
   charts: Array<MushonKeyChart> = [];
@@ -149,29 +173,29 @@ export class HeroComponent implements ScrollyListener {
               private scroller: ScrollyService) {
     this.mainPage.getBubblesData().then((bubbles) => {
       this.makeDeficitCharts(bubbles.deficitChart);
-      _.map(bubbles.educationCharts, (c) => this.charts.push(HeroComponent.makeEducationChart(c)));
+      _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
     });
     this.ts = new TransitionSteps([
       new TransitionStep(5, [
-        new HiglightText('אבל איך בעצם בנוי תקציב המדינה?', 200, 200),
-        new ChartIntroduce(),
+        new HiglightText('זה בעצם די פשוט&#8230;', (t: number) => d3.easePolyInOut(1-t)),
+        new ChartIntroduce(true),
         new UpdateMushonkey(0),
       ]),
       new TransitionStep(5, [
-        new HiglightText('מצד אחד נכנס כסף - הכנסות', 100, 100),
+        new HiglightText('מצד אחד נכנס כסף - הכנסות'),
         new UpdateMushonkey(1),
         new ConnectorIntroduce('income'),
       ]),
       new TransitionStep(5, [
-        new HiglightText('ומהצד השני יוצא כסף - הוצאות', 100, 100),
+        new HiglightText('ומהצד השני יוצא כסף - הוצאות'),
         new UpdateMushonkey(2),
         new ConnectorIntroduce('expenses'),
       ]),
       new TransitionStep(5, [
-        new HiglightText('מאיפה מגיע הכסף לתקציב המדינה?', 100, 100)
+        new HiglightText('מאיפה מגיע הכסף לתקציב המדינה?')
       ]),
       new TransitionStep(5, [
-        new HiglightText('יש לא מעט מקורות, אבל הנה העיקריים מביניהם', 100, 100)
+        new HiglightText('יש לא מעט מקורות, אבל הנה העיקריים מביניהם')
       ]),
       new TransitionStep(5, [
         new UpdateMushonkey(3),
@@ -183,36 +207,78 @@ export class HeroComponent implements ScrollyListener {
            כל שנה הממשלה מוציאה קצת יותר כסף ממה שנכנס,
            <br/>
            אבל אנחנו לא נכנסים למינוס - כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.
-        `, 100, 100),
+        `),
       ]),
       new TransitionStep(5, [
-        new HiglightText('להפרש בין ההוצאות להכנסות קוראים ״גירעון״.', 100, 100)
+        new HiglightText('להפרש בין ההוצאות להכנסות קוראים ״גירעון״.')
       ]),
       new TransitionStep(5, [
         new UpdateMushonkey(4),
         new ConnectorIntroduce('deficit'),
       ]),
       new TransitionStep(5, [
-        new HiglightText('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות', 100, 100)
+        new HiglightText('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות')
       ]),
       new TransitionStep(5, [
         new UpdateMushonkey(5),
         new ConnectorIntroduce('debt'),
       ]),
       new TransitionStep(5, [
-        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.', 100, 100)
+        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.')
       ]),
       new TransitionStep(5, [
-        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.', 100, 100)
+        new HiglightText('באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים.')
       ]),
       new TransitionStep(5, [
-        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.', 100, 100)
-      ]),
-      new TransitionStep(5, [
-        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.', 100, 100)
+        new HiglightText('לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד - וכן הלאה.')
       ]),
       new TransitionStep(5, [
         new UpdateMushonkey(6),
+      ]),
+      new TransitionStep(5, [
+        new HiglightText(`
+        זאת הסיבה שאם רוצים לדעת כמה כסף ״הולך לפריפריה״ או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״
+        <br/>
+        <small>(ואנחנו מקבלים הרבה שאלות כאלו&#8230;)</small>
+        <br/>
+        אז אין תשובה מוחלטת - כי אין ״משרד הפריפריה״ או ״משרד החרדים״ בממשלה`)
+      ]),
+      new TransitionStep(5, [
+        new HiglightText('לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
+        new ConnectorToSublevel('expenses', 0)
+      ]),
+      new TransitionStep(5, [
+        new HiglightText('לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
+        new ConnectorToSublevel('expenses', 0),
+        new ChartIntroduce(false)
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(true),
+        new UpdateMushonkey(7),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(false),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(true),
+        new UpdateMushonkey(8),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(false),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(true),
+        new UpdateMushonkey(9),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(false),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(true),
+        new UpdateMushonkey(10),
+      ]),
+      new TransitionStep(5, [
+        new ChartIntroduce(false),
       ]),
     ]);
     this.scroller.subscribe(this);
@@ -346,7 +412,7 @@ export class HeroComponent implements ScrollyListener {
 
   }
 
-  static makeEducationChart(data: any) {
+  makeEducationCharts(data: any) {
     let children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_allocated)
     let rest = data.net_allocated - _.sum(
         _.map(_.slice(children, 0, 4),
@@ -365,14 +431,15 @@ export class HeroComponent implements ScrollyListener {
         new MushonKeyFlowGroup(
           false, [
             HeroComponent
-              .makeFlow(data.net_allocated, data.hierarchy[data.hierarchy.length-1][1])
+              .makeFlow(data.net_allocated,
+                '…' + 'מתוך תקציב ' + data.hierarchy[data.hierarchy.length-1][1] + ': ')
           ], 'income', -100
         ),
       ],
       data.title,
       200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
     );
-    return chart;
+    this.charts.push(chart);
   }
 
 }

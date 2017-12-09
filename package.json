@@ -39,7 +39,7 @@
     "mushonkey": "0.0.16",
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.4.0",
-    "scrollama": "^0.5.3",
+    "scrollama": "https://github.com/akariv/scrollama/tarball/master",
     "systemjs": "0.19.40",
     "zone.js": "^0.6.26"
   },

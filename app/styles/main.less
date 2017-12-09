@@ -29,6 +29,37 @@
   }
 }
 
+.course {
+  display: block;
+  width: 100%;
+  background: #FF5A5F;
+  margin-top: 4em;
+  margin-bottom: 4em;
+  padding-top: 3em;
+  padding-bottom: 3em;
+
+  .question {
+    font-size: 3em;
+    color: white;
+  }
+
+  .scroll-down{
+    flex: 0 0 auto;
+    margin: 30px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    svg {
+      display: block;
+
+      path {
+        fill: white;
+      }
+    }
+  }
+}
 
 .map-container {
   width: 100%;
@@ -38,57 +69,63 @@
 
 .sticky {
 
-  .text-center {
-    position: sticky;
-    width: auto;
-    overflow-x: hidden;
-    top: 20%;
-    white-space: nowrap;
+  height: 10000px;
+  margin-bottom: 100vh;
 
-    .description, .chart {
+  .sticky-wrapper {
+    position: sticky;
+    top: 130px;
+    height: auto;
+
+    .text-center {
+      width: auto;
+      overflow-x: hidden;
+      white-space: nowrap;
+
+      .description, .chart {
+        display: inline-block;
+      }
+    }
+
+    .subtitles {
+      display: block;
+      min-height: 4em;
+      font-size: 1.5em;
+      color: #FF5A5F;
+    }
+
+    .chart {
+      direction: ltr;
       display: inline-block;
+      width: 80vw;
+      height: 80vh;
+
+      .expenses {
+        stroke: lightblue;
+      }
+
+      .income {
+        stroke: skyblue;
+      }
+
+      .deficit {
+        stroke: violet;
+      }
+
+      .debt {
+        stroke: darkviolet;
+      }
+
+      .centerpiece-text {
+        fill: white;
+      }
+
+      .centerpiece {
+        fill: navyblue;
+      }
     }
   }
 
-  .chart {
-    position: sticky;
-    direction: ltr;
-    display: inline-block;
-    top: 20vh;
-    width: 80vw;
-    height: 80vh;
-
-    .expenses {
-      stroke: lightblue;
-    }
-
-    .income {
-      stroke: skyblue;
-    }
-
-    .deficit {
-      stroke: violet;
-    }
-
-    .debt {
-      stroke: darkviolet;
-    }
-
-    .centerpiece-text {
-      fill: white;
-    }
-
-    .centerpiece {
-      fill: navyblue;
-    }
-  }
-
-
-  &:after {
-    content: "after";
-    display: block;
-    height: 10000px;
-  }
 }
 
 .after {

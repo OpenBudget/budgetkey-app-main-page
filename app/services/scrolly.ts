@@ -71,7 +71,7 @@ export class ScrollyService {
   }
 
   emit(id: string, progress: number) {
-    console.log(id, '<--', progress);
+    // console.log(id, '<--', progress);
     setTimeout(() => {
       this.emitter.emit({ id: id, progress: progress });
     }, 0)
