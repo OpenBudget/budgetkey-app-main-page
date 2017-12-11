@@ -70,7 +70,7 @@
 .sticky {
 
   height: 10000px;
-  margin-bottom: 100vh;
+  //margin-bottom: 100vh;
 
   .sticky-wrapper {
     position: sticky;
@@ -95,25 +95,35 @@
     }
 
     .chart {
-      direction: ltr;
+      direction: rtl;
       display: inline-block;
       width: 80vw;
       height: 80vh;
 
       .expenses {
         stroke: lightblue;
+        text-anchor: end !important;
       }
 
       .income {
         stroke: skyblue;
+        text-anchor: start !important;
       }
 
       .deficit {
         stroke: violet;
+        text-anchor: start !important;
       }
 
       .debt {
         stroke: darkviolet;
+        text-anchor: end !important;
+      }
+
+      .supports {
+        stroke: lightgreen;
+        stroke-dasharray: 10,1;
+        text-anchor: end !important;
       }
 
       .centerpiece-text {
@@ -129,6 +139,6 @@
 }
 
 .after {
-  height: 1000px;
+  //height: 1000px;
   border: beige solid 1px;
 }

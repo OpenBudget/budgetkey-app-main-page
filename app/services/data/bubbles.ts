@@ -8,6 +8,7 @@ import * as Promise from 'bluebird';
 const API_URL = 'http://next.obudget.org/api/query?query=';
 const DOC_URL = 'http://next.obudget.org/get/';
 const YEAR = 2018;
+const BUDGET_CODE = '0020460418';
 
 const SQL_FUNC_BUBBLES_DATA = `
   SELECT 
@@ -47,6 +48,17 @@ const SQL_INCOME_BUBBLES_DATA = `
   ORDER BY 1, 2
 `;
 
+const SUPPORTS_BUBBLES_DATA = `
+  SELECT 
+    entity_name,
+    sum(amount_total) as total_amount,
+    'https://next.obudget.org/i/org/' || entity_kind || '/' || entity_id as href
+  FROM raw_supports
+  WHERE budget_code='`+BUDGET_CODE+`' and year_paid=`+(YEAR-1)+` and entity_name is not null
+  GROUP BY 1, 3 
+  ORDER BY 2 desc
+`;
+
 
 declare type Row = {
   bubble_group: any;
@@ -55,9 +67,7 @@ declare type Row = {
   href: any;
 }
 
-declare type RecordSet = {
-  rows: Row[];
-}
+declare type RecordSet = Array<Row>;
 
 function cached_get_url(url: string): PromiseLike<any> {
   let filePath = 'build-cache/' + crypto.createHash('md5').update(url).digest('hex') + '.json';
@@ -69,8 +79,16 @@ function cached_get_url(url: string): PromiseLike<any> {
         // Load data as JSON
           .then((response: Response) => response.text())
           .then((body: string) => {
+            let parsed;
+            try {
+              parsed = JSON.parse(body);
+            } catch (e) {
+              console.log('ERRORED', url);
+              fs.writeFileSync('errd', body);
+              throw e;
+            }
             fs.writeFileSync(filePath, body);
-            resolve(JSON.parse(body));
+            resolve(parsed);
           });
       } else {
         console.log('Loaded from '+filePath);
@@ -84,13 +102,20 @@ function cached_get_url(url: string): PromiseLike<any> {
   });
 }
 
-function fetch_data(sql: string) {
+function fetch_sql(sql: string) {
   let url = API_URL + encodeURIComponent(sql);
   return cached_get_url(url)
+    .then((data) => {
+      return data.rows;
+    });
+}
+
+function fetch_data(sql: string) {
+  return fetch_sql(sql)
     // Collect data
     .then((data: RecordSet) => {
       let grouped = {};
-      data.rows.forEach(
+      data.forEach(
         ({bubble_group, bubble_title, total_amount, href}: Row) => {
           grouped[bubble_group] = grouped[bubble_group] || {};
           grouped[bubble_group][bubble_title] = {
@@ -167,15 +192,16 @@ function deficitChart() {
 function educationBudgetChart() {
   return Promise.all([
     fetch_doc('budget/0020/'+YEAR),
-    fetch_doc('budget/002043/'+YEAR),
-    fetch_doc('budget/00204301/'+YEAR),
-  ]).then((data: any) => {
-    return {
-      level1: data[0],
-      level2: data[1],
-      level3: data[2],
-    };
-  });
+    fetch_doc('budget/002046/'+YEAR),
+    fetch_doc('budget/00204604/'+YEAR),
+  ]);
+}
+
+function supportsChart(): PromiseLike<any> {
+  return Promise.all([
+    fetch_sql(SUPPORTS_BUBBLES_DATA),
+    fetch_doc('budget/'+BUDGET_CODE+'/'+YEAR)
+  ]);
 }
 
 export default function() {
@@ -185,17 +211,19 @@ export default function() {
       fetch_data(SQL_INCOME_BUBBLES_DATA),
       deficitChart(),
       educationBudgetChart(),
-    ]).then((data: any) => {
-      data = {
+      supportsChart()
+    ]).then((data: any[]) => {
+      let ret = {
         year: YEAR,
         func: data[0],
         econ: data[1],
         income: data[2],
         deficitChart: data[3],
         educationCharts: data[4],
+        supportChart: data[5]
       };
       return {
-        code: 'module.exports = ' + JSON.stringify(data)
+        code: 'module.exports = ' + JSON.stringify(ret)
       };
     });
 }

@@ -59,7 +59,7 @@ class TransitionStep implements Mutator {
 
 class TransitionSteps implements Mutator {
   constructor(private _steps: Array<TransitionStep>) {
-    let totalLength = d3.sum(_steps, (s) => s.duration);
+    let totalLength = d3.sum(_steps, (s) => s.duration) / 0.9;
     let ofs = 0;
     for (let step of _steps) {
       step.setRange(ofs/totalLength, (ofs + step.duration)/totalLength);
@@ -83,7 +83,6 @@ class HiglightText implements Mutator {
   mutate(hero: HeroComponent, t: number): void {
     hero.text = this.text;
     hero.textOpacity = this.ease(t);
-    console.log('HiglightText', t, hero.textOpacity);
   }
 }
 
@@ -132,7 +131,7 @@ class ConnectorIntroduce implements Mutator {
 }
 
 class ConnectorToSublevel implements Mutator {
-  constructor(private klass: string, private index: number) {}
+  constructor(private klass: string, private index: number, private going: boolean) {}
 
   mutate(hero: HeroComponent, t: number): void {
     let connectors: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('path');
@@ -140,11 +139,13 @@ class ConnectorToSublevel implements Mutator {
     connectors = connectors.filter((c) => c.classList.contains(this.klass));
     let connector = connectors[this.index];
     if (connector) {
-      let gap = t * 200;
+      if (!this.going) {
+        t = 1-t;
+      }
+      let gap = tweenie(t) * 200;
       if (gap > 20) {
         gap = 20;
       }
-      console.log('ConnectorToSublevel', t, gap);
       connector.style.strokeDasharray = '10,'+gap;
       connector.style.strokeDashoffset = '-'+(50*t);
     }
@@ -174,6 +175,7 @@ export class HeroComponent implements ScrollyListener {
     this.mainPage.getBubblesData().then((bubbles) => {
       this.makeDeficitCharts(bubbles.deficitChart);
       _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
+      this.makeSupportChart(bubbles.supportChart[0], bubbles.supportChart[1]);
     });
     this.ts = new TransitionSteps([
       new TransitionStep(5, [
@@ -195,7 +197,11 @@ export class HeroComponent implements ScrollyListener {
         new HiglightText('מאיפה מגיע הכסף לתקציב המדינה?')
       ]),
       new TransitionStep(5, [
-        new HiglightText('יש לא מעט מקורות, אבל הנה העיקריים מביניהם')
+        new HiglightText(`יש לא מעט מקורות, אבל הנה העיקריים מביניהם:<br/>
+(1) מס הכנסה (ובתוכו בעיקר מס חברות),<br/>
+(2) גיוסים בשוק ההון (מלוות)<br/>
+ו(3) מע״מ.
+`)
       ]),
       new TransitionStep(5, [
         new UpdateMushonkey(3),
@@ -245,39 +251,87 @@ export class HeroComponent implements ScrollyListener {
       ]),
       new TransitionStep(5, [
         new HiglightText('לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
-        new ConnectorToSublevel('expenses', 0)
+        new ConnectorToSublevel('expenses', 0, true)
       ]),
       new TransitionStep(5, [
-        new HiglightText('לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
-        new ConnectorToSublevel('expenses', 0),
         new ChartIntroduce(false)
       ]),
       new TransitionStep(5, [
+        new HiglightText('מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018'),
         new ChartIntroduce(true),
         new UpdateMushonkey(7),
+        new ConnectorToSublevel('income', 0, false),
+      ]),
+      new TransitionStep(5, [
+        new HiglightText(`למשרד החינוך, כמו למרבית המשרדים הגדולים, יש סעיף תקציבי משל עצמו.
+<br/><small>
+(התקציב של משרדים קטנים לפעמים מוצמד למשרד גדול אחר)
+</small>
+<br/>
+בתוך משרד החינוך, התקציב מחולק לפי הנושאים הגדולים בהם המשרד מטפל.`),
+      ]),
+      new TransitionStep(5, [
+        new HiglightText('בואו נבדוק מה קורה בתוך ״תכניות לימודים משלימות״&#8230'),
+        new ConnectorToSublevel('expenses', 4, true)
       ]),
       new TransitionStep(5, [
         new ChartIntroduce(false),
       ]),
       new TransitionStep(5, [
+        new HiglightText(`כ-4 מיליארד שקלים מתוך תקציב משרד החינוך משמשים לתכניות לימודים משלימות
+<br/>
+<small>
+אפשר לראות שלכל סעיף תקציבי יש מספר - ככל שהסעיף יותר מפורט, המספר יותר ארוך
+</small>`),
         new ChartIntroduce(true),
         new UpdateMushonkey(8),
+        new ConnectorToSublevel('income', 0, false),
+      ]),
+      new TransitionStep(5, [
+        new HiglightText('נמשיך לצלול לתוך ״חינוך בלתי פורמאלי״&#8230'),
+        new ConnectorToSublevel('expenses', 1, true)
       ]),
       new TransitionStep(5, [
         new ChartIntroduce(false),
       ]),
       new TransitionStep(5, [
+        new HiglightText(`כמעט מיליארד שקלים מתוך תקציב תכניות הלימודים המשלימות משמשים לחינוך בלתי פורמאלי
+<br/>
+<small>
+ברמה הזאת, סעיפי התקציב נקראים ״תכניות״.
+<br/>
+כאשר עושים העברות תקציביות - שינויים בתקציב במהלך השנה - לרוב עובר כסף בין תכנית אחת לתכנית אחרת.
+<br/>
+במהלך השנה יכולים להיות אלפים של שינויים כאלה - שלפעמים משנים באופן מהותי חלקים משמעותיים בתקציב!
+</small>`),
         new ChartIntroduce(true),
         new UpdateMushonkey(9),
+        new ConnectorToSublevel('income', 0, false),
+      ]),
+      new TransitionStep(5, [
+        new HiglightText('בוא נבדוק מה קורה בתוך ״תמיכה בתנועות נוער״&#8230'),
+        new ConnectorToSublevel('expenses', 2, true)
       ]),
       new TransitionStep(5, [
         new ChartIntroduce(false),
       ]),
       new TransitionStep(5, [
+        new HiglightText(`כמעט מיליון שקל מוקצה תקציב המדינה לתמיכה בתנועות נוער
+<br/>
+<small>
+הגענו!
+<br/>
+זאת הרמה הכי מפורטת של התקציב - שנקראת גם תקנה תקציבית
+<br/>
+מכאן והלאה הכסף יוצא החוצה - כמשכורת, קניות או - במקרה שלנו - דרך תמיכה בארגונים שונים.
+</small>`),
         new ChartIntroduce(true),
         new UpdateMushonkey(10),
+        new ConnectorToSublevel('income', 0, false),
       ]),
-      new TransitionStep(5, [
+      new TransitionStep(15, [
+        new HiglightText('זהו!'),
+        new ConnectorToSublevel('expenses', 2, true),
         new ChartIntroduce(false),
       ]),
     ]);
@@ -293,10 +347,11 @@ export class HeroComponent implements ScrollyListener {
   ngAfterViewInit(){
   }
 
-  static makeFlow(amount: number, title: string) {
-    let billions = amount/1000000000;
+  static makeFlow(amount: number, title: string, scale?: any) {
+    scale = scale || [1000000000, "מיל'"];
+    let billions = amount/scale[0];
     let digits = billions < 5 ? 1 : 0;
-    let amountStr =  billions.toFixed(digits) + ' מיל׳';
+    let amountStr =  billions.toFixed(digits) + ' ' + scale[1];
     title = title + ' ' + amountStr;
     return new MushonKeyFlow(amount, title, null);
   }
@@ -413,20 +468,20 @@ export class HeroComponent implements ScrollyListener {
   }
 
   makeEducationCharts(data: any) {
-    let children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_allocated)
+    let numToShow = 5;
+    let children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_allocated);
     let rest = data.net_allocated - _.sum(
-        _.map(_.slice(children, 0, 4),
+        _.map(_.slice(children, 0, numToShow),
           (d: any) => d.net_allocated)
       );
+    let flows = [];
+    for (let i = 0 ; i < numToShow ; i++ ) {
+      flows.push(HeroComponent.makeFlow(children[i].net_allocated, children[i].title));
+    }
+    flows.push(HeroComponent.makeFlow(rest, 'אחרים...'));
     let chart = new MushonKeyChart([
         new MushonKeyFlowGroup(
-          true, [
-            HeroComponent.makeFlow(children[0].net_allocated, children[0].title),
-            HeroComponent.makeFlow(children[1].net_allocated, children[1].title),
-            HeroComponent.makeFlow(children[2].net_allocated, children[2].title),
-            HeroComponent.makeFlow(children[3].net_allocated, children[3].title),
-            HeroComponent.makeFlow(rest, 'אחרים...')
-          ], 'expenses', 20
+          true, flows, 'expenses', 20
         ),
         new MushonKeyFlowGroup(
           false, [
@@ -436,7 +491,45 @@ export class HeroComponent implements ScrollyListener {
           ], 'income', -100
         ),
       ],
-      data.title,
+      data.title + ' '+data['nice-code'],
+      200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
+    );
+    console.log(data);
+    this.charts.push(chart);
+  }
+
+  makeSupportChart(supportData: any, budgetData: any) {
+    console.log(supportData);
+    console.log(budgetData);
+    let numToShow = 5;
+    let children: Array<any> = _.sortBy(supportData, (d: any) => -d.total_amount);
+    let total = _.sum(_.map(children, (d) => d.total_amount));
+    let rest = total - _.sum(
+        _.map(_.slice(children, 0, numToShow),
+          (d: any) => d.total_amount)
+      );
+    let scale = [1000000, 'מיליון ₪']
+    let flows = [];
+    for (let i = 0 ; i < numToShow ; i++ ) {
+      flows.push(HeroComponent.makeFlow(children[i].total_amount, children[i].entity_name, scale));
+    }
+    flows.push(HeroComponent.makeFlow(rest, 'אחרים...', scale));
+    let group = new MushonKeyFlowGroup(
+      true, flows, 'supports', 20
+    );
+    group.labelTextSize = 12;
+    let chart = new MushonKeyChart([
+        group,
+        new MushonKeyFlowGroup(
+          false, [
+            HeroComponent
+              .makeFlow(budgetData.net_allocated,
+                '…' + 'מתוך תקציב ' + budgetData.hierarchy[budgetData.hierarchy.length-1][1] + ': ',
+              scale)
+          ], 'income', -100
+        ),
+      ],
+      budgetData.title + ' '+budgetData['nice-code'],
       200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
     );
     this.charts.push(chart);
@@ -445,30 +538,6 @@ export class HeroComponent implements ScrollyListener {
 }
 
 /*
-מאיפה מגיע הכסף לתקציב המדינה?
-יש לא מעט מקורות, אבל הנה העיקריים מביניהם
-     (1) מס הכנסה (ובתוכו בעיקר מס חברות), (2) גיוסים בשוק ההון (מלוות)  ו(3) מע״מ.
-
-האם סך ההכנסות שווה לסך ההוצאות? לא בדיוק...
-כל שנה הממשלה מוציאה קצת יותר כסף ממה שנכנס,
-אבל אנחנו לא נכנסים למינוס - כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.
-
-להפרש בין ההוצאות להכנסות קוראים ״גירעון״.
-
-בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות.
-זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.
-
-באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים. לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד וכן הלאה.
-זאת הסיבה שאם רוצים לדעת כמה כסף ״הולך לפריפריה״ או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״
-(ואנחנו מקבלים הרבה שאלות כאלו&#8230;)
-אז אין תשובה מוחלטת - כי אין ״משרד הפריפריה״ או ״משרד החרדים״ בממשלה.
-<br/>
-אז מה קורה בתוך המשרדים עצמם? בוא נצלול לתקציב משרד החינוך&#8230;
-</span>
-</div>
-<div class="mushonkey-wrapper">
-<mushonkey [chart]="educationCharts[0]" *ngIf="educationCharts"></mushonkey>
-</div>
 <div class="description">
   <span>
     מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018.

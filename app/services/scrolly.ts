@@ -32,7 +32,7 @@ export class ScrollyService {
       step: '.step', // required
       container: '.scroll', // required (for sticky)
       graphic: '.sticky', // required (for sticky)
-      offset: 0.2,   // optional, default = 0.5
+      offset: 0.5,   // optional, default = 0.5
       debug: false,  // optional, default = false
       progress: true,  // optional, default = false
     })
