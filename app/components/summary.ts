@@ -158,20 +158,20 @@ export class SummaryComponent implements ScrollyListener {
         };
       });
 
-      const layer = d3.select(this.transitionLayer.nativeElement);
-      layer.selectAll('div')
-        .data(this.transitionTargets)
-        .enter()
-        .append('div')
-        .style('background', this.transitionSource.background)
-        .style('border-radius', '50%')
-        .style('position', 'absolute')
-        .style('opacity', 1)
-        .style('left', this.transitionSource.bounds.left + 'px')
-        .style('top', this.transitionSource.bounds.top + 'px')
-        .style('width', this.transitionSource.bounds.width + 'px')
-        .style('height', this.transitionSource.bounds.height + 'px')
-        .style('opacity', 0);
+      // const layer = d3.select(this.transitionLayer.nativeElement);
+      // layer.selectAll('div')
+      //   .data(this.transitionTargets)
+      //   .enter()
+      //   .append('div')
+      //   .style('background', this.transitionSource.background)
+      //   .style('border-radius', '50%')
+      //   .style('position', 'absolute')
+      //   .style('opacity', 1)
+      //   .style('left', this.transitionSource.bounds.left + 'px')
+      //   .style('top', this.transitionSource.bounds.top + 'px')
+      //   .style('width', this.transitionSource.bounds.width + 'px')
+      //   .style('height', this.transitionSource.bounds.height + 'px')
+      //   .style('opacity', 0);
     }, 100);
   }
 

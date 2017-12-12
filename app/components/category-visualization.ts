@@ -92,6 +92,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   theme: string = '';
   currentBubble: any;
+  scale: number;
 
   formatPercents(value: number): string {
     return this.utils.formatNumber(value, 1) + '%';
@@ -264,6 +265,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.theme = CATEGORIES_THEMES[this.category.name] || '';
     this.theme += ' vis-kind-'+this.kind;
+    this.scale = this.category.scale;
   }
 
   ngAfterViewInit() {
@@ -285,8 +287,8 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
     );
 
     d3.select(this.rootElement.nativeElement)
-      .on('mouseover', () => update(true, true))
-      .on('mouseout', () => update(false, false));
+      .on('mouseover', () => update(true, true, this.scale))
+      .on('mouseout', () => update(false, false, this.scale));
 
     const that = this;
     circles
@@ -309,17 +311,20 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
         this.currentBubble = null;
       });
 
-    update(false, false);
+    update(false, false, this.scale);
 
-    function update(zoomCircles: boolean, showLabels: boolean) {
+    function update(zoomCircles: boolean, showLabels: boolean, circleScale: number) {
       const scale = zoomCircles ? 1 : 0.7;
+      circleScale = zoomCircles ? 1 : circleScale;
       const opacity = showLabels ? 1 : 0;
+      const delay = zoomCircles? 0: 100;
 
       circles
         .transition()
+        .delay(delay)
         .duration(500)
         .ease(d3.easeBackOut)
-        .attr('transform', (d: any) => 'translate(' + d.x * scale + ',' + d.y * scale + ')');
+        .attr('transform', (d: any) => 'scale(' + circleScale + ')' + ' translate(' + d.x * scale + ',' + d.y * scale + ')');
 
       legendLines
         .transition()

@@ -139,10 +139,14 @@ function fetch_data(sql: string) {
       });
 
       result = _.sortBy(result, (v: any) => -v.amount);
-
+      let maxPercent = 0;
       let total = _.sum(_.map(result, (v: any) => v.amount));
       _.each(result, (item: any) => {
         item.percent = item.amount / total * 100;
+        maxPercent = maxPercent > item.percent? maxPercent : item.percent;
+      });
+      _.each(result, (item: any) => {
+        item.scale = Math.sqrt(item.percent / maxPercent);
       });
 
       result = _.filter(result, (v: any) => v.percent > 0.5);
