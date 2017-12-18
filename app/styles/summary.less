@@ -1,15 +1,15 @@
 .budgetkey-main-summary-container {
 
   @size: 350px;
-  @height: ~'calc(50vh + 100px)';
+  @height: ~'calc(50vh - 40px)';
 
   .description {
     height: 50vh;
-    margin-top: 100px;
+    margin-top: 230px;
 
-    & > span {
-      max-width: 500px;
-    }
+    //& > span {
+    //  max-width: 500px;
+    //}
   }
 
   .change-year {
@@ -60,6 +60,7 @@
       right: 0;
       top: ~'calc(50vh - @{size})';
       opacity: 0;
+      z-index: 1;
       transition: all 150ms ease-out 0ms;
 
       :nth-child(2):before,

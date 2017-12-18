@@ -11,11 +11,10 @@ import {ScrollyListener} from "../services/scrolly";
     <div class="budgetkey-main-summary-container step" data-id="summary-description" 
       [ngClass]="{active: isActive, collapsed: isCollapsed}">
       <div class="description">
-        <span>
-        אספנו את כל הנתונים הרשמיים ממשרד האוצר,
-        וסידרנו אותם בצורה ברורה שתאפשר לכם להבין מאיפה
-        מגיע הכסף שלנו ולאן הוא הולך…
-        </span>
+        <div class="speech-bubble question">מה זה האתר הזה?</div>
+        <div class="speech-bubble answer">כאן אפשר למצוא את כל המידע </div>
+        <div class="speech-bubble answer">על התקציב ועל הוצאות הממשלה</div>
+        <div class="speech-bubble answer">בצורה מסודרת וברורה</div>
       </div>
       <div class="row">
         <div class="col-xs-2">

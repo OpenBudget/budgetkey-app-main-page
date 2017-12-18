@@ -45,15 +45,6 @@ import {ScrollyService} from "./services/scrolly";
                 <hero></hero>           
             </div>
             <div class="after">
-          
-              <hr/>
-              <hr/>
-              <hr/>
-              <hr/>
-              
-              <h3>to be continued...</h3>
-                          
-              <!-- <map-visualization></map-visualization> -->
             </div>
 
         </div>

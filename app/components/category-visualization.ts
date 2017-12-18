@@ -16,9 +16,7 @@ import { UtilsService } from '../services';
         <span>{{ formatAmount(bubble.value) }} ₪</span>
         <span>( {{ formatPercents(bubble.percent) }} )</span>
       </div>
-      <div class="contents" *ngIf="currentTab == 0">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+      <div class="contents" *ngIf="currentTab == 0" [innerHtml]="bubble.explanation">       
       </div>
       <div class="contents" *ngIf="currentTab == 1">
         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
@@ -56,13 +54,13 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
   constructor(private utils: UtilsService) {}
 
   ngOnInit() {
-    this.timer = setInterval(() => {
-      this.currentTab = (this.currentTab + 1) % 3;
-    }, 3000);
+    // this.timer = setInterval(() => {
+    //   this.currentTab = (this.currentTab + 1) % 3;
+    // }, 3000);
   }
 
   ngOnDestroy() {
-    clearInterval(this.timer);
+    // clearInterval(this.timer);
   }
 }
 
@@ -219,7 +217,14 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
       .size([diameter - margin, diameter - margin])
       .padding(padding);
 
-    let data = _.map(<any>values, (value: any, key) => ({name: key, size: value.amount, href: value.href}));
+    let data = _.map(<any>values,
+      (value: any, key) => ({
+        name: key,
+        size: value.amount,
+        href: value.href,
+        explanation: value.explanation,
+        explanation_source: value.explanation_source
+      }));
 
     let root: any = d3.hierarchy({name: title, children: data})
       .sum((d: any) => d.size)
@@ -296,8 +301,16 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
         const selfBounds = this.getBoundingClientRect();
         const parentBounds = that.rootElement.nativeElement.getBoundingClientRect();
 
+        let explanation = 'אין מידע';
+        if ((<any>datum.data).explanation) {
+          explanation = (<any>datum.data).explanation +
+            '<br/><small>מקור:' +
+            ((<any>datum.data).explanation_source) +
+            '</small>';
+        }
         that.currentBubble = {
           name: (<any>datum.data).name,
+          explanation: explanation,
           left: Math.round((selfBounds.left + selfBounds.right) / 2 - parentBounds.left),
           top: Math.round(parentBounds.bottom - selfBounds.top + 10),
           value: datum.value,

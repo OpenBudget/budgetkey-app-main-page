@@ -14,13 +14,14 @@
 
 .description {
   display: flex;
-  align-items: flex-end;
+  //align-items: flex-end;
+  flex-direction: column;
   justify-content: center;
   opacity: 1;
   margin-top: 40px;
   transition: opacity 150ms ease-out 0ms;
 
-  & > span {
+  & > span, & > div {
     max-width: 720px;
     flex: 0 0 auto;
     font-size: 24px;
@@ -70,12 +71,10 @@
 .sticky {
 
   height: 10000px;
-  //margin-bottom: 100vh;
 
   .sticky-wrapper {
-    position: sticky;
-    top: 130px;
     height: auto;
+    position: sticky;
 
     .text-center {
       width: auto;
@@ -87,18 +86,33 @@
       }
     }
 
-    .subtitles {
+    &.subtitles {
       display: block;
       min-height: 4em;
       font-size: 1.5em;
       color: #FF5A5F;
+      top: 150px;
+
+      .speech-bubble:nth-of-type(1) {
+        opacity: 0.05;
+      }
+
+      .speech-bubble:nth-of-type(2) {
+        opacity: 0.1;
+      }
+
+      .speech-bubble:nth-of-type(3) {
+        opacity: 0.2;
+      }
     }
 
-    .chart {
+    &.chart {
+      display: block;
+      top: 60px;
       direction: rtl;
-      display: inline-block;
-      width: 80vw;
-      height: 80vh;
+      width: 80%;
+      margin-right: 10%;
+      height: 450px;
 
       .expenses {
         stroke: lightblue;
@@ -141,4 +155,52 @@
 .after {
   //height: 1000px;
   border: beige solid 1px;
+}
+
+
+.speech-bubble {
+  position: relative;
+  border-radius: .4em;
+  padding: 0.5em;
+  //padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+  width: 400px;
+  right: 50%;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 70%;
+    width: 0;
+    height: 0;
+    border: .5em solid transparent;
+    margin-top: -.5em;
+  }
+
+  &.question {
+    color: black;
+    background: #aaaaaa;
+    margin-right: -250px;
+
+    &:after {
+      right: 0;
+      border-left-color: #aaaaaa;
+      border-right: 0;
+      margin-right: -.5em;
+    }
+  }
+
+  &.answer {
+    color: white;
+    background: #ff6666;
+    margin-right: -150px;
+
+    &:after {
+      left: 0;
+      border-right-color: #ff6666;
+      border-left: 0;
+      margin-left: -.5em;
+    }
+  }
+
 }

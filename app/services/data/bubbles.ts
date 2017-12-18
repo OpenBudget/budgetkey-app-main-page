@@ -15,10 +15,11 @@ const SQL_FUNC_BUBBLES_DATA = `
     func_cls_title_1->>0 AS bubble_group,
     func_cls_title_2->>0 AS bubble_title,
     sum(net_allocated) AS total_amount,
+    'budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as doc_id,
     'https://next.obudget.org/i/budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as href
   FROM raw_budget
   WHERE length(code) = 10 AND year = `+YEAR+` AND NOT code LIKE '0000%%'
-  GROUP BY 1, 2, 4 
+  GROUP BY 1, 2, 4 ,5
   ORDER BY 1, 2
 `;
 
@@ -65,6 +66,7 @@ declare type Row = {
   bubble_title: any;
   total_amount: any;
   href: any;
+  doc_id: any;
 }
 
 declare type RecordSet = Array<Row>;
@@ -116,11 +118,12 @@ function fetch_data(sql: string) {
     .then((data: RecordSet) => {
       let grouped = {};
       data.forEach(
-        ({bubble_group, bubble_title, total_amount, href}: Row) => {
+        ({bubble_group, bubble_title, total_amount, href, doc_id}: Row) => {
           grouped[bubble_group] = grouped[bubble_group] || {};
           grouped[bubble_group][bubble_title] = {
             amount: total_amount,
-            href: href
+            href: href,
+            doc_id: doc_id,
           };
         }
       );
@@ -208,7 +211,25 @@ function supportsChart(): PromiseLike<any> {
   ]);
 }
 
+function fetchExplanations(func: any[]) {
+  let promises = [];
+  for (let t of func) {
+    let v = t['values'];
+    for (let t2 in v) {
+      let v2 = v[t2];
+      let p = fetch_doc(v2['doc_id'])
+        .then((doc) => {
+          v2['explanation'] = doc['explanation'];
+          v2['explanation_source'] = doc['explanation_source'];
+        });
+      promises.push(p);
+    }
+  }
+  return Promise.all(promises);
+}
+
 export default function() {
+  let ret = {};
   return Promise.all([
       fetch_data(SQL_FUNC_BUBBLES_DATA),
       fetch_data(SQL_ECON_BUBBLES_DATA),
@@ -217,7 +238,7 @@ export default function() {
       educationBudgetChart(),
       supportsChart()
     ]).then((data: any[]) => {
-      let ret = {
+      ret = {
         year: YEAR,
         func: data[0],
         econ: data[1],
@@ -226,6 +247,8 @@ export default function() {
         educationCharts: data[4],
         supportChart: data[5]
       };
+      return fetchExplanations(data[0]);
+    }).then(() => {
       return {
         code: 'module.exports = ' + JSON.stringify(ret)
       };

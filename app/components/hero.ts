@@ -18,18 +18,33 @@ function tweenie(t: number) {
 
 interface Mutator {
   mutate(hero: HeroComponent, t: number): void;
+  duration(): number;
 }
 
+class BaseMutator implements Mutator {
+
+  duration_ = 1;
+
+  mutate(hero: HeroComponent, t: number) {}
+
+  duration() {
+    return this.duration_;
+  }
+}
 
 class TransitionStep implements Mutator {
   private start: number;
   private stop: number;
   private active = false;
+  private _duration: number;
 
-  constructor(private _duration: number,
-              private _mutators: Array<Mutator>) {}
+  constructor(private _mutators: Array<Mutator>) {
+    this._duration = d3.max(_mutators, (m) => m.duration())
+  }
 
-  get duration() { return this._duration };
+  duration() {
+    return this._duration;
+  };
 
   setRange(start: number, stop: number) {
     this.start = start;
@@ -39,6 +54,7 @@ class TransitionStep implements Mutator {
   mutate(hero: HeroComponent, t: number): void {
     let m: Mutator;
     if (t>=this.start && t<=this.stop) {
+      console.log('EEE', this.start,'<=', t, '<=', this.stop);
       this.active = true;
       t = (t-this.start) / (this.stop - this.start);
       for (m of this._mutators) {
@@ -57,14 +73,16 @@ class TransitionStep implements Mutator {
   }
 }
 
-class TransitionSteps implements Mutator {
+class TransitionSteps extends BaseMutator {
   constructor(private _steps: Array<TransitionStep>) {
-    let totalLength = d3.sum(_steps, (s) => s.duration) / 0.9;
+    super();
+    let totalLength = d3.sum(_steps, (s) => s.duration());
     let ofs = 0;
     for (let step of _steps) {
-      step.setRange(ofs/totalLength, (ofs + step.duration)/totalLength);
-      ofs += step.duration;
+      step.setRange(ofs/totalLength, (ofs + step.duration())/totalLength);
+      ofs += step.duration();
     }
+    this.duration_ = totalLength;
   }
 
   mutate(hero: HeroComponent, t: number): void {
@@ -74,31 +92,62 @@ class TransitionSteps implements Mutator {
   }
 }
 
-class HiglightText implements Mutator {
+class HiglightText extends BaseMutator {
   constructor(private text: string,
               private ease?: any) {
+    super();
     this.ease = ease || tweenie;
   }
 
   mutate(hero: HeroComponent, t: number): void {
-    hero.text = this.text;
-    hero.textOpacity = this.ease(t);
+    // hero.text = this.text;
+    // hero.textOpacity = this.ease(t);
+    // if (hero.dialogLines[hero.dialogLines.length-1].content !== this.text) {
+    //   hero.dialogLines.push({content: this.text, direction: 'question'});
+    //   if (hero.dialogLines.length > 7) {
+    //     hero.dialogLines.shift();
+    //   }
+    // }
   }
 }
 
-class UpdateMushonkey implements Mutator {
-  constructor(private index: number) {}
+class ShowDialogBit extends BaseMutator {
+  constructor(private bit: DialogBit) {
+    super();
+    this.duration_ = bit.adders.length + 1;
+  }
 
   mutate(hero: HeroComponent, t: number): void {
+    if (t < 1) {
+      let tt = Math.floor(t * this.duration_);
+      hero.dialogLines =
+        this.bit.start
+          .slice(tt)
+          .concat(this.bit.adders.slice(tt - 7 < 0 ? 0 : tt - 7, tt));
+      console.log('DDDD2', t, tt, hero.dialogLines[hero.dialogLines.length-1]);
+    }
+  }
+}
+
+
+class UpdateMushonkey extends BaseMutator {
+  constructor(private index: number) {
+    super();
+  }
+
+  mutate(hero: HeroComponent, t: number): void {
+    let chart = hero.chart;
     hero.chart = hero.charts[this.index];
-    if (hero.mushonkeyComponent) {
+    if (hero.mushonkeyComponent && chart != hero.chart) {
       hero.mushonkeyComponent.updateChart(hero.chart);
     }
   }
 }
 
-class ChartIntroduce implements Mutator {
-  constructor(private increasing: boolean) {}
+class ChartIntroduce extends BaseMutator {
+  constructor(private increasing: boolean) {
+    super();
+  }
 
   mutate(hero: HeroComponent, t: number): void {
     hero.chartOpacity = d3.easeExpOut(this.increasing? t : 1-t);
@@ -106,9 +155,40 @@ class ChartIntroduce implements Mutator {
   }
 }
 
+class ChartShow extends BaseMutator {
+  private opacity_: number;
+  constructor(opacity?: number) {
+    super();
+    this.opacity_ = opacity || 1;
+  }
 
-class ConnectorIntroduce implements Mutator {
-  constructor(private klass: string) {}
+  mutate(hero: HeroComponent, t: number): void {
+    hero.chartOpacity = this.opacity_;
+  }
+}
+
+class ConnectorShow extends BaseMutator {
+  constructor() {
+    super();
+  }
+
+  mutate(hero: HeroComponent, t: number): void {
+    let connectors: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('path');
+    for (let connector of connectors) {
+      connector.style.strokeDasharray = 'none';
+      connector.style.strokeDashoffset = '0';
+    }
+    let labels: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('text');
+    for (let label of labels) {
+      label.style.opacity = '1';
+    }
+  }
+}
+
+class ConnectorIntroduce extends BaseMutator {
+  constructor(private klass: string) {
+    super();
+  }
 
   mutate(hero: HeroComponent, t: number): void {
     t = d3.easePolyInOut(t);
@@ -130,8 +210,10 @@ class ConnectorIntroduce implements Mutator {
   }
 }
 
-class ConnectorToSublevel implements Mutator {
-  constructor(private klass: string, private index: number, private going: boolean) {}
+class ConnectorToSublevel extends BaseMutator {
+  constructor(private klass: string, private index: number, private going: boolean) {
+    super();
+  }
 
   mutate(hero: HeroComponent, t: number): void {
     let connectors: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('path');
@@ -142,7 +224,8 @@ class ConnectorToSublevel implements Mutator {
       if (!this.going) {
         t = 1-t;
       }
-      let gap = tweenie(t) * 200;
+      // let gap = tweenie(t) * 200;
+      let gap = tweenie(t) * 2000;
       if (gap > 20) {
         gap = 20;
       }
@@ -152,10 +235,159 @@ class ConnectorToSublevel implements Mutator {
   }
 }
 
+class DialogElement {
+  constructor (private _direction: string, private _content: string) {}
+
+  get content() {
+    return this._content;
+  }
+
+  get direction() {
+    return this._direction;
+  }
+}
+
+function Q(content: string) {
+    return new DialogElement('question', content);
+}
+
+function A(content: string) {
+    return new DialogElement('answer', content);
+}
+
+let dialog = [
+  Q('נו, אז תגידו - איך עובד תקציב המדינה?'),
+  A('זה בעצם די פשוט&#8230;'),
+  A('מצד אחד נכנס כסף - הכנסות'),
+  A('ומהצד השני יוצא כסף - הוצאות'),
+  Q('שניה רגע - מה הכוונה הכנסות? איפה מגיע הכסף?'),
+  A('יש לא מעט מקורות, אבל הנה העיקריים מביניהם'),
+  A('מס הכנסה (ובתוכו בעיקר מס חברות)'),
+  A('גיוסים בשוק ההון (מלוות)'),
+  A('מע״מ'),
+  Q('ואז את כל הכסף שנכנס אפשר לבזבז!'),
+  A('הממ... לא בדיוק'),
+  A('כל שנה הממשלה מוציאה קצת יותר כסף ממה שנכנס'),
+  Q('אז איך אנחנו לא נכנסים למינוס?'),
+  A('כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.'),
+  A('דרך אגב,'),
+  A('ההפרש בין ההוצאות להכנסות נקרא ה״גירעון״.'),
+  Q('אוקיי.. מה עושים עם כל הכסף הזה? בטוח שהרוב הולך לביטחון, נכון?'),
+  A('דווקא לא - ההוצאה הכי גדולה בתקציב היא החזר חובות.'),
+  Q('ולמה החזר החובות צבוע בצבע אחר?'),
+  A('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות'),
+  A('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ יש הגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.'),
+  Q('טוב, חוץ מהחזר חובות, מה עוד יש בתקציב?'),
+  Q('איפה החרדים? ההתנחלויות? הערבים? הפריפריה???'),
+  A('רגע, רגע!'),
+  A('באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים.'),
+  A('לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד - וכן הלאה.'),
+  A('כך שאם רוצים לדעת כמה כסף ״הולך לפריפריה״ או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״'),
+  A('אז אין תשובה מוחלטת - כי אין ״משרד הפריפריה״ או ״משרד החרדים״ בממשלה'),
+  Q('נראה לי שהגיע הזמן לדוגמה' +
+    ' &#x1F605;'),
+  A('בהחלט. לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
+  A('מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018'),
+  Q('הבנתי... אז לכל משרד בממשלה יש תקציב משל עצמו?'),
+  A('כן, למרבית המשרדים הגדולים יש סעיף תקציבי משל עצמם'),
+  A('אבל לא לכל המשרדים הקטנים '),
+  Q('ואיך מחלקים את הכסף בתוך המשרד?'),
+  A('בתוך המשרד, התקציב מחולק לפי הנושאים הגדולים בהם הוא מטפל'),
+  Q('מה זה ״תכניות לימודים משלימות״?'),
+  A('שאלה טובה... בוא נבדוק!'),
+  Q('וואו, יש כאן המון דברים!'),
+  A('כן, כ-4 מיליארד שקלים מתוך תקציב משרד החינוך משמשים לתכניות לימודים משלימות'),
+  Q('מעניין, מה זה המספר הזה שיש לכל סעיף תקציבי?'),
+  A('הבחנה טובה!'),
+  A('באמת לכל סעיף תקציבי יש מספר - ככל שהסעיף יותר מפורט, המספר יותר ארוך'),
+  Q('אז מה עוד יש כאן? מה זה חינוך בלתי פורמאלי?'),
+  A('והנה התשובה :)'),
+  Q('התקציב הזה באמת מאוד מפורט'),
+  A('כמעט מיליארד שקלים מתוך תקציב תכניות הלימודים המשלימות משמשים לחינוך בלתי פורמאלי'),
+  A('סעיפי התקציב שברמה הזאת נקראים ״תכניות״'),
+  A('כאשר עושים שינויים בתקציב במהלך השנה - מעבירים כסף מתכנית אחת לתכנית אחרת.'),
+  Q('זה קורה הרבה?'),
+  A('במהלך השנה יכולים להיות אלפים של שינויים כאלה'),
+  A('שלפעמים משנים באופן מהותי חלקים משמעותיים בתקציב!'),
+  Q('לא יאומן'),
+  A('שנבדוק מה קורה בתוך ״תמיכה בתנועות נוער״?'),
+  Q('קדימה!'),
+  A('כמעט מיליון שקל מוקצה תקציב המדינה לתמיכה בתנועות נוער'),
+  A('הגענו!'),
+  Q('לאן?'),
+  A('זאת הרמה הכי מפורטת של התקציב'),
+  A('נקראת גם תקנה תקציבית'),
+  Q('אז מה קורה עם הכסף מכאן?'),
+  A('מכאן והלאה הכסף יוצא החוצה'),
+  A('כמשכורת, קניות או - במקרה שלנו'),
+  A('דרך תמיכה בארגונים שונים'),
+  A('כמו הנוער העובד והלומד'),
+  A('הצופים'),
+  A('או תנועת בני-עקיבא'),
+  Q('נראה לי שהבנתי את הרוב &#x1F60E;'),
+  Q('מה כדאי לי לעשות עכשיו?'),
+  A('להתחיל לחפור באתר כמובן &#x1F913;'),
+  A('הנה כמה כיוונים מעניינים:'),
+  A('אילו עמותות של ׳זהות יהודית׳ הפועלות במערכת החינוך?'),
+  A('מה תקציב התמיכה בכוללים והישיבות?'),
+  A('אילו סטארט-אפים מקבלים תמיכה מהמדען הראשי?'),
+  A('כמה תקציבים מקבלת העיר שדרות? ומה לגבי קרית ארבע?'),
+  A('כמה מכספי משלם המסים מקבל תיאטרון ״הבימה״?'),
+  A('בהצלחה!!!'),
+];
+
+interface DialogBit {
+  start: any[];
+  adders: any[];
+}
+
+let dialogBits: Array<DialogBit> = [];
+let last = -2;
+for (let i=0; i<dialog.length; i++) {
+  if (dialog[i].direction == 'question') {
+    if (i == last + 1) {
+      continue;
+    }
+    last = i;
+    let bit = {
+      start: <any[]>[],
+      adders: <any[]>[],
+    };
+    let j = i;
+    while (j >= 0 && bit.start.length < 7) {
+      bit.start.unshift(dialog[j]);
+      j--;
+    }
+    while (bit.start.length < 7) {
+      bit.start.unshift({});
+    }
+    let answered = false;
+    j = i+1;
+    while (j < dialog.length) {
+      if (dialog[j].direction == 'answer') {
+        answered = true;
+      } else {
+        if (answered) {
+          break;
+        }
+      }
+      bit.adders.push(dialog[j]);
+      j++;
+    }
+    dialogBits.push(bit);
+  }
+}
+
 
 @Component({
   selector: 'hero',
-  template: require('./hero.html')
+  template: require('./hero.html'),
+  styles: [`    
+    .graph-bg {
+        background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px); 
+        background-size: 20px 20px;
+    }
+`]
 })
 export class HeroComponent implements ScrollyListener {
 
@@ -169,6 +401,7 @@ export class HeroComponent implements ScrollyListener {
   chart: MushonKeyChart;
   chartOpacity: number = 0;
   charts: Array<MushonKeyChart> = [];
+  dialogLines: DialogElement[] = [];
 
   constructor(private mainPage: BudgetKeyMainPageService,
               private scroller: ScrollyService) {
@@ -178,161 +411,189 @@ export class HeroComponent implements ScrollyListener {
       this.makeSupportChart(bubbles.supportChart[0], bubbles.supportChart[1]);
     });
     this.ts = new TransitionSteps([
-      new TransitionStep(5, [
-        new HiglightText('זה בעצם די פשוט&#8230;', (t: number) => d3.easePolyInOut(1-t)),
-        new ChartIntroduce(true),
-        new UpdateMushonkey(0),
+      new TransitionStep([
+        // new HiglightText('זה בעצם די פשוט&#8230;', (t: number) => d3.easePolyInOut(1-t)),
+        new ShowDialogBit(dialogBits[0]),
+        new TransitionSteps([
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(0),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(1),
+            new ConnectorShow(),
+            new ConnectorIntroduce('income'),
+            new ChartShow(),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(2),
+            new ChartShow(),
+            new ConnectorShow(),
+            new ConnectorIntroduce('expenses'),
+          ]),
+        ])
       ]),
-      new TransitionStep(5, [
-        new HiglightText('מצד אחד נכנס כסף - הכנסות'),
-        new UpdateMushonkey(1),
-        new ConnectorIntroduce('income'),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[1]),
+        new TransitionSteps([
+          new TransitionStep([
+            new ChartShow(),
+            new ConnectorShow(),
+          ]),
+          new TransitionStep([new UpdateMushonkey(3),]),
+        ])
       ]),
-      new TransitionStep(5, [
-        new HiglightText('ומהצד השני יוצא כסף - הוצאות'),
-        new UpdateMushonkey(2),
-        new ConnectorIntroduce('expenses'),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[2]),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('מאיפה מגיע הכסף לתקציב המדינה?')
-      ]),
-      new TransitionStep(5, [
-        new HiglightText(`יש לא מעט מקורות, אבל הנה העיקריים מביניהם:<br/>
-(1) מס הכנסה (ובתוכו בעיקר מס חברות),<br/>
-(2) גיוסים בשוק ההון (מלוות)<br/>
-ו(3) מע״מ.
-`)
-      ]),
-      new TransitionStep(5, [
-        new UpdateMushonkey(3),
-      ]),
-      new TransitionStep(5, [
-        new HiglightText(`
-           האם סך ההכנסות שווה לסך ההוצאות? לא בדיוק...
-           <br/>
-           כל שנה הממשלה מוציאה קצת יותר כסף ממה שנכנס,
-           <br/>
-           אבל אנחנו לא נכנסים למינוס - כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.
-        `),
-      ]),
-      new TransitionStep(5, [
-        new HiglightText('להפרש בין ההוצאות להכנסות קוראים ״גירעון״.')
-      ]),
-      new TransitionStep(5, [
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[3]),
         new UpdateMushonkey(4),
+        new ChartShow(),
+        new ConnectorShow(),
         new ConnectorIntroduce('deficit'),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות')
-      ]),
-      new TransitionStep(5, [
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[4]),
         new UpdateMushonkey(5),
+        new ChartShow(),
+        new ConnectorShow(),
         new ConnectorIntroduce('debt'),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ חלות מגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.')
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[5]),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים.')
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[6]),
+        new TransitionSteps([
+          new TransitionStep([
+            new ChartShow(),
+            new ConnectorShow(),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(6),
+          ])
+        ])
       ]),
-      new TransitionStep(5, [
-        new HiglightText('לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד - וכן הלאה.')
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[7]),
+        new TransitionSteps([
+          new TransitionStep([
+            new BaseMutator(),
+          ]),
+          new TransitionStep([
+            new BaseMutator(),
+          ]),
+          new TransitionStep([
+            new ConnectorShow(),
+            new ConnectorToSublevel('expenses', 0, true),
+            new ChartIntroduce(false)
+          ]),
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(7),
+            new ConnectorShow(),
+            new ConnectorToSublevel('income', 0, false),
+          ])
+        ])
       ]),
-      new TransitionStep(5, [
-        new UpdateMushonkey(6),
-      ]),
-      new TransitionStep(5, [
-        new HiglightText(`
-        זאת הסיבה שאם רוצים לדעת כמה כסף ״הולך לפריפריה״ או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״
-        <br/>
-        <small>(ואנחנו מקבלים הרבה שאלות כאלו&#8230;)</small>
-        <br/>
-        אז אין תשובה מוחלטת - כי אין ״משרד הפריפריה״ או ״משרד החרדים״ בממשלה`)
-      ]),
-      new TransitionStep(5, [
-        new HiglightText('לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
-        new ConnectorToSublevel('expenses', 0, true)
-      ]),
-      new TransitionStep(5, [
-        new ChartIntroduce(false)
-      ]),
-      new TransitionStep(5, [
-        new HiglightText('מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018'),
-        new ChartIntroduce(true),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[8]),
         new UpdateMushonkey(7),
-        new ConnectorToSublevel('income', 0, false),
       ]),
-      new TransitionStep(5, [
-        new HiglightText(`למשרד החינוך, כמו למרבית המשרדים הגדולים, יש סעיף תקציבי משל עצמו.
-<br/><small>
-(התקציב של משרדים קטנים לפעמים מוצמד למשרד גדול אחר)
-</small>
-<br/>
-בתוך משרד החינוך, התקציב מחולק לפי הנושאים הגדולים בהם המשרד מטפל.`),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[9]),
+        new UpdateMushonkey(7),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('בואו נבדוק מה קורה בתוך ״תכניות לימודים משלימות״&#8230'),
-        new ConnectorToSublevel('expenses', 4, true)
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[10]),
+        new TransitionSteps([
+          new TransitionStep([
+            new UpdateMushonkey(7),
+            new ConnectorToSublevel('expenses', 4, true),
+            new ChartIntroduce(false),
+          ]),
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(8),
+            new ConnectorToSublevel('income', 0, false),
+          ]),
+        ])
       ]),
-      new TransitionStep(5, [
-        new ChartIntroduce(false),
-      ]),
-      new TransitionStep(5, [
-        new HiglightText(`כ-4 מיליארד שקלים מתוך תקציב משרד החינוך משמשים לתכניות לימודים משלימות
-<br/>
-<small>
-אפשר לראות שלכל סעיף תקציבי יש מספר - ככל שהסעיף יותר מפורט, המספר יותר ארוך
-</small>`),
-        new ChartIntroduce(true),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[11]),
         new UpdateMushonkey(8),
-        new ConnectorToSublevel('income', 0, false),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('נמשיך לצלול לתוך ״חינוך בלתי פורמאלי״&#8230'),
-        new ConnectorToSublevel('expenses', 1, true)
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[12]),
+        new UpdateMushonkey(8),
       ]),
-      new TransitionStep(5, [
-        new ChartIntroduce(false),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[13]),
+        new TransitionSteps([
+          new TransitionStep([
+            new UpdateMushonkey(8),
+            new ConnectorToSublevel('expenses', 1, true),
+            new ChartIntroduce(false),
+          ]),
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(9),
+            new ConnectorToSublevel('income', 0, false),
+          ]),
+        ])
       ]),
-      new TransitionStep(5, [
-        new HiglightText(`כמעט מיליארד שקלים מתוך תקציב תכניות הלימודים המשלימות משמשים לחינוך בלתי פורמאלי
-<br/>
-<small>
-ברמה הזאת, סעיפי התקציב נקראים ״תכניות״.
-<br/>
-כאשר עושים העברות תקציביות - שינויים בתקציב במהלך השנה - לרוב עובר כסף בין תכנית אחת לתכנית אחרת.
-<br/>
-במהלך השנה יכולים להיות אלפים של שינויים כאלה - שלפעמים משנים באופן מהותי חלקים משמעותיים בתקציב!
-</small>`),
-        new ChartIntroduce(true),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[14]),
         new UpdateMushonkey(9),
-        new ConnectorToSublevel('income', 0, false),
       ]),
-      new TransitionStep(5, [
-        new HiglightText('בוא נבדוק מה קורה בתוך ״תמיכה בתנועות נוער״&#8230'),
-        new ConnectorToSublevel('expenses', 2, true)
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[15]),
+        new UpdateMushonkey(9),
       ]),
-      new TransitionStep(5, [
-        new ChartIntroduce(false),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[16]),
+        new TransitionSteps([
+          new TransitionStep([
+            new UpdateMushonkey(9),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(9),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(9),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(9),
+            new ConnectorToSublevel('expenses', 2, true),
+            new ChartIntroduce(false),
+          ]),
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(10),
+            new ConnectorToSublevel('income', 0, false),
+          ]),
+        ])
       ]),
-      new TransitionStep(5, [
-        new HiglightText(`כמעט מיליון שקל מוקצה תקציב המדינה לתמיכה בתנועות נוער
-<br/>
-<small>
-הגענו!
-<br/>
-זאת הרמה הכי מפורטת של התקציב - שנקראת גם תקנה תקציבית
-<br/>
-מכאן והלאה הכסף יוצא החוצה - כמשכורת, קניות או - במקרה שלנו - דרך תמיכה בארגונים שונים.
-</small>`),
-        new ChartIntroduce(true),
+      new TransitionStep([
         new UpdateMushonkey(10),
-        new ConnectorToSublevel('income', 0, false),
+        new ShowDialogBit(dialogBits[17]),
       ]),
-      new TransitionStep(15, [
-        new HiglightText('זהו!'),
-        new ConnectorToSublevel('expenses', 2, true),
+      new TransitionStep([
+        new UpdateMushonkey(10),
+        new ShowDialogBit(dialogBits[18]),
+      ]),
+      new TransitionStep([
+        new UpdateMushonkey(10),
+        new ShowDialogBit(dialogBits[19]),
+      ]),
+      new TransitionStep([
+        new UpdateMushonkey(10),
         new ChartIntroduce(false),
+      ]),
+      new TransitionStep([
+        new ChartShow(0.01),
+        new ShowDialogBit(dialogBits[20]),
       ]),
     ]);
     this.scroller.subscribe(this);
@@ -340,6 +601,9 @@ export class HeroComponent implements ScrollyListener {
 
   onScrolly(id: string, progress: number) {
     if (id == 'hero') {
+      progress = 1.12*progress - 0.06;
+      progress = progress < 0 ? 0 : progress;
+      progress = progress > 1 ? 1 : progress;
       this.ts.mutate(this, progress);
     }
   }
