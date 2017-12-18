@@ -158,35 +158,41 @@
 }
 
 
-.speech-bubble {
+div.speech-bubble {
   position: relative;
   border-radius: .4em;
-  padding: 0.5em;
+  padding: 0.5em 0.75em;
   //padding-bottom: 0.5em;
   margin-bottom: 0.5em;
   width: 400px;
   right: 50%;
+  text-align: right;
+  font-size: 20px;
+  animation: bubble_enter 0.5s;
 
   &:after {
     content: '';
     position: absolute;
-    top: 70%;
+    bottom: -0.32em;
     width: 0;
     height: 0;
     border: .5em solid transparent;
-    margin-top: -.5em;
   }
 
   &.question {
     color: black;
     background: #aaaaaa;
     margin-right: -250px;
+    border-radius: 1em 1em 0 1em;
+    background: #F2F2F2;
+    transition: margin-right 0.5s;
 
     &:after {
       right: 0;
-      border-left-color: #aaaaaa;
+      border-left-color: #F2F2F2;
       border-right: 0;
-      margin-right: -.5em;
+      margin-left: -0.3em;
+      transform: rotate(135deg);
     }
   }
 
@@ -194,13 +200,20 @@
     color: white;
     background: #ff6666;
     margin-right: -150px;
+    border-radius: 1em 1em 1em 0;
 
     &:after {
       left: 0;
       border-right-color: #ff6666;
       border-left: 0;
-      margin-left: -.5em;
+      margin-left: -0.3em;
+      transform: rotate(-135deg);
     }
+  }
+
+  @keyframes bubble_enter {
+    from {opacity: 0; bottom: -1em}
+    to {opacity: 1; bottom: 0em}
   }
 
 }
