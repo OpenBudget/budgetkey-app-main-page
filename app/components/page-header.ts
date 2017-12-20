@@ -1,5 +1,6 @@
-import { Component, Inject, HostListener } from '@angular/core';
+import {Component, Inject, HostListener, ViewChild, ElementRef} from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
+import {FormGroupDirective} from "@angular/forms";
 
 @Component({
   selector: 'budgetkey-main-page-header',
@@ -22,7 +23,7 @@ import { DOCUMENT } from '@angular/platform-browser';
           <h1 class="text-center">אז באמת, איפה הכסף?!</h1>
 
           <div class="search-wrapper">
-            <form ngNoForm method="get" [action]="searchUrl">
+            <form #searchForm ngNoForm method="get" (submit)="doSearch()">
               <input type="text" placeholder="חפשו הכל.. סעיף תקציבי, ארגון, אדם, או כל דבר אחר העולה על דעתכם.."
                 [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}">
               <button type="submit"></button>
@@ -35,8 +36,10 @@ import { DOCUMENT } from '@angular/platform-browser';
   `
 })
 export class HeaderComponent {
-  searchTerm: string = '';
+  searchTerm_: string = '';
   private isCollapsed: boolean = false;
+
+  @ViewChild('searchForm') searchForm: ElementRef;
 
   constructor(@Inject(DOCUMENT) private document: Document) { }
 
@@ -46,7 +49,21 @@ export class HeaderComponent {
     this.isCollapsed = scrollTop >= 50;
   }
 
+  doSearch() {
+    console.log('LLL', this.searchUrl);
+    window.open(this.searchUrl, '_self')
+  }
+
+  set searchTerm(v: string) {
+    this.searchTerm_ = v;
+    if (this.searchTerm_.length >= 3) {
+      this.doSearch();
+    }
+  }
+
   get searchUrl() {
-    return 'https://next.obudget.org/s/?q=' + encodeURIComponent(this.searchTerm);
+    let ret = 'https://next.obudget.org/s/?q=' + encodeURIComponent(this.searchTerm_);
+    console.log('SSS!', ret);
+    return ret;
   }
 }

@@ -54,7 +54,6 @@ class TransitionStep implements Mutator {
   mutate(hero: HeroComponent, t: number): void {
     let m: Mutator;
     if (t>=this.start && t<=this.stop) {
-      console.log('EEE', this.start,'<=', t, '<=', this.stop);
       this.active = true;
       t = (t-this.start) / (this.stop - this.start);
       for (m of this._mutators) {
@@ -157,7 +156,6 @@ class ChartIntroduce extends BaseMutator {
 
   mutate(hero: HeroComponent, t: number): void {
     hero.chartOpacity = d3.easeExpOut(this.increasing? t : 1-t);
-    console.log('ChartIntroduce', this.increasing, hero.chartOpacity);
   }
 }
 
