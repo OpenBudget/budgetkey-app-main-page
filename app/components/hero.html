@@ -1,10 +1,16 @@
 <div class="sticky step graph-bg text-center" data-id="hero">
     <div class="sticky-wrapper subtitles"
          [style.opacity]="textOpacity">
-        <div class="dialogLine speech-bubble" *ngFor="let text of dialogLines"
-             [class.question]="text.direction == 'question'"
-             [class.answer]="text.direction == 'answer'"
-             [innerHtml]="text.content || '&nbsp;'">
+        <div class="subtitles-wrapper">
+            <div class="inner-subtitles-wrapper"
+                 [style.bottom]="dialogOfs + 'px'">
+                <div class="dialogLine speech-bubble" *ngFor="let text of dialogLines"
+                     [class.question]="text.direction == 'question'"
+                     [class.answer]="text.direction == 'answer'"
+                     [class.enter]="text['last']"
+                     [innerHtml]="text.content || '&nbsp;'">
+                </div>
+            </div>
         </div>
     </div>
     <div #mushonkeyWrapper

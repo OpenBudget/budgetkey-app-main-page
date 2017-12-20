@@ -119,12 +119,18 @@ class ShowDialogBit extends BaseMutator {
 
   mutate(hero: HeroComponent, t: number): void {
     if (t < 1) {
+
       let tt = Math.floor(t * this.duration_);
+      let tofs = t * this.duration_ - tt;
       hero.dialogLines =
         this.bit.start
           .slice(tt)
           .concat(this.bit.adders.slice(tt - 7 < 0 ? 0 : tt - 7, tt));
-      console.log('DDDD2', t, tt, hero.dialogLines[hero.dialogLines.length-1]);
+      for (let dl of hero.dialogLines) {
+        dl['last'] = false;
+      }
+      hero.dialogLines[hero.dialogLines.length-1]['last'] = true;
+      hero.dialogOfs = tofs * 58.0;
     }
   }
 }
@@ -402,6 +408,7 @@ export class HeroComponent implements ScrollyListener {
   chartOpacity: number = 0;
   charts: Array<MushonKeyChart> = [];
   dialogLines: DialogElement[] = [];
+  dialogOfs: number = 0;
 
   constructor(private mainPage: BudgetKeyMainPageService,
               private scroller: ScrollyService) {
