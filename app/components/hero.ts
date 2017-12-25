@@ -282,7 +282,10 @@ let dialog = [
   A('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות'),
   A('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ יש הגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.'),
   Q('טוב, חוץ מהחזר חובות, מה עוד יש בתקציב?'),
-  Q('איפה החרדים? ההתנחלויות? הערבים? הפריפריה???'),
+  Q('איפה החרדים?'),
+  Q('ההתנחלויות?'),
+  Q('הערבים?'),
+  Q('הפריפריה???'),
   A('רגע, רגע!'),
   A('באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים.'),
   A('לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד - וכן הלאה.'),
@@ -384,9 +387,9 @@ for (let i=0; i<dialog.length; i++) {
 @Component({
   selector: 'hero',
   template: require('./hero.html'),
-  styles: [`    
+  styles: [`
     .graph-bg {
-        background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px); 
+        background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px);
         background-size: 20px 20px;
     }
 `]
