@@ -346,13 +346,11 @@ interface DialogBit {
 }
 
 let dialogBits: Array<DialogBit> = [];
-let last = -2;
 for (let i=0; i<dialog.length; i++) {
   if (dialog[i].direction == 'question') {
-    if (i == last + 1) {
+    if (i > 0 && dialog[i-1].direction  == 'question') {
       continue;
     }
-    last = i;
     let bit = {
       start: <any[]>[],
       adders: <any[]>[],
