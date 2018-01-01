@@ -8,7 +8,9 @@
                      [class.question]="text.direction == 'question'"
                      [class.answer]="text.direction == 'answer'"
                      [class.enter]="text['last']"
-                     [innerHtml]="text.content || '&nbsp;'">
+                     [style.display]="text.content ? 'inherit' : 'none'"
+                     [innerHtml]="text.content || ''"
+                >
                 </div>
             </div>
         </div>
@@ -19,5 +21,34 @@
         <mushonkey #mushonkey [chart]="chart" *ngIf="chart">
 
         </mushonkey>
+    </div>
+
+    <div class="footer">
+        <div>
+            <a href="mailto:adam@obudget.org"
+               class="button"
+               target="_blank">
+                יש לי שאלה שקשורה לתקציב ואשמח לעזרתכם
+            </a>
+            <br/>
+            <a href="http://www.hasadna.org.il/%D7%A6%D7%95%D7%A8-%D7%A7%D7%A9%D7%A8/"
+               class="button"
+               target="_blank">
+                אני עיתונאי/ת
+            </a>
+        </div>
+        <div>
+            <a href="http://www.hasadna.org.il/about-us/"
+               class="button"
+               target="_blank">
+                יש לי שאלה שקשורה לסדנא לידע ציבורי
+            </a>
+            <br/>
+            <a href="http://www.hasadna.org.il/%D7%AA%D7%A8%D7%95%D7%9E%D7%94-2/"
+               class="button"
+               target="_blank">
+                איך אפשר לתרום לכם?
+            </a>
+        </div>
     </div>
 </div>

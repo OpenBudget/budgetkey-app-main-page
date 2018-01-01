@@ -31,18 +31,14 @@
 }
 
 .course {
-  display: block;
-  width: 100%;
-  background: #FF5A5F;
-  margin-top: 4em;
-  margin-bottom: 4em;
-  padding-top: 3em;
-  padding-bottom: 3em;
-
-  .question {
-    font-size: 3em;
-    color: white;
-  }
+  display: inline-block;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  padding: 0.5em 1em;
+  border-radius: 2em 2em 0 2em;
+  background: #F2F2F2;
+  font-size: 3em;
+  color:  black;
 
   .scroll-down{
     flex: 0 0 auto;
@@ -56,7 +52,7 @@
       display: block;
 
       path {
-        fill: white;
+        fill: #ff6666;
       }
     }
   }
@@ -72,9 +68,39 @@
 
   height: 10000px;
 
+  .footer {
+    position: absolute;
+    bottom: 10px;
+    height: 200px;
+    text-align: center;
+    width: 100%;
+
+    div {
+      width: 49%;
+      text-align: right;
+      display: inline-block;
+
+      &:nth-of-type(1) {
+        text-align: left;
+      }
+
+      a.button {
+        display: inline-block;
+        color: #fff;
+        background: cornflowerblue;
+        margin: 10px 30px;
+        padding: 0.75em 15px;
+        font-size: 1.5em;
+        border-radius: 1.5em;
+        vertical-align: middle;
+      }
+    }
+  }
+
   .sticky-wrapper {
     height: auto;
     position: sticky;
+    margin-bottom: 200px;
 
     .text-center {
       width: auto;
@@ -92,18 +118,19 @@
       font-size: 1.5em;
       color: #FF5A5F;
       top: -50px;
+      margin-top: -220px;
 
       .speech-bubble:nth-of-type(1) {
         opacity: 0.05;
       }
 
       .speech-bubble:nth-of-type(2) {
-        opacity: 0.1;
-      }
-
-      .speech-bubble:nth-of-type(3) {
         opacity: 0.2;
       }
+
+      //.speech-bubble:nth-of-type(3) {
+      //  opacity: 0.2;
+      //}
 
       .subtitles-wrapper {
         position: relative;
@@ -121,7 +148,7 @@
 
     &.chart {
       display: block;
-      top: 400px;
+      top: 385px;
       direction: rtl;
       width: 80%;
       margin-right: 10%;
@@ -166,7 +193,6 @@
 }
 
 .after {
-  //height: 1000px;
   border: beige solid 1px;
 }
 
@@ -175,12 +201,13 @@ div.speech-bubble {
   position: relative;
   border-radius: .4em;
   padding: 0.5em 0.75em;
-  //padding-bottom: 0.5em;
   margin-bottom: 0.5em;
   width: 400px;
   right: 50%;
   text-align: right;
   font-size: 20px;
+  transition-duration: 0.5s;
+  transition-property: opacity;
 
   &.enter {
     animation: bubble_enter 0.5s;
@@ -197,7 +224,6 @@ div.speech-bubble {
 
   &.question {
     color: black;
-    background: #aaaaaa;
     margin-right: -250px;
     border-radius: 1em 1em 0 1em;
     background: #F2F2F2;
@@ -228,8 +254,12 @@ div.speech-bubble {
   }
 
   @keyframes bubble_enter {
-    from {opacity: 0; bottom: -1em}
-    to {opacity: 1; bottom: 0em}
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
 }

@@ -19,13 +19,8 @@ import { UtilsService } from '../services';
       <div class="contents" *ngIf="currentTab == 0" [innerHtml]="bubble.explanation">       
       </div>
       <div class="contents" *ngIf="currentTab == 1">
-        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-        nisi ut aliquip ex ea commodo consequat.
       </div>
       <div class="contents" *ngIf="currentTab == 2">
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum 
-        dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non 
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </div>
       <div class="pagination">
         <button type="button" [ngClass]="{active: currentTab == 0}" (click)="currentTab = 0"></button>
@@ -68,7 +63,7 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
   selector: 'category-visualization',
   template: `
     <div #wrapper class="category-visualization" [ngClass]="theme">   
-      <svg #container width="300" height="300"></svg>
+      <svg #container width="300" height="230"></svg>
       <div class="text-center">
         <span class="legend">
           <span class="value">{{ formatPercents(category.percent) }}</span>

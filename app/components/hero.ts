@@ -32,6 +32,13 @@ class BaseMutator implements Mutator {
   }
 }
 
+class Filler extends BaseMutator {
+  constructor(duration: number) {
+    super();
+    this.duration_ = duration;
+  }
+}
+
 class TransitionStep implements Mutator {
   private start: number;
   private stop: number;
@@ -129,7 +136,7 @@ class ShowDialogBit extends BaseMutator {
         dl['last'] = false;
       }
       hero.dialogLines[hero.dialogLines.length-1]['last'] = true;
-      hero.dialogOfs = tofs * 58.0;
+      hero.dialogOfs = tofs * 59.0;
     }
   }
 }
@@ -190,8 +197,11 @@ class ConnectorShow extends BaseMutator {
 }
 
 class ConnectorIntroduce extends BaseMutator {
-  constructor(private klass: string) {
+  constructor(private klass: string, private direction?: string) {
     super();
+    if (!this.direction) {
+      this.direction = 'rtl';
+    }
   }
 
   mutate(hero: HeroComponent, t: number): void {
@@ -201,8 +211,14 @@ class ConnectorIntroduce extends BaseMutator {
       if (connector.classList.contains(this.klass)) {
         let cr = connector.getBoundingClientRect();
         let length = cr.width + cr.height;
-        connector.style.strokeDasharray = length+',100000';
-        connector.style.strokeDashoffset = ''+((1-t)*length);
+        // console.log(this.klass,this.direct)
+        if (this.direction == 'rtl') {
+          connector.style.strokeDasharray = length+',100000';
+          connector.style.strokeDashoffset = ''+((1-t)*length);
+        } else {
+          connector.style.strokeDasharray = length+',100000';
+          connector.style.strokeDashoffset = '-'+((1-t)*length);
+        }
       }
     }
     let labels: Array<SVGElement> = hero.mushonkeyComponentWrapper.nativeElement.querySelectorAll('text');
@@ -264,83 +280,132 @@ let dialog = [
   A('זה בעצם די פשוט&#8230;'),
   A('מצד אחד נכנס כסף - הכנסות'),
   A('ומהצד השני יוצא כסף - הוצאות'),
+
   Q('שניה רגע - מה הכוונה הכנסות? איפה מגיע הכסף?'),
-  A('יש לא מעט מקורות, אבל הנה העיקריים מביניהם'),
-  A('מס הכנסה (ובתוכו בעיקר מס חברות)'),
+  A('בעיקר ממס הכנסה (של אנשים ושל חברות)'),
   A('גיוסים בשוק ההון (מלוות)'),
-  A('מע״מ'),
+  A('וגם מע״מ'),
+  A('האמת שיש עוד לא מעט מקורות, אבל אלו העיקריים מביניהם'),
+
   Q('ואז את כל הכסף שנכנס אפשר לבזבז!'),
   A('הממ... לא בדיוק'),
-  A('כל שנה הממשלה מוציאה קצת יותר כסף ממה שנכנס'),
+  A('כל שנה מוציאים קצת יותר כסף ממה שנכנס'),
+
   Q('אז איך אנחנו לא נכנסים למינוס?'),
-  A('כי האוכלוסיה גדלה, המשק צומח וההכנסות של השנה אחרי מכסות את הפער.'),
+  A('כי האוכלוסיה גדלה והמשק צומח'),
+  A('אז ההכנסות של השנה אחרי מכסות את הפער'),
   A('דרך אגב,'),
   A('ההפרש בין ההוצאות להכנסות נקרא ה״גירעון״.'),
-  Q('אוקיי.. מה עושים עם כל הכסף הזה? בטוח שהרוב הולך לביטחון, נכון?'),
-  A('דווקא לא - ההוצאה הכי גדולה בתקציב היא החזר חובות.'),
-  Q('ולמה החזר החובות צבוע בצבע אחר?'),
-  A('בצד ההוצאות אנו מפרידים בין החזר החובות לכל שאר ההוצאות'),
-  A('זאת מכיוון שעל התקציב ל״שאר ההוצאות״ יש הגבלות המונעות ממנו לגדול - גם אם יש כסף בקופה.'),
+
+  Q('אוקיי&hellip;'),
+  Q('אבל מה עושים עם כל הכסף הזה?'),
+  Q('בטוח שהרוב הולך לביטחון, נכון?'),
+  A('דווקא לא &#x1f46e;&#x1f3fc;'),
+  A('ההוצאה הכי גדולה בתקציב היא החזר חובות'),
+
+  Q('ואללה? &#x1F62E;'),
+  Q('זאת אומרת עדיין מחזירים הלוואות שלקחנו פעם?'),
+  Q('רגע, למה הפרדתם את זה?'),
+  A('אנחנו מפרידים בין החזר החובות לכל שאר ההוצאות'),
+  A('כי על התקציב של ״שאר ההוצאות״'),
+  A('יש הגבלות שמונעות ממנו לגדול'),
+  A('גם אם יש כסף בקופה&hellip;'),
+
+  Q('&#x1F914;'),
   Q('טוב, חוץ מהחזר חובות, מה עוד יש בתקציב?'),
   Q('איפה החרדים?'),
   Q('ההתנחלויות?'),
   Q('הערבים?'),
   Q('הפריפריה???'),
   A('רגע, רגע!'),
-  A('באופן כללי, התקציב מאורגן לפי משרדי הממשלה השונים.'),
-  A('לכל משרד יש תקציב משלו, המתחלק בין היחידות השונות בתוך המשרד - וכן הלאה.'),
-  A('כך שאם רוצים לדעת כמה כסף ״הולך לפריפריה״ או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״'),
-  A('אז אין תשובה מוחלטת - כי אין ״משרד הפריפריה״ או ״משרד החרדים״ בממשלה'),
+  A('בגדול, התקציב מחולק למשרדי הממשלה השונים.'),
+  A('לכל משרד יש תקציב משלו,'),
+  A('שמתחלק בין היחידות השונות בתוך המשרד'),
+  A('וכן הלאה&hellip;'),
+  A('כך שאם רוצים לדעת כמה כסף ״הולך לפריפריה״'),
+  A('או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״'),
+  A('אז אין תשובה מוחלטת - כי אין משרדים כאלה'),
   Q('נראה לי שהגיע הזמן לדוגמה' +
     ' &#x1F605;'),
-  A('בהחלט. לשם הדוגמה, בוא נצלול לתוך תקציב משרד החינוך'),
-  A('מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018'),
-  Q('הבנתי... אז לכל משרד בממשלה יש תקציב משל עצמו?'),
-  A('כן, למרבית המשרדים הגדולים יש סעיף תקציבי משל עצמם'),
-  A('אבל לא לכל המשרדים הקטנים '),
-  Q('ואיך מחלקים את הכסף בתוך המשרד?'),
-  A('בתוך המשרד, התקציב מחולק לפי הנושאים הגדולים בהם הוא מטפל'),
-  Q('מה זה ״תכניות לימודים משלימות״?'),
+  A('קדימה!'),
+  A('בוא נצלול לתוך תקציב משרד החינוך'),
+  Q('מה? איפה זה?'),
+  A('זה הקו המקווקו'),
+  A('רגע&hellip;'),
+  A('&hellip;'),
+  A('&hellip;'),
+  A('הופ!'),
+  A('תקציב משרד החינוך ב-2018'),
+  A('מעל 56 מיליארד שקלים'),
+  Q('הבנתי... אז זה התקציב של משרד החינוך?'),
+  A('כן, למשרדים הגדולים יש סעיף תקציבי משלהם'),
+  A('אבל לא לכל המשרדים הקטנים'),
+  Q('איך מחלקים את הכסף בתוך המשרד?'),
+  A('לפי הנושאים הגדולים בהם המשרד מטפל'),
+  Q('נגיד, מה זה ״תכניות לימודים משלימות״?'),
   A('שאלה טובה... בוא נבדוק!'),
+  A('צוללים פנימה עוד'),
+  A('3&hellip;'),
+  A('2&hellip;'),
+  A('1&hellip;'),
+  A('והופלה!'),
+  A('תקציב תכניות לימודים משלימות'),
+  A('בערך 4 מיליארד שקלים'),
+  Q('חחח.. "הופלה" &#x1F61C;'),
   Q('וואו, יש כאן המון דברים!'),
-  A('כן, כ-4 מיליארד שקלים מתוך תקציב משרד החינוך משמשים לתכניות לימודים משלימות'),
   Q('מעניין, מה זה המספר הזה שיש לכל סעיף תקציבי?'),
   A('הבחנה טובה!'),
-  A('באמת לכל סעיף תקציבי יש מספר - ככל שהסעיף יותר מפורט, המספר יותר ארוך'),
+  A('באמת לכל סעיף תקציבי יש מספר -'),
+  A('ככל שהסעיף יותר מפורט, המספר יותר ארוך'),
   Q('אז מה עוד יש כאן? מה זה חינוך בלתי פורמאלי?'),
+  A('אין שום בעיה'),
+  A('שאלת שאלה'),
   A('והנה התשובה :)'),
   Q('התקציב הזה באמת מאוד מפורט'),
-  A('כמעט מיליארד שקלים מתוך תקציב תכניות הלימודים המשלימות משמשים לחינוך בלתי פורמאלי'),
+  A('התקציב לחינוך בלתי פורמאלי'),
+  A('הוא כמעט מיליארד שקלים'),
   A('סעיפי התקציב שברמה הזאת נקראים ״תכניות״'),
-  A('כאשר עושים שינויים בתקציב במהלך השנה - מעבירים כסף מתכנית אחת לתכנית אחרת.'),
+  A('לפעמים עושים שינויים בתקציב במהלך השנה'),
+  A('ואז מעבירים כסף מתכנית אחת לאחרת.'),
   Q('זה קורה הרבה?'),
-  A('במהלך השנה יכולים להיות אלפים של שינויים כאלה'),
-  A('שלפעמים משנים באופן מהותי חלקים משמעותיים בתקציב!'),
-  Q('לא יאומן'),
+  A('במהלך שנה יכולים להיות אלפי שינויים כאלה'),
+  A('שלפעמים משנים חלקים משמעותיים בתקציב!'),
+  Q('לא יאומן &#x1F612;'),
   A('שנבדוק מה קורה בתוך ״תמיכה בתנועות נוער״?'),
-  Q('קדימה!'),
-  A('כמעט מיליון שקל מוקצה תקציב המדינה לתמיכה בתנועות נוער'),
-  A('הגענו!'),
+  Q('קדימה! ' +
+    '&#x1F466;&#x1F3FD;' +
+    '&#x1F467;&#x1F3FE;'),
+  A('תקציב התמיכה בתנועות נוער'),
+  A('הוא כמעט מאה מיליון שקל'),
+  A('הגענו!  ' +
+    '&#x1F389;'),
   Q('לאן?'),
   A('זאת הרמה הכי מפורטת של התקציב'),
-  A('נקראת גם תקנה תקציבית'),
+  A('שנקראת גם תקנה תקציבית'),
   Q('אז מה קורה עם הכסף מכאן?'),
-  A('מכאן והלאה הכסף יוצא החוצה'),
-  A('כמשכורת, קניות או - במקרה שלנו'),
-  A('דרך תמיכה בארגונים שונים'),
+  A('מכאן והלאה הכסף יוצא החוצה ' +
+    '&#x1F4B8;'),
+  A('כמשכורת' +
+    ' &#x1F4B5;, ' +
+    'קניות' +
+    ' &#x1F6CD;,' +
+    ' או - במקרה שלנו'),
+  A('לתמיכה בארגונים שונים ' +
+    '&#x1F54D;&#x1F3DF;&#x1F3DB;&#x1F3D7;'),
   A('כמו הנוער העובד והלומד'),
-  A('הצופים'),
-  A('או תנועת בני-עקיבא'),
+  A('תנועת הצופים'),
+  A('או בני-עקיבא'),
   Q('נראה לי שהבנתי את הרוב &#x1F60E;'),
   Q('מה כדאי לי לעשות עכשיו?'),
   A('להתחיל לחפור באתר כמובן &#x1F913;'),
   A('הנה כמה כיוונים מעניינים:'),
-  A('אילו עמותות של ׳זהות יהודית׳ הפועלות במערכת החינוך?'),
+  A('מהן העמותות המקדמות ׳זהות יהודית?'),
   A('מה תקציב התמיכה בכוללים והישיבות?'),
   A('אילו סטארט-אפים מקבלים תמיכה מהמדען הראשי?'),
   A('כמה תקציבים מקבלת העיר שדרות? ומה לגבי קרית ארבע?'),
   A('כמה מכספי משלם המסים מקבל תיאטרון ״הבימה״?'),
   A('בהצלחה!!!'),
+  Q('תודה! אלה היו חמש דקות ששינו את חיי &#x1F64F;'),
 ];
 
 interface DialogBit {
@@ -416,23 +481,25 @@ export class HeroComponent implements ScrollyListener {
       _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
       this.makeSupportChart(bubbles.supportChart[0], bubbles.supportChart[1]);
     });
+    let chartIdx = 0;
+    let dialogBit = 0;
     this.ts = new TransitionSteps([
       new TransitionStep([
         // new HiglightText('זה בעצם די פשוט&#8230;', (t: number) => d3.easePolyInOut(1-t)),
-        new ShowDialogBit(dialogBits[0]),
+        new ShowDialogBit(dialogBits[dialogBit]),
         new TransitionSteps([
           new TransitionStep([
             new ChartIntroduce(true),
-            new UpdateMushonkey(0),
+            new UpdateMushonkey(chartIdx),
           ]),
           new TransitionStep([
-            new UpdateMushonkey(1),
+            new UpdateMushonkey(++chartIdx),
             new ConnectorShow(),
-            new ConnectorIntroduce('income'),
+            new ConnectorIntroduce('income', 'ltr'),
             new ChartShow(),
           ]),
           new TransitionStep([
-            new UpdateMushonkey(2),
+            new UpdateMushonkey(++chartIdx),
             new ChartShow(),
             new ConnectorShow(),
             new ConnectorIntroduce('expenses'),
@@ -440,166 +507,175 @@ export class HeroComponent implements ScrollyListener {
         ])
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[1]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
         new TransitionSteps([
           new TransitionStep([
             new ChartShow(),
             new ConnectorShow(),
           ]),
-          new TransitionStep([new UpdateMushonkey(3),]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
+          new TransitionStep([ new Filler(1), ]),
         ])
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[2]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[3]),
-        new UpdateMushonkey(4),
-        new ChartShow(),
-        new ConnectorShow(),
-        new ConnectorIntroduce('deficit'),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[4]),
-        new UpdateMushonkey(5),
-        new ChartShow(),
-        new ConnectorShow(),
-        new ConnectorIntroduce('debt'),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[5]),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[6]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
         new TransitionSteps([
+          new TransitionStep([ new UpdateMushonkey(chartIdx), new Filler(4), ]),
           new TransitionStep([
+            new UpdateMushonkey(++chartIdx),
             new ChartShow(),
             new ConnectorShow(),
-          ]),
-          new TransitionStep([
-            new UpdateMushonkey(6),
+            new ConnectorIntroduce('deficit'),
           ])
         ])
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[7]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new TransitionSteps([
+          new TransitionStep([ new UpdateMushonkey(chartIdx), new Filler(4), ]),
+          new TransitionStep([
+            new UpdateMushonkey(++chartIdx),
+            new ChartShow(),
+            new ConnectorShow(),
+            new ConnectorIntroduce('debt'),
+          ])
+        ])
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new TransitionSteps([
+          new TransitionStep([ new UpdateMushonkey(chartIdx), new Filler(7), ]),
+          new TransitionStep([
+            new ChartShow(),
+            new ConnectorShow(),
+          ]),
+          new TransitionStep([
+            new UpdateMushonkey(++chartIdx),
+          ]),
+          new TransitionStep([ new UpdateMushonkey(chartIdx),  new Filler(5), ]),
+        ])
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
         new TransitionSteps([
           new TransitionStep([
-            new BaseMutator(),
-          ]),
-          new TransitionStep([
-            new BaseMutator(),
-          ]),
-          new TransitionStep([
+            new UpdateMushonkey(chartIdx),
             new ConnectorShow(),
             new ConnectorToSublevel('expenses', 0, true),
-            new ChartIntroduce(false)
-          ]),
-          new TransitionStep([
-            new ChartIntroduce(true),
-            new UpdateMushonkey(7),
-            new ConnectorShow(),
-            new ConnectorToSublevel('income', 0, false),
-          ])
-        ])
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[8]),
-        new UpdateMushonkey(7),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[9]),
-        new UpdateMushonkey(7),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[10]),
-        new TransitionSteps([
-          new TransitionStep([
-            new UpdateMushonkey(7),
-            new ConnectorToSublevel('expenses', 4, true),
+            new TransitionStep([ new Filler(4), ]),
             new ChartIntroduce(false),
           ]),
           new TransitionStep([
             new ChartIntroduce(true),
-            new UpdateMushonkey(8),
+            new UpdateMushonkey(++chartIdx),
+            new ConnectorShow(),
+            new ConnectorToSublevel('income', 0, false),
+          ])
+        ])
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new TransitionSteps([
+          new TransitionStep([ new Filler(2), ]),
+          new TransitionStep([
+            new UpdateMushonkey(chartIdx),
+            new ConnectorShow(),
+            new ConnectorToSublevel('expenses', 4, true),
+            new TransitionStep([ new Filler(4), ]),
+            new ChartIntroduce(false),
+          ]),
+          new TransitionStep([
+            new ChartIntroduce(true),
+            new UpdateMushonkey(++chartIdx),
             new ConnectorToSublevel('income', 0, false),
           ]),
         ])
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[11]),
-        new UpdateMushonkey(8),
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[12]),
-        new UpdateMushonkey(8),
-      ]),
-      new TransitionStep([
-        new ShowDialogBit(dialogBits[13]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
         new TransitionSteps([
           new TransitionStep([
-            new UpdateMushonkey(8),
+            new UpdateMushonkey(chartIdx),
             new ConnectorToSublevel('expenses', 1, true),
             new ChartIntroduce(false),
           ]),
           new TransitionStep([
             new ChartIntroduce(true),
-            new UpdateMushonkey(9),
+            new UpdateMushonkey(++chartIdx),
             new ConnectorToSublevel('income', 0, false),
           ]),
         ])
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[14]),
-        new UpdateMushonkey(9),
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[15]),
-        new UpdateMushonkey(9),
+        new ShowDialogBit(dialogBits[++dialogBit]),
+        new UpdateMushonkey(chartIdx),
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[16]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
         new TransitionSteps([
+          new TransitionStep([ new UpdateMushonkey(chartIdx), new Filler(3) ]),
           new TransitionStep([
-            new UpdateMushonkey(9),
-          ]),
-          new TransitionStep([
-            new UpdateMushonkey(9),
-          ]),
-          new TransitionStep([
-            new UpdateMushonkey(9),
-          ]),
-          new TransitionStep([
-            new UpdateMushonkey(9),
+            new UpdateMushonkey(chartIdx),
             new ConnectorToSublevel('expenses', 2, true),
             new ChartIntroduce(false),
           ]),
           new TransitionStep([
             new ChartIntroduce(true),
-            new UpdateMushonkey(10),
+            new UpdateMushonkey(++chartIdx),
             new ConnectorToSublevel('income', 0, false),
           ]),
         ])
       ]),
       new TransitionStep([
-        new UpdateMushonkey(10),
-        new ShowDialogBit(dialogBits[17]),
+        new UpdateMushonkey(chartIdx),
+        new ShowDialogBit(dialogBits[++dialogBit]),
       ]),
       new TransitionStep([
-        new UpdateMushonkey(10),
-        new ShowDialogBit(dialogBits[18]),
+        new UpdateMushonkey(chartIdx),
+        new ShowDialogBit(dialogBits[++dialogBit]),
       ]),
       new TransitionStep([
-        new UpdateMushonkey(10),
-        new ShowDialogBit(dialogBits[19]),
+        new UpdateMushonkey(chartIdx),
+        new ShowDialogBit(dialogBits[++dialogBit]),
       ]),
       new TransitionStep([
-        new UpdateMushonkey(10),
+        new UpdateMushonkey(chartIdx),
         new ChartIntroduce(false),
       ]),
       new TransitionStep([
         new ChartShow(0.01),
-        new ShowDialogBit(dialogBits[20]),
+        new ShowDialogBit(dialogBits[++dialogBit]),
+      ]),
+      new TransitionStep([
+        new ShowDialogBit(dialogBits[++dialogBit]),
       ]),
     ]);
     this.scroller.subscribe(this);
@@ -633,12 +709,8 @@ export class HeroComponent implements ScrollyListener {
     let expenseRest = data.budget - _.sum(
         _.map(_.slice(expenseChildren, 0, 4),
           (d: any) => d.net_allocated)
-      );
-    let incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated)
-    let incomeRest = data.income - _.sum(
-        _.map(_.slice(incomeChildren, 0, 3),
-          (d: any) => d.net_allocated)
-      );
+    );
+
     let incomesFlowGroup = new MushonKeyFlowGroup(
       false, [
         HeroComponent.makeFlow(data.income, 'הכנסות המדינה')
@@ -649,14 +721,24 @@ export class HeroComponent implements ScrollyListener {
         HeroComponent.makeFlow(data.budget - data.income, 'הגירעון')
       ], 'deficit', -100, 0.7
     );
-    let expandedIncomesFlowGroup = new MushonKeyFlowGroup(
-      false, [
-        HeroComponent.makeFlow(incomeChildren[0].net_allocated, incomeChildren[0].title),
-        HeroComponent.makeFlow(incomeChildren[1].net_allocated, incomeChildren[1].title),
-        HeroComponent.makeFlow(incomeChildren[2].net_allocated, incomeChildren[2].title),
-        HeroComponent.makeFlow(incomeRest, 'הכנסות אחרות')
-      ], 'income', 20
-    );
+
+    let incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated)
+    let kidsNum = [1,2,3];
+
+    let expandedIncomesFlowGroup = _.map(kidsNum, (k) => {
+      let incomeRest = data.income - _.sum(
+        _.map(_.slice(incomeChildren, 0, k),
+          (d: any) => d.net_allocated)
+      );
+      let flows = [];
+      for (let i = 0 ; i < k ; i++ ) {
+        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, incomeChildren[i].title))
+      }
+      flows.push(HeroComponent.makeFlow(incomeRest, 'הכנסות אחרות'));
+      return new MushonKeyFlowGroup(
+        false, flows, 'income', 20
+      );
+    });
     let expensesFlowGroup = new MushonKeyFlowGroup(
       true, [
         HeroComponent.makeFlow(data.budget, 'הוצאות הממשלה')
@@ -703,7 +785,21 @@ export class HeroComponent implements ScrollyListener {
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
-        expandedIncomesFlowGroup,
+        expandedIncomesFlowGroup[0],
+      ],
+      'תקציב המדינה',
+      200, 80, true, margin, centerVerticalOffset
+    ));
+    this.charts.push(new MushonKeyChart([
+        expensesFlowGroup,
+        expandedIncomesFlowGroup[1],
+      ],
+      'תקציב המדינה',
+      200, 80, true, margin, centerVerticalOffset
+    ));
+    this.charts.push(new MushonKeyChart([
+        expensesFlowGroup,
+        expandedIncomesFlowGroup[2],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -711,7 +807,7 @@ export class HeroComponent implements ScrollyListener {
     this.charts.push(new MushonKeyChart([
         deficitFlowGroup,
         expensesFlowGroup,
-        expandedIncomesFlowGroup,
+        expandedIncomesFlowGroup[2],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -720,7 +816,7 @@ export class HeroComponent implements ScrollyListener {
         deficitFlowGroup,
         debtFlowGroup,
         semiExpandedExpensesFlowGroup,
-        expandedIncomesFlowGroup,
+        expandedIncomesFlowGroup[2],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -729,7 +825,7 @@ export class HeroComponent implements ScrollyListener {
         deficitFlowGroup,
         debtFlowGroup,
         expandedExpensesFlowGroup,
-        expandedIncomesFlowGroup,
+        expandedIncomesFlowGroup[2],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -806,75 +902,3 @@ export class HeroComponent implements ScrollyListener {
   }
 
 }
-
-/*
-<div class="description">
-  <span>
-    מעל 56 מיליארד שקלים מתוך תקציב המדינה יגיעו למשרד החינוך ב-2018.
-<br/>
-למשרד החינוך יש סעיף תקציבי משל עצמו, שנקרא
-<code>20</code>.
-<br/>
-למרבית המשרדים הגדולים יש סעיף תקציבי כזה - בעוד שלמשרדים קטנים לרוב אין, והם מוצמדים למשרד אחר.
-<br/>
-בתוך משרד החינוך, התקציב מחולק לפי הנושאים הגדולים בהם המשרד מטפל, שהן שכבות הגיל השונות.
-<br/>
-נתמקד בשכבה שמקבלת הכי הרבה כסף - בתי ספר יסודיים וחטיבות ביניים&#8230;
-</span>
-</div>
-
-<div class="mushonkey-wrapper">
-<mushonkey [chart]="educationCharts[1]" *ngIf="educationCharts"></mushonkey>
-</div>
-
-<div class="description">
-  <span>
-    מעל 15 מיליארד שקלים מתוך תקציב משרד החינוך יגיעו ב-2018 לתחום החינוך היסודי וחטיבות הביניים.
-<br/>
-גם לתחום הזה יש מספר משלו, והוא
-<code>20.43</code>.
-<br/>
-המספרים הללו חשובים, שכן הם מאפשרים לנו לזהות את הסעיפים התקציביים בצורה מדויקת. מכיוון שגם הסעיפים הכי קטנים מכילים עשרות מיליונים של שקלים, דיוק הוא די הכרחי כאן.
-<br/>
-מתוך תקציב החינוך היסודי, אפשר לראות שהתקציב מחולק לפי הזרמים השונים בחינוך - הרוב לחינוך הרשמי והשאר לזרמים העצמאיים.
-<br/>
-נתמקד בזרם שמקבל הכי הרבה כסף - החינוך הרשמי&#8230;
-</span>
-</div>
-
-<div class="mushonkey-wrapper">
-<mushonkey [chart]="educationCharts[2]" *ngIf="educationCharts"></mushonkey>
-</div>
-
-<div class="description">
-  <span>
-    מעל 8 מיליארד שקלים מתוך תקציב החינוך היסודי וחטיבות הביניים יגיעו ב-2018 לחינוך הרשמי.
-<br/>
-ברמה הזאת, סעיפי התקציב נקראים ״תכניות״. המספר של התכנית הזו הוא
-<code>20.43.01</code>.
-<br/>
-כאשר עושים העברות תקציביות - שינויים בתקציב במהלך השנה - מה שעושים לרוב זה להעביר כסף בין תכנית אחת לתכנית אחרת.
-  במהלך השנה יכולים להיות אלפים של שינויים כאלה - שלפעמים משנים באופן מהותי חלקים משמעותיים בתקציב.
-</span>
-</div>
-<div class="description">
-  <span>
-    כל תכנית מכילה בתוכה מספר תקנות תקציביות.
-<br/>
-כל תקנה מגדירה סכום כסף שהמדינה החליטה להוציא עבור פעילות בודדת כלשהי -
-ובאיזה דרך היא תוציא אותו.
-<br/>
-במקרה שלנו, התקנה ״שעות תקן ביסודי״ (מספר
-<code>20.43.01.01</code>) היא תקנה המשמשת לתשלום משכורות למורים.
-</span>
-</div>
-<div class="description">
-  <span>
-    דרכים נוספות שבהן המדינה מוציאה כסף (פרט למשכורות) הן
-תמיכה כלכלית (ברשויות מקומיות, אנשים וארגונים) וקניית מוצרים או שירותים.
-<br/>
-במבט על נוכל להתרשם באיזה אופן המדינה משתמשת בתקציב:
-  </span>
-  </div>
-`
-*/

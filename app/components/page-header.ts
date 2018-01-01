@@ -12,12 +12,12 @@ import {FormGroupDirective} from "@angular/forms";
         </div>
         <div class="col-xs-8">
           <div class="header-menu">
-            <span class="menu-item active">התקשרויות</span>
-            <span class="menu-item">העברות</span>
-            <span class="menu-item">הדרכה</span>
-            <span class="menu-item">מונחון התקציב</span>
-            <span class="menu-item">אודות</span>
-            <span class="menu-item">הצטרפו אלינו</span>
+            <!--<span class="menu-item active">התקשרויות</span>-->
+            <!--<span class="menu-item">העברות</span>-->
+            <!--<span class="menu-item">הדרכה</span>-->
+            <!--<span class="menu-item">מונחון התקציב</span>-->
+            <!--<span class="menu-item">אודות</span>-->
+            <!--<span class="menu-item">הצטרפו אלינו</span>-->
           </div>
 
           <h1 class="text-center">אז באמת, איפה הכסף?!</h1>
