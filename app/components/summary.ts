@@ -8,11 +8,11 @@ import {ScrollyListener} from "../services/scrolly";
 @Component({
   selector: 'budgetkey-main-page-summary',
   template: `
-    <div class="budgetkey-main-summary-container step" data-id="summary-description"
-      [ngClass]="{active: isActive, collapsed: isCollapsed}">
+    <div class="budgetkey-main-summary-container step active collapsed" data-id="summary-description">
+      <!--[ngClass]="{active: true || isActive, collapsed: true || isCollapsed}">-->
       <div class="description">
         <div class="speech-bubble question">מה זה האתר הזה?</div>
-        <div class="speech-bubble answer">מה? מפתח התקציב?</div>
+        <!--<div class="speech-bubble answer">מה? מפתח התקציב?</div>-->
         <div class="speech-bubble answer">אספנו פה את כל המידע על התקציב ועל הוצאות הממשלה וסידרנו אותם כדי שנוכל לדעת מה עושים עם הכסף שלנו</div>
       </div>
       <div class="row">
@@ -35,26 +35,26 @@ import {ScrollyListener} from "../services/scrolly";
               <div>הוא</div>
             </div>
             <div class="container">
-              <div class="scroll-down">
-                <div>גללו ותהנו</div>
-                <div>
-                  <svg width="30" viewBox="0 0 18 28">
-                    <path d="M16.797 13.5c0 0.125-0.063 0.266-0.156 0.359l-7.281
-                      7.281c-0.094 0.094-0.234 0.156-0.359
-                      0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063-0.266
-                      0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156
-                      0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.094
-                      0.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094
-                      0.094 0.156 0.234 0.156 0.359zM16.797 7.5c0 0.125-0.063 0.266-0.156
-                      0.359l-7.281 7.281c-0.094 0.094-0.234 0.156-0.359
-                      0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063
-                      -0.266 0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156
-                      0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.094
-                      0.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094 0.094
-                      0.156 0.234 0.156 0.359z"></path>
-                  </svg>
-                </div>
-              </div>
+              <!--<div class="scroll-down">-->
+                <!--<div>גללו ותהנו</div>-->
+                <!--<div>-->
+                  <!--<svg width="30" viewBox="0 0 18 28">-->
+                    <!--<path d="M16.797 13.5c0 0.125-0.063 0.266-0.156 0.359l-7.281-->
+                      <!--7.281c-0.094 0.094-0.234 0.156-0.359-->
+                      <!--0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063-0.266-->
+                      <!--0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156-->
+                      <!--0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.094-->
+                      <!--0.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094-->
+                      <!--0.094 0.156 0.234 0.156 0.359zM16.797 7.5c0 0.125-0.063 0.266-0.156-->
+                      <!--0.359l-7.281 7.281c-0.094 0.094-0.234 0.156-0.359-->
+                      <!--0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063-->
+                      <!-- -0.266 0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156-->
+                      <!--0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.094-->
+                      <!--0.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094 0.094-->
+                      <!--0.156 0.234 0.156 0.359z"></path>-->
+                  <!--</svg>-->
+                <!--</div>-->
+              <!--</div>-->
               <div class="value">
                 <span>{{ formatValue(amount) }}</span>
                 <span>{{ valueSuffix(amount) }}<br>₪</span>
@@ -101,7 +101,7 @@ export class SummaryComponent implements ScrollyListener {
   onScrolly(id: string, progress: number) {
     if (id === 'summary-description') {
       this.isActive = progress > 0.3;
-      if (progress >= 0.7) {
+      if (progress >= 0.9) {
         this.isCollapsed = true;
         this.animate((progress - 0.7)/0.3*1.6);
       } else {

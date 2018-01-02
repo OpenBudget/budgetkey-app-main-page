@@ -8,9 +8,16 @@
 @import './summary.less';
 
 // Override `budgetkey-ng2-components` style
-.app:not(root):after {
-  content: none;
+.app {
+
+  margin-bottom: 50px;
+
+  &:not(root):after {
+    content: none;
+  }
+
 }
+
 
 .description {
   display: flex;
@@ -66,34 +73,23 @@
 
 .sticky {
 
-  height: 10000px;
+  height: 8000px;
+  padding-bottom: 400px;
 
   .footer {
     position: absolute;
     bottom: 10px;
-    height: 200px;
+    //height: 200px;
     text-align: center;
     width: 100%;
 
-    div {
-      width: 49%;
-      text-align: right;
-      display: inline-block;
+    a {
+      text-decoration: underline;
+      color: white;
+    }
 
-      &:nth-of-type(1) {
-        text-align: left;
-      }
-
-      a.button {
-        display: inline-block;
-        color: #fff;
-        background: cornflowerblue;
-        margin: 10px 30px;
-        padding: 0.75em 15px;
-        font-size: 1.5em;
-        border-radius: 1.5em;
-        vertical-align: middle;
-      }
+    a:hover {
+      color: lightblue;
     }
   }
 
@@ -262,4 +258,9 @@ div.speech-bubble {
     }
   }
 
+}
+
+.category-visualizations {
+  display: inline-block;
+  max-width: 1250px;
 }

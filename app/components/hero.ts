@@ -372,9 +372,9 @@ let dialog = [
   A('שלפעמים משנים חלקים משמעותיים בתקציב!'),
   Q('לא יאומן &#x1F612;'),
   A('שנבדוק מה קורה בתוך ״תמיכה בתנועות נוער״?'),
-  Q('קדימה! ' +
-    '&#x1F466;&#x1F3FD;' +
-    '&#x1F467;&#x1F3FE;'),
+  Q('קדימה!'),
+    // '&#x1F466;&#x1F3FD;' +
+    // '&#x1F467;&#x1F3FE;'),
   A('תקציב התמיכה בתנועות נוער'),
   A('הוא כמעט מאה מיליון שקל'),
   A('הגענו!  ' +
@@ -390,8 +390,8 @@ let dialog = [
     'קניות' +
     ' &#x1F6CD;,' +
     ' או - במקרה שלנו'),
-  A('לתמיכה בארגונים שונים ' +
-    '&#x1F54D;&#x1F3DF;&#x1F3DB;&#x1F3D7;'),
+  A('לתמיכה בארגונים שונים '),
+    // '&#x1F54D;&#x1F3DF;&#x1F3DB;&#x1F3D7;'),
   A('כמו הנוער העובד והלומד'),
   A('תנועת הצופים'),
   A('או בני-עקיבא'),
@@ -683,7 +683,7 @@ export class HeroComponent implements ScrollyListener {
 
   onScrolly(id: string, progress: number) {
     if (id == 'hero') {
-      progress = 1.12*progress - 0.06;
+      progress = 1.18*progress - 0.06;
       progress = progress < 0 ? 0 : progress;
       progress = progress > 1 ? 1 : progress;
       this.ts.mutate(this, progress);

@@ -4,8 +4,9 @@
   @height: ~'calc(50vh - 40px)';
 
   .description {
-    height: 50vh;
-    margin-top: 230px;
+    //height: 50vh;
+    margin-top: 115px;
+    margin-bottom: 30px;
 
     //& > span {
     //  max-width: 500px;
@@ -13,10 +14,10 @@
   }
 
   .change-year {
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    height: @height;
+    //display: flex;
+    //align-items: flex-end;
+    //justify-content: center;
+    //height: @height;
     opacity: 0;
     transition: opacity 150ms ease-out 0ms;
     font-size: 18px;
@@ -50,7 +51,7 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    height: @height;
+    //height: @height;
 
     .title {
       font-size: 24px;
@@ -58,7 +59,7 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: ~'calc(50vh - @{size})';
+      top: ~'calc(50vh - @{size} - 150px)';
       opacity: 0;
       z-index: 1;
       transition: all 150ms ease-out 0ms;
@@ -137,7 +138,7 @@
 
   &.active {
     .description {
-      opacity: 0;
+      //opacity: 0;
     }
 
     .change-year {
