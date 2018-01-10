@@ -136,7 +136,8 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
     return container;
   }
 
-  private renderLegendLabels(container: any, root: any, nodes: any[], margin: number, padding: number) {
+  private renderLegendLabels(container: any, root: any, category: any,
+                             nodes: any[], margin: number, padding: number) {
     container
       .attr('class', 'legend-labels')
       .style('opacity', 0)
@@ -165,7 +166,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
         let datum: any = containerForLabel.datum();
 
         let fragments: string[] = [
-          formatPercents(datum.value / root.value * 100)
+          formatPercents(datum.value / root.value * category.percent)
         ];
 
         let tempText = containerForLabel.append('text');
@@ -283,7 +284,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
     const legendLines = this.renderLegendLines(this.createContainer(svg, diameter_w, diameter_h), nodes);
     const legendLabels = this.renderLegendLabels(
       this.createContainer(svg, diameter_w, diameter_h),
-      root, nodes, margin, padding
+      root, this.category, nodes, margin, padding
     );
 
     d3.select(this.rootElement.nativeElement)
