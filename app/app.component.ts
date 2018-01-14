@@ -12,9 +12,9 @@ import {ScrollyService} from "./services/scrolly";
               <budgetkey-main-page-summary [amount]="totalAmount" [year]="year"></budgetkey-main-page-summary>
               <div class="text-center">
                 <!--<div class="description">-->
-        <!--<div class="speech-bubble question">מה זה האתר הזה?</div>-->
-        <!--<div class="speech-bubble answer">כאן אפשר למצוא את כל המידע </div>-->
-        <!--<div class="speech-bubble answer">על התקציב ועל הוצאות הממשלה</div>-->
+        <!--<div class="speech-bubble question">הי, מה זה האתר הזה?</div>-->
+        <!--<div class="speech-bubble answer">ב״מפתח התקציב״ אפשר למצוא את  </div>-->
+        <!--<div class="speech-bubble answer">כל המידע על התקציב ועל הוצאות הממשלה</div>-->
         <!--<div class="speech-bubble answer">בצורה מסודרת וברורה</div>-->
                    <!--<span>-->
                    <!--התקציב משמש למגוון מטרות, לפי ראות עיניהן של הממשלה והכנסת.-->

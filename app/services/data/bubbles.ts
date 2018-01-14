@@ -219,7 +219,7 @@ function fetchExplanations(func: any[]) {
       let v2 = v[t2];
       let p = fetch_doc(v2['doc_id'])
         .then((doc) => {
-          v2['explanation'] = doc['explanation'];
+          v2['explanation'] = doc['explanation_short'];
           v2['explanation_source'] = doc['explanation_source'];
         });
       promises.push(p);

@@ -22,11 +22,11 @@ import { UtilsService } from '../services';
       </div>
       <div class="contents" *ngIf="currentTab == 2">
       </div>
-      <div class="pagination">
-        <button type="button" [ngClass]="{active: currentTab == 0}" (click)="currentTab = 0"></button>
-        <button type="button" [ngClass]="{active: currentTab == 1}" (click)="currentTab = 1"></button>
-        <button type="button" [ngClass]="{active: currentTab == 2}" (click)="currentTab = 2"></button>
-      </div>
+      <!--<div class="pagination">-->
+        <!--<button type="button" [ngClass]="{active: currentTab == 0}" (click)="currentTab = 0"></button>-->
+        <!--<button type="button" [ngClass]="{active: currentTab == 1}" (click)="currentTab = 1"></button>-->
+        <!--<button type="button" [ngClass]="{active: currentTab == 2}" (click)="currentTab = 2"></button>-->
+      <!--</div>-->
       <div class="pointer"></div>
     </div>
   `

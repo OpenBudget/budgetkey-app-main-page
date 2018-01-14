@@ -11,9 +11,9 @@ import {ScrollyListener} from "../services/scrolly";
     <div class="budgetkey-main-summary-container step active collapsed" data-id="summary-description">
       <!--[ngClass]="{active: true || isActive, collapsed: true || isCollapsed}">-->
       <div class="description">
-        <div class="speech-bubble question">מה זה האתר הזה?</div>
+        <div class="speech-bubble question">הי, מה זה האתר הזה?</div>
         <!--<div class="speech-bubble answer">מה? מפתח התקציב?</div>-->
-        <div class="speech-bubble answer">אספנו פה את כל המידע על התקציב ועל הוצאות הממשלה וסידרנו אותם כדי שנוכל לדעת מה עושים עם הכסף שלנו</div>
+        <div class="speech-bubble answer">אספנו ב״מפתח התקציב״ כל המידע על תקציב המדינה ועל הוצאות הממשלה וסידרנו אותו &ndash;<br/> כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;</div>
       </div>
       <div class="row">
         <div class="col-xs-2">
