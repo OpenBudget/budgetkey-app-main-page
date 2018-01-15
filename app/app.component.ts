@@ -53,7 +53,7 @@ import { BudgetKeyMainPageService } from './services';
             <div class="text-center">
                 <hero></hero>           
                 <div class="footer text-center graph-bg">
-                    <div class="dialogLine speech-bubble question">יש לי עדיין שאלות, למי לפנות?</div>
+                    <div class="dialogLine speech-bubble question">אם יש לי עדיין שאלות, למי לפנות?</div>
                     <div class="dialogLine speech-bubble answer">
                         <a href="mailto:adam@obudget.org"
                            target="_blank">
