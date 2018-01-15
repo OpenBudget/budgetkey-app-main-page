@@ -74,20 +74,11 @@
 .sticky {
 
   height: 8000px;
-  padding-bottom: 400px;
-
-  .footer {
-    position: absolute;
-    bottom: 10px;
-    //height: 200px;
-    text-align: center;
-    width: 100%;
-  }
+  padding-bottom: 20px;
 
   .sticky-wrapper {
     height: auto;
     position: sticky;
-    margin-bottom: 200px;
 
     .text-center {
       width: auto;
@@ -104,7 +95,7 @@
       min-height: 4em;
       font-size: 1.5em;
       color: #FF5A5F;
-      top: -50px;
+      top: calc(~"100vh - 850px");
       margin-top: -220px;
 
       .speech-bubble:nth-of-type(1) {
@@ -135,7 +126,7 @@
 
     &.chart {
       display: block;
-      top: 385px;
+      top: calc(~"100vh - 450px");
       direction: rtl;
       width: 80%;
       margin-right: 10%;
@@ -178,6 +169,15 @@
   }
 
 }
+
+.footer {
+  //position: absolute;
+  //bottom: 10px;
+  //height: 200px;
+  text-align: center;
+  width: 100%;
+}
+
 
 .after {
   border: beige solid 1px;
@@ -263,4 +263,9 @@ div.speech-bubble {
 .category-visualizations {
   display: inline-block;
   max-width: 1250px;
+}
+
+.graph-bg {
+  background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px);
+  background-size: 20px 20px;
 }

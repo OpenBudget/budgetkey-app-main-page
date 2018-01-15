@@ -1,8 +1,6 @@
 import { Component, Input, Inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { ScrollyService } from '../services';
-import {ScrollyListener} from "../services/scrolly";
 import {
   MushonKeyChart, MushonKeyFlow, MushonKeyFlowGroup,
   MushonkeyComponent
@@ -118,7 +116,7 @@ class HiglightText extends BaseMutator {
 }
 
 class ShowDialogBit extends BaseMutator {
-  constructor(private bit: DialogBit) {
+  constructor(private bit: DialogBit, private accumulate?: boolean) {
     super();
     this.duration_ = bit.adders.length + 1;
   }
@@ -136,7 +134,11 @@ class ShowDialogBit extends BaseMutator {
         dl['last'] = false;
       }
       hero.dialogLines[hero.dialogLines.length-1]['last'] = true;
-      hero.dialogOfs = tofs * 59.0;
+      if (this.accumulate) {
+        hero.dialogOfs = 0;
+      } else {
+        hero.dialogOfs = tofs * 59.0;
+      }
     }
   }
 }
@@ -466,18 +468,13 @@ for (let i=0; i<dialog.length; i++) {
 
 @Component({
   selector: 'hero',
-  template: require('./hero.html'),
-  styles: [`
-    .graph-bg {
-        background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px);
-        background-size: 20px 20px;
-    }
-`]
+  template: require('./hero.html')
 })
-export class HeroComponent implements ScrollyListener {
+export class HeroComponent {
 
   @ViewChild('mushonkeyWrapper') mushonkeyComponentWrapper: ElementRef;
   @ViewChild('mushonkey') mushonkeyComponent: MushonkeyComponent;
+  @ViewChild('hero') heroComponent: ElementRef;
 
   private ts: TransitionSteps;
 
@@ -489,8 +486,7 @@ export class HeroComponent implements ScrollyListener {
   dialogLines: DialogElement[] = [];
   dialogOfs: number = 0;
 
-  constructor(private mainPage: BudgetKeyMainPageService,
-              private scroller: ScrollyService) {
+  constructor(private mainPage: BudgetKeyMainPageService) {
     this.mainPage.getBubblesData().then((bubbles) => {
       this.makeDeficitCharts(bubbles.deficitChart);
       _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
@@ -687,13 +683,27 @@ export class HeroComponent implements ScrollyListener {
       ]),
       new TransitionStep([
         new ChartShow(0.01),
-        new ShowDialogBit(dialogBits[++dialogBit]),
+        new ShowDialogBit(dialogBits[++dialogBit], true),
       ]),
       new TransitionStep([
-        new ShowDialogBit(dialogBits[++dialogBit]),
+        new ShowDialogBit(dialogBits[++dialogBit], true),
       ]),
     ]);
-    this.scroller.subscribe(this);
+
+    // this.scroller.subscribe(this);
+    document.onscroll = (ev: UIEvent) => {
+      let el = this.heroComponent.nativeElement;
+      let rectTop = el.getBoundingClientRect().top;
+      let offsetHeight = el.scrollHeight;
+      if ((rectTop < 0) && (rectTop > -offsetHeight)) {
+        let progress = -1 * rectTop / offsetHeight;
+        this.onScrolly('hero', progress);
+      } else if (rectTop > 0) {
+        this.onScrolly('hero', 0);
+      } else {
+        this.onScrolly('hero', 1);
+      }
+    };
   }
 
   onScrolly(id: string, progress: number) {

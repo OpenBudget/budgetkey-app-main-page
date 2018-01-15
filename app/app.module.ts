@@ -14,7 +14,7 @@ import {
   HeroComponent
 } from './components';
 
-import { BudgetKeyMainPageService, UtilsService, ScrollyService } from './services';
+import { BudgetKeyMainPageService, UtilsService } from './services';
 
 import { KeysPipe } from './pipes';
 
@@ -46,7 +46,6 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
   ],
   providers: [
     BudgetKeyMainPageService,
-    ScrollyService,
     UtilsService,
     {provide: MAPBOXGL_TOKEN, useValue: mapboxgl}
   ],

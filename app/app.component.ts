@@ -1,6 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
 import { BudgetKeyMainPageService } from './services';
-import {ScrollyService} from "./services/scrolly";
 
 @Component({
   selector: 'my-app',
@@ -53,6 +52,46 @@ import {ScrollyService} from "./services/scrolly";
             </div>
             <div class="text-center">
                 <hero></hero>           
+                <div class="footer text-center graph-bg">
+                    <div class="dialogLine speech-bubble question">יש לי עדיין שאלות, למי לפנות?</div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="mailto:adam@obudget.org"
+                           target="_blank">
+                            אם זו שאלה כללית שקשורה לתקציב נשמח לעזור
+                        </a>
+                    </div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="http://www.hasadna.org.il/about-us/"
+                           target="_blank">
+                            אם זו שאלה שקשורה לסדנא לידע ציבורי
+                        </a>
+                    </div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="http://www.hasadna.org.il/%D7%A6%D7%95%D7%A8-%D7%A7%D7%A9%D7%A8/"
+                           target="_blank">
+                            אם את/ה עיתונאי/ת
+                        </a>
+                    </div>
+                    <div class="dialogLine speech-bubble question">איך אפשר לעזור לכם?</div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="http://www.hasadna.org.il/%D7%AA%D7%A8%D7%95%D7%9E%D7%94-2/"
+                           target="_blank">
+                            אפשר לתרום לנו...
+                        </a>
+                    </div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="http://www.hasadna.org.il/%D7%94%D7%AA%D7%A0%D7%93%D7%91%D7%95%D7%AA/"
+                           target="_blank">
+                            או לבוא להתנדב
+                        </a>
+                    </div>
+                    <div class="dialogLine speech-bubble answer">
+                        <a href="https://github.com/OpenBudget/BudgetKey"
+                           target="_blank">
+                            או לשחק עם הקוד של האתר
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="after">
             </div>
@@ -69,8 +108,7 @@ export class AppComponent {
   private totalAmount: number = 0;
   private year: number;
 
-  constructor(private mainPage: BudgetKeyMainPageService,
-              private scrolly: ScrollyService) {
+  constructor(private mainPage: BudgetKeyMainPageService) {
     this.mainPage.getBubblesData().then((bubbles) => {
       this.year = bubbles.year;
       this.funcCategories = bubbles.func;
@@ -81,9 +119,5 @@ export class AppComponent {
         this.totalAmount += category.amount;
       });
     });
-  }
-
-  ngAfterViewInit() {
-    this.scrolly.init();
   }
 }

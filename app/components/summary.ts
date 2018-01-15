@@ -2,8 +2,7 @@ import { Component, Input, Inject, HostListener, ViewChild, ElementRef } from '@
 import { DOCUMENT } from '@angular/platform-browser';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import { UtilsService, ScrollyService } from '../services';
-import {ScrollyListener} from "../services/scrolly";
+import { UtilsService } from '../services';
 
 @Component({
   selector: 'budgetkey-main-page-summary',
@@ -78,7 +77,7 @@ import {ScrollyListener} from "../services/scrolly";
     <div class="transition-layer" #transitionLayer></div>
   `
 })
-export class SummaryComponent implements ScrollyListener {
+export class SummaryComponent  {
   @Input() amount: number = 0;
   @Input() year: number = 0;
   @ViewChild('container') container: ElementRef;
@@ -98,23 +97,8 @@ export class SummaryComponent implements ScrollyListener {
     this._isCollapsed = value;
   }
 
-  onScrolly(id: string, progress: number) {
-    if (id === 'summary-description') {
-      this.isActive = progress > 0.3;
-      if (progress >= 0.9) {
-        this.isCollapsed = true;
-        this.animate((progress - 0.7)/0.3*1.6);
-      } else {
-        this.isCollapsed = false;
-        this.animate(0);
-      }
-    }
-  }
-
   constructor(@Inject(DOCUMENT) private document: Document,
-              private utils: UtilsService,
-              private scroller: ScrollyService) {
-    this.scroller.subscribe(this);
+              private utils: UtilsService) {
   }
 
   ngAfterViewInit(){
