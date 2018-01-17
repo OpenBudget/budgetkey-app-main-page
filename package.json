@@ -30,7 +30,7 @@
     "@angular/router": "~3.2.0",
     "angular-in-memory-web-api": "~0.1.15",
     "bluebird": "^3.5.1",
-    "budgetkey-ng2-components": "^0.1.7",
+    "budgetkey-ng2-components": "^0.1.13",
     "core-js": "^2.4.1",
     "d3": "^4.10.0",
     "d3-ease": "^1.0.3",

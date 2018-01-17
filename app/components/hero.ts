@@ -1,4 +1,4 @@
-import { Component, Input, Inject, HostListener, ViewChild, ElementRef } from '@angular/core';
+import {Component, Input, Inject, HostListener, ViewChild, ElementRef, EventEmitter, Renderer} from '@angular/core';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import {
@@ -213,7 +213,6 @@ class ConnectorIntroduce extends BaseMutator {
       if (connector.classList.contains(this.klass)) {
         let cr = connector.getBoundingClientRect();
         let length = cr.width + cr.height;
-        // console.log(this.klass,this.direct)
         if (this.direction == 'rtl') {
           connector.style.strokeDasharray = length+',100000';
           connector.style.strokeDashoffset = ''+((1-t)*length);
@@ -488,8 +487,9 @@ export class HeroComponent {
   charts: Array<MushonKeyChart> = [];
   dialogLines: DialogElement[] = [];
   dialogOfs: number = 0;
+  scroller = new EventEmitter<Number>();
 
-  constructor(private mainPage: BudgetKeyMainPageService) {
+  constructor(private mainPage: BudgetKeyMainPageService, private renderer: Renderer) {
     this.mainPage.getBubblesData().then((bubbles) => {
       this.makeDeficitCharts(bubbles.deficitChart);
       _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
@@ -693,29 +693,30 @@ export class HeroComponent {
       ]),
     ]);
 
-    // this.scroller.subscribe(this);
-    document.onscroll = (ev: UIEvent) => {
-      let el = this.heroComponent.nativeElement;
-      let rectTop = el.getBoundingClientRect().top;
-      let offsetHeight = el.scrollHeight;
-      if ((rectTop < 0) && (rectTop > -offsetHeight)) {
-        let progress = -1 * rectTop / offsetHeight;
-        this.onScrolly('hero', progress);
-      } else if (rectTop > 0) {
-        this.onScrolly('hero', 0);
-      } else {
-        this.onScrolly('hero', 1);
-      }
-    };
-  }
+    this.renderer.listenGlobal('window', 'scroll',
+    // document.onscroll =
+      (ev: UIEvent) => {
+      setTimeout(() => {
+        let el = this.heroComponent.nativeElement;
+        let rectTop = el.getBoundingClientRect().top;
+        let offsetHeight = el.scrollHeight;
+        if ((rectTop < 0) && (rectTop > -offsetHeight)) {
+          let progress = -1 * rectTop / offsetHeight;
+          this.scroller.emit(progress);
+        } else if (rectTop > 0) {
+          this.scroller.emit(0);
+        } else {
+          this.scroller.emit(1);
+        }
+      }, 10);
+    });
 
-  onScrolly(id: string, progress: number) {
-    if (id == 'hero') {
+    this.scroller.subscribe((progress: number) => {
       progress = 1.18*progress - 0.06;
       progress = progress < 0 ? 0 : progress;
       progress = progress > 1 ? 1 : progress;
       this.ts.mutate(this, progress);
-    }
+    });
   }
 
   ngAfterViewInit(){

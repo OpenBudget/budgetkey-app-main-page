@@ -9,7 +9,7 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
 import { AppComponent } from './app.component';
 
 import {
-  HeaderComponent, SummaryComponent, MapVisualizationComponent,
+  SummaryComponent, MapVisualizationComponent,
   CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent
 } from './components';
 
@@ -33,7 +33,6 @@ describe('AppComponent', function () {
       declarations: [
         KeysPipe,
         AppComponent,
-        HeaderComponent,
         SummaryComponent,
         MapVisualizationComponent,
         CategoryVisualizationComponent,

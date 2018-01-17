@@ -9,7 +9,7 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
 
 import { AppComponent }  from './app.component';
 import {
-  HeaderComponent, SummaryComponent, MapVisualizationComponent,
+  SummaryComponent, MapVisualizationComponent,
   CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent,
   HeroComponent
 } from './components';
@@ -37,7 +37,6 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
   declarations: [
     KeysPipe,
     AppComponent,
-    HeaderComponent,
     SummaryComponent,
     MapVisualizationComponent,
     CategoryVisualizationComponent,

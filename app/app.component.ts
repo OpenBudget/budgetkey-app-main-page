@@ -4,33 +4,11 @@ import { BudgetKeyMainPageService } from './services';
 @Component({
   selector: 'my-app',
   template: `
-      <budgetkey-container>
+      <budgetkey-container [showHeader]="true" [showSearchBar]="true">
         <div class="container-fluid scroll" style="position: relative">
             <div class="non-sticky">
-              <budgetkey-main-page-header></budgetkey-main-page-header>
               <budgetkey-main-page-summary [amount]="totalAmount" [year]="year"></budgetkey-main-page-summary>
               <div class="text-center">
-                <!--<div class="description">-->
-        <!--<div class="speech-bubble question">הי, מה זה האתר הזה?</div>-->
-        <!--<div class="speech-bubble answer">ב״מפתח התקציב״ אפשר למצוא את  </div>-->
-        <!--<div class="speech-bubble answer">כל המידע על התקציב ועל הוצאות הממשלה</div>-->
-        <!--<div class="speech-bubble answer">בצורה מסודרת וברורה</div>-->
-                   <!--<span>-->
-                   <!--התקציב משמש למגוון מטרות, לפי ראות עיניהן של הממשלה והכנסת.-->
-                   <!--<br/>-->
-                    <!--ניתן לראות שהנושאים הגדולים ביותר הם:-->
-                   <!--<br/>-->
-                     <!--(1) השרותים החברתיים, (2) החזר החובות ו-(3) הביטחון.-->
-                   <!--<br/>-->
-                   <!--כל נושא כזה מורכב מנושאי משנה. כך למשל, השרותים החברתיים כוללים את החינוך, הבריאות, הביטוח הלאומי ועוד-->
-                   <!--<br/>-->
-                   <!--כל תת-נושא בסופו של דבר מטופל על ידי משרד ממשלתי אחד (או יותר)-->
-                   <!--<br/>         -->
-                   <!--<small>-->
-                   <!--עברו עם העכבר על הבועות בשביל ללמוד עוד-->
-                   <!--</small>-->
-                   <!--</span>-->
-                <!--</div>-->
                 <div class="category-visualizations">
                   <category-visualization *ngFor="let category of funcCategories"
                         [category]="category" data-kind="func">                      
