@@ -18,7 +18,9 @@ const SQL_FUNC_BUBBLES_DATA = `
     'budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as doc_id,
     'https://next.obudget.org/i/budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as href
   FROM raw_budget
-  WHERE length(code) = 10 AND year = `+YEAR+` AND NOT code LIKE '0000%%'
+  WHERE length(code) = 10 AND year = ` + YEAR + ` 
+  AND NOT code LIKE '0000%%'  
+  AND ((NOT code LIKE '0084%%') OR ((econ_cls_json->>0)::jsonb->>2='226'))
   GROUP BY 1, 2, 4 ,5
   ORDER BY 1, 2
 `;

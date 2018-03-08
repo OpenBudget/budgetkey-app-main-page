@@ -66,7 +66,10 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
       <svg #container width="300" height="230"></svg>
       <div class="text-center">
         <span class="legend">
-          <span class="value">{{ formatPercents(category.percent) }}</span>
+          <span class="value">
+            {{ formatPercents(category.percent) }}
+            <span class="amount">{{ formatAmount(category.amount) }}</span>
+          </span>
           <span class="label">{{ category.name }}</span>
         </span>
       </div>
@@ -89,6 +92,10 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   formatPercents(value: number): string {
     return this.utils.formatNumber(value, 1) + '%';
+  }
+
+  formatAmount(value: number): string {
+    return this.utils.formatNumber(value/1000000000, 2) + ' מיליארד ₪';
   }
 
   constructor(private utils: UtilsService) {}
