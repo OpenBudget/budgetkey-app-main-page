@@ -3,7 +3,7 @@ import { BudgetKeyMainPageService } from './services';
 
 @Component({
   selector: 'my-app',
-  template: `
+  template: ` 
       <budgetkey-container [showHeader]="true" [showSearchBar]="true">
         <div class="container-fluid scroll" style="position: relative">
             <div class="non-sticky">
@@ -92,7 +92,7 @@ export class AppComponent {
       this.funcCategories = bubbles.func;
       this.econCategories = bubbles.econ;
       this.incomeCategories = bubbles.income;
-      this.totalAmount = 0;
+      this.totalAmount = 0; 
       this.funcCategories.forEach((category: any) => {
         this.totalAmount += category.amount;
       });

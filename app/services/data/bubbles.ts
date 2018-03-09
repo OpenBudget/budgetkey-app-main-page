@@ -10,6 +10,31 @@ const DOC_URL = 'http://next.obudget.org/get/';
 const YEAR = 2018;
 const BUDGET_CODE = '0020460418';
 
+const RETURNS_CONDITION = `
+((code LIKE '0084%%') AND NOT ((econ_cls_json->>0)::jsonb->>2='226'))
+`;
+
+const GOV_INDUSTIES_CONDITION = `
+(code LIKE '0089%%' OR
+ code LIKE '0091%%' OR
+ code LIKE '0094%%' OR
+ code LIKE '0095%%' OR
+ code LIKE '0098%%')
+`;
+
+const EXPENSES_CONDITION = `length(code) = 10 AND year = ` + YEAR + ` 
+AND NOT code LIKE '0000%%'  
+AND NOT ` + GOV_INDUSTIES_CONDITION + `
+AND NOT ` + RETURNS_CONDITION;
+
+const DEFICIT_FUNDING_CONDITION = `
+((func_cls_json->>0)::jsonb->>2='86')
+`;
+
+const INCOME_CONDITION = `length(code) = 10 AND year = ` + YEAR + ` 
+AND code LIKE '0000%%'  
+AND NOT ` + DEFICIT_FUNDING_CONDITION;
+
 const SQL_FUNC_BUBBLES_DATA = `
   SELECT 
     func_cls_title_1->>0 AS bubble_group,
@@ -18,9 +43,7 @@ const SQL_FUNC_BUBBLES_DATA = `
     'budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as doc_id,
     'https://next.obudget.org/i/budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as href
   FROM raw_budget
-  WHERE length(code) = 10 AND year = ` + YEAR + ` 
-  AND NOT code LIKE '0000%%'  
-  AND ((NOT code LIKE '0084%%') OR ((econ_cls_json->>0)::jsonb->>2='226'))
+  WHERE ` + EXPENSES_CONDITION + `
   GROUP BY 1, 2, 4 ,5
   ORDER BY 1, 2
 `;
@@ -32,7 +55,7 @@ const SQL_ECON_BUBBLES_DATA = `
     sum(net_allocated) AS total_amount,
     'https://next.obudget.org/i/budget/E' || ((econ_cls_json->>0)::json->>0) || ((econ_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as href
   FROM raw_budget
-  WHERE length(code) = 10 AND year = `+YEAR+` AND NOT code LIKE '0000%%'
+  WHERE ` + EXPENSES_CONDITION + `
   GROUP BY 1, 2, 4
   HAVING sum(net_allocated) > 0
   ORDER BY 1, 2
@@ -45,10 +68,20 @@ const SQL_INCOME_BUBBLES_DATA = `
     sum(net_allocated) AS total_amount,
     'https://next.obudget.org/i/budget/' || ((hierarchy->>2)::jsonb->>0) || '/' || '`+YEAR+`' as href
   FROM raw_budget
-  WHERE length(code) = 10 AND year = `+YEAR+` AND code LIKE '0000%%'
+  WHERE ` + INCOME_CONDITION + `
   GROUP BY 1, 2, 4
   HAVING sum(net_allocated) > 0
   ORDER BY 1, 2
+`;
+
+const SQL_INCOME_FUNCTIONS = `
+  SELECT 
+    func_cls_title_2->>0 as title,
+    sum(net_allocated) as net_allocated
+  FROM raw_budget
+  WHERE ` + INCOME_CONDITION + `
+  GROUP BY 1
+  ORDER BY 2 desc
 `;
 
 const SUPPORTS_BUBBLES_DATA = `
@@ -57,7 +90,9 @@ const SUPPORTS_BUBBLES_DATA = `
     sum(amount_total) as total_amount,
     'https://next.obudget.org/i/org/' || entity_kind || '/' || entity_id as href
   FROM raw_supports
-  WHERE budget_code='`+BUDGET_CODE+`' and year_paid=`+(YEAR-1)+` and entity_name is not null
+  WHERE budget_code='` + BUDGET_CODE + `' 
+  AND year_paid=` + (YEAR - 1) + ` 
+  AND entity_name is not null
   GROUP BY 1, 3 
   ORDER BY 2 desc
 `;
@@ -186,30 +221,42 @@ function fetch_doc(doc: string) {
 
 function deficitChart() {
   return Promise.all([
-    fetch_doc('budget/00/'+YEAR),
-    fetch_doc('budget/0000/'+YEAR)
+    fetch_doc('budget/00/' + YEAR),
+    fetch_sql(`select sum(net_allocated) from raw_budget 
+               where ` + EXPENSES_CONDITION),
+    fetch_sql(`select sum(net_allocated) from raw_budget 
+               where ` + INCOME_CONDITION),
+    fetch_sql(`select sum(net_allocated) from raw_budget 
+               where length(code) = 10 AND year = ` + YEAR + ` 
+               AND ` + RETURNS_CONDITION),
+    fetch_sql(`select sum(net_allocated) from raw_budget 
+               where length(code) = 10 AND year = ` + YEAR + ` 
+               AND ` + DEFICIT_FUNDING_CONDITION),
+    fetch_sql(SQL_INCOME_FUNCTIONS),
   ]).then((data: any) => {
     return {
-      budget: data[0].net_allocated,
+      budget: data[1][0].sum,
       expenseChildren: data[0].children,
-      income: data[1].net_allocated,
-      incomeChildren: data[1].children
+      income: data[2][0].sum,
+      returns: data[3][0].sum,
+      deficitFunding: data[4][0].sum,
+      incomeChildren: data[5],
     };
   });
 }
 
 function educationBudgetChart() {
   return Promise.all([
-    fetch_doc('budget/0020/'+YEAR),
-    fetch_doc('budget/002046/'+YEAR),
-    fetch_doc('budget/00204604/'+YEAR),
+    fetch_doc('budget/0020/' + YEAR),
+    fetch_doc('budget/002046/' + YEAR),
+    fetch_doc('budget/00204604/' + YEAR),
   ]);
 }
 
 function supportsChart(): PromiseLike<any> {
   return Promise.all([
     fetch_sql(SUPPORTS_BUBBLES_DATA),
-    fetch_doc('budget/'+BUDGET_CODE+'/'+YEAR)
+    fetch_doc('budget/' + BUDGET_CODE + '/' + YEAR)
   ]);
 }
 

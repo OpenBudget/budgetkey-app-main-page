@@ -284,9 +284,9 @@ let dialog = [
 
   Q('שניה רגע - מה הכוונה הכנסות? מאיפה מגיע הכסף?'),
   A('בעיקר ממס הכנסה (של אנשים ושל חברות)'),
-  A('גיוסים בשוק ההון (מלוות)'),
-  A('וגם מע״מ'),
-  A('האמת שיש עוד לא מעט מקורות, אבל אלו העיקריים מביניהם'),
+  A('מס עקיף כמו מע״מ'),
+  A('עוד לא מעט מקורות...'),
+  A('אה, וגם אגרות!'),
 
   Q('ואז את כל הכסף שנכנס אפשר לבזבז!'),
   A('הממ... לא בדיוק'),
@@ -530,7 +530,7 @@ export class HeroComponent {
           new TransitionStep([new UpdateMushonkey(++chartIdx),]),
           new TransitionStep([new UpdateMushonkey(++chartIdx),]),
           new TransitionStep([new UpdateMushonkey(++chartIdx),]),
-          new TransitionStep([ new Filler(1), ]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
         ])
       ]),
       new TransitionStep([
@@ -734,9 +734,9 @@ export class HeroComponent {
   makeDeficitCharts(data: any) {
 
     let expenseChildren: Array<any> = _.sortBy(data.expenseChildren, (d: any) => -d.net_allocated)
-    let semiExpenseRest = data.budget - expenseChildren[0].net_allocated;
-    let expenseRest = data.budget - _.sum(
-        _.map(_.slice(expenseChildren, 0, 4),
+    let semiExpenseRest = data.budget;
+    let expenseRest = semiExpenseRest - _.sum(
+        _.map(_.slice(expenseChildren, 1, 4),
           (d: any) => d.net_allocated)
     );
 
@@ -752,7 +752,7 @@ export class HeroComponent {
     );
 
     let incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated)
-    let kidsNum = [1,2,3];
+    let kidsNum = [1,2,3,4];
 
     let expandedIncomesFlowGroup = _.map(kidsNum, (k) => {
       let incomeRest = data.income - _.sum(
@@ -763,19 +763,21 @@ export class HeroComponent {
       for (let i = 0 ; i < k ; i++ ) {
         flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, incomeChildren[i].title))
       }
-      flows.push(HeroComponent.makeFlow(incomeRest, 'הכנסות אחרות'));
+      if (k != 4) {
+        flows.push(HeroComponent.makeFlow(incomeRest, '...'));
+      }
       return new MushonKeyFlowGroup(
         false, flows, 'income', 20
       );
     });
     let expensesFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(data.budget, 'הוצאות הממשלה')
+        HeroComponent.makeFlow(data.budget + data.returns, 'הוצאות הממשלה')
       ], 'expenses', 20
     );
     let debtFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(expenseChildren[0].net_allocated, expenseChildren[0].title),
+        HeroComponent.makeFlow(data.returns, 'החזר חובות'),
       ], 'debt', -100, 0.7
     );
     let semiExpandedExpensesFlowGroup = new MushonKeyFlowGroup(
@@ -834,9 +836,16 @@ export class HeroComponent {
       200, 80, true, margin, centerVerticalOffset
     ));
     this.charts.push(new MushonKeyChart([
+        expensesFlowGroup,
+        expandedIncomesFlowGroup[3],
+      ],
+      'תקציב המדינה',
+      200, 80, true, margin, centerVerticalOffset
+    ));
+    this.charts.push(new MushonKeyChart([
         deficitFlowGroup,
         expensesFlowGroup,
-        expandedIncomesFlowGroup[2],
+        expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -845,7 +854,7 @@ export class HeroComponent {
         deficitFlowGroup,
         debtFlowGroup,
         semiExpandedExpensesFlowGroup,
-        expandedIncomesFlowGroup[2],
+        expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
@@ -854,7 +863,7 @@ export class HeroComponent {
         deficitFlowGroup,
         debtFlowGroup,
         expandedExpensesFlowGroup,
-        expandedIncomesFlowGroup[2],
+        expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
       200, 80, true, margin, centerVerticalOffset
