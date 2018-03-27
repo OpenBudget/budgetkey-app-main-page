@@ -12,7 +12,7 @@ import { UtilsService } from '../services';
       <div class="description">
         <div class="speech-bubble question">הי, מה זה האתר הזה?</div>
         <!--<div class="speech-bubble answer">מה? מפתח התקציב?</div>-->
-        <div class="speech-bubble answer">אספנו ב״מפתח התקציב״ כל המידע על תקציב המדינה ועל הוצאות הממשלה וסידרנו אותו &ndash;<br/> כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;</div>
+        <div class="speech-bubble answer">אספנו והנגשנו ב״מפתח התקציב״ את כל המידע על תקציב המדינה ועל הוצאות הממשלה &ndash;<br/> כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;</div>
       </div>
       <div class="row">
         <div class="col-xs-2">
