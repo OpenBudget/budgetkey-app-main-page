@@ -7,7 +7,7 @@ import * as Promise from 'bluebird';
 
 const API_URL = 'http://next.obudget.org/api/query?query=';
 const DOC_URL = 'http://next.obudget.org/get/';
-const YEAR = 2018;
+const YEAR = 2019;
 const BUDGET_CODE = '0020460418';
 
 const RETURNS_CONDITION = `
