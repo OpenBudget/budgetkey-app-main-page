@@ -10,7 +10,9 @@ import { UtilsService } from '../services';
 @Component({
   selector: 'category-info-popup',
   template: `
-    <div class="category-info-popup text-right step" [ngStyle]="{left: bubble.left + 'px', bottom: bubble.top + 'px'}" data-id="category-visualisation">
+    <div class="category-info-popup text-right step" 
+         [ngStyle]="{left: bubble.left + 'px', bottom: bubble.top + 'px'}" 
+         data-id="category-visualisation">
       <h3>{{ bubble.name }}</h3>
       <div class="brief">
         <span>{{ formatAmount(bubble.value) }} ₪</span>
@@ -35,8 +37,6 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
   @Input() bubble: any;
 
   currentTab: any = 0;
-
-  private timer: any = 0;
 
   formatPercents(value: number): string {
     return this.utils.formatNumber(value, 1) + '%';
@@ -95,7 +95,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
   }
 
   formatAmount(value: number): string {
-    return this.utils.formatNumber(value/1000000000, 2) + ' מיליארד ₪';
+    return this.utils.formatNumber(value / 1000000000, 2) + ' מיליארד ₪';
   }
 
   constructor(private utils: UtilsService) {}
@@ -272,7 +272,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.theme = CATEGORIES_THEMES[this.category.name] || '';
-    this.theme += ' vis-kind-'+this.kind;
+    this.theme += ' vis-kind-' + this.kind;
     this.scale = this.category.scale;
   }
 
@@ -333,7 +333,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
       const scale = zoomCircles ? 1 : 0.7;
       circleScale = zoomCircles ? 1 : circleScale;
       const opacity = showLabels ? 1 : 0;
-      const delay = zoomCircles? 0: 100;
+      const delay = zoomCircles ? 0 : 100;
 
       circles
         .transition()

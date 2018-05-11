@@ -9,15 +9,17 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
 import { AppComponent } from './app.component';
 
 import {
-  SummaryComponent, MapVisualizationComponent,
-  CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent
+  SummaryComponent,
+  CategoryVisualizationComponent, 
+  CategoryVisualizationInfoPopupComponent,
+  HeroComponent
 } from './components';
 
 import { BudgetKeyMainPageService, UtilsService } from './services';
 
 import { KeysPipe } from './pipes';
 
-import { MAPBOXGL_TOKEN } from './constants';
+import {MushonkeyModule} from 'mushonkey';
 
 describe('AppComponent', function () {
   let comp: AppComponent;
@@ -28,20 +30,20 @@ describe('AppComponent', function () {
       imports: [
         HttpModule,
         FormsModule,
-        BudgetKeyCommonModule
+        BudgetKeyCommonModule,
+        MushonkeyModule
       ],
       declarations: [
         KeysPipe,
         AppComponent,
         SummaryComponent,
-        MapVisualizationComponent,
+        HeroComponent,
         CategoryVisualizationComponent,
         CategoryVisualizationInfoPopupComponent
       ],
       providers: [
         BudgetKeyMainPageService,
         UtilsService,
-        {provide: MAPBOXGL_TOKEN, useValue: null}
       ]
     })
     .compileComponents();

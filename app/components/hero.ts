@@ -1,16 +1,16 @@
-import {Component, Input, Inject, HostListener, ViewChild, ElementRef, EventEmitter, Renderer} from '@angular/core';
+import {Component, ViewChild, ElementRef, EventEmitter, Renderer} from '@angular/core';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import {
   MushonKeyChart, MushonKeyFlow, MushonKeyFlowGroup,
   MushonkeyComponent
-} from "mushonkey/lib/components/MushonkeyComponent";
-import {BudgetKeyMainPageService} from "../services/budgetkey-main-page";
+} from 'mushonkey/lib/components/MushonkeyComponent';
+import {BudgetKeyMainPageService} from '../services/budgetkey-main-page';
 
 function tweenie(t: number) {
   t = Math.abs(t - 0.5);
-  t = 1 - t*2;
-  return d3.easeExpOut(t)
+  t = 1 - t * 2;
+  return d3.easeExpOut(t);
 }
 
 
@@ -44,7 +44,7 @@ class TransitionStep implements Mutator {
   private _duration: number;
 
   constructor(private _mutators: Array<Mutator>) {
-    this._duration = d3.max(_mutators, (m) => m.duration())
+    this._duration = d3.max(_mutators, (m) => m.duration());
   }
 
   duration() {
@@ -58,16 +58,16 @@ class TransitionStep implements Mutator {
 
   mutate(hero: HeroComponent, t: number): void {
     let m: Mutator;
-    if (t>=this.start && t<=this.stop) {
+    if (t >= this.start && t <= this.stop) {
       this.active = true;
-      t = (t-this.start) / (this.stop - this.start);
+      t = (t - this.start) / (this.stop - this.start);
       for (m of this._mutators) {
         m.mutate(hero, t);
       }
     } else if (this.active) {
       this.active = false;
       let p = 0;
-      if (t>this.stop) {
+      if (t > this.stop) {
         p = 1;
       }
       for (m of this._mutators) {
@@ -83,7 +83,7 @@ class TransitionSteps extends BaseMutator {
     let totalLength = d3.sum(_steps, (s) => s.duration());
     let ofs = 0;
     for (let step of _steps) {
-      step.setRange(ofs/totalLength, (ofs + step.duration())/totalLength);
+      step.setRange(ofs / totalLength, (ofs + step.duration()) / totalLength);
       ofs += step.duration();
     }
     this.duration_ = totalLength;
@@ -133,7 +133,7 @@ class ShowDialogBit extends BaseMutator {
       for (let dl of hero.dialogLines) {
         dl['last'] = false;
       }
-      hero.dialogLines[hero.dialogLines.length-1]['last'] = true;
+      hero.dialogLines[hero.dialogLines.length - 1]['last'] = true;
       if (this.accumulate) {
         hero.dialogOfs = 0;
       } else {
@@ -152,7 +152,7 @@ class UpdateMushonkey extends BaseMutator {
   mutate(hero: HeroComponent, t: number): void {
     let chart = hero.chart;
     hero.chart = hero.charts[this.index];
-    if (hero.mushonkeyComponent && chart != hero.chart) {
+    if (hero.mushonkeyComponent && chart !== hero.chart) {
       hero.mushonkeyComponent.updateChart(hero.chart);
     }
   }
@@ -164,7 +164,7 @@ class ChartIntroduce extends BaseMutator {
   }
 
   mutate(hero: HeroComponent, t: number): void {
-    hero.chartOpacity = d3.easeExpOut(this.increasing? t : 1-t);
+    hero.chartOpacity = d3.easeExpOut(this.increasing ? t : 1 - t);
   }
 }
 
@@ -213,12 +213,12 @@ class ConnectorIntroduce extends BaseMutator {
       if (connector.classList.contains(this.klass)) {
         let cr = connector.getBoundingClientRect();
         let length = cr.width + cr.height;
-        if (this.direction == 'rtl') {
-          connector.style.strokeDasharray = length+',100000';
-          connector.style.strokeDashoffset = ''+((1-t)*length);
+        if (this.direction === 'rtl') {
+          connector.style.strokeDasharray = length + ',100000';
+          connector.style.strokeDashoffset = '' + ((1 - t) * length);
         } else {
-          connector.style.strokeDasharray = length+',100000';
-          connector.style.strokeDashoffset = '-'+((1-t)*length);
+          connector.style.strokeDasharray = length + ',100000';
+          connector.style.strokeDashoffset = '-' + ((1 - t) * length);
         }
       }
     }
@@ -243,15 +243,15 @@ class ConnectorToSublevel extends BaseMutator {
     let connector = connectors[this.index];
     if (connector) {
       if (!this.going) {
-        t = 1-t;
+        t = 1 - t;
       }
       // let gap = tweenie(t) * 200;
       let gap = tweenie(t) * 2000;
       if (gap > 20) {
         gap = 20;
       }
-      connector.style.strokeDasharray = '10,'+gap;
-      connector.style.strokeDashoffset = '-'+(50*t);
+      connector.style.strokeDasharray = '10,' + gap;
+      connector.style.strokeDashoffset = '-' + (50 * t);
     }
   }
 }
@@ -433,9 +433,9 @@ interface DialogBit {
 }
 
 let dialogBits: Array<DialogBit> = [];
-for (let i=0; i<dialog.length; i++) {
-  if (dialog[i].direction == 'question') {
-    if (i > 0 && dialog[i-1].direction  == 'question') {
+for (let i = 0; i < dialog.length; i++) {
+  if (dialog[i].direction === 'question') {
+    if (i > 0 && dialog[i - 1].direction  === 'question') {
       continue;
     }
     let bit = {
@@ -451,9 +451,9 @@ for (let i=0; i<dialog.length; i++) {
       bit.start.unshift({});
     }
     let answered = false;
-    j = i+1;
+    j = i + 1;
     while (j < dialog.length) {
-      if (dialog[j].direction == 'answer') {
+      if (dialog[j].direction === 'answer') {
         answered = true;
       } else {
         if (answered) {
@@ -488,6 +488,15 @@ export class HeroComponent {
   dialogLines: DialogElement[] = [];
   dialogOfs: number = 0;
   scroller = new EventEmitter<Number>();
+
+  static makeFlow(amount: number, title: string, scale?: any) {
+    scale = scale || [1000000000, `מיל'`];
+    let billions = amount / scale[0];
+    let digits = billions < 5 ? 1 : 0;
+    let amountStr =  billions.toFixed(digits) + ' ' + scale[1];
+    title = title + ' ' + amountStr;
+    return new MushonKeyFlow(amount, title, null);
+  }
 
   constructor(private mainPage: BudgetKeyMainPageService, private renderer: Renderer) {
     this.mainPage.getBubblesData().then((bubbles) => {
@@ -527,10 +536,10 @@ export class HeroComponent {
             new ChartShow(),
             new ConnectorShow(),
           ]),
-          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
-          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
-          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
-          new TransitionStep([new UpdateMushonkey(++chartIdx),]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx), ]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx), ]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx), ]),
+          new TransitionStep([new UpdateMushonkey(++chartIdx), ]),
         ])
       ]),
       new TransitionStep([
@@ -712,28 +721,16 @@ export class HeroComponent {
     });
 
     this.scroller.subscribe((progress: number) => {
-      progress = 1.18*progress - 0.06;
+      progress = 1.18 * progress - 0.06;
       progress = progress < 0 ? 0 : progress;
       progress = progress > 1 ? 1 : progress;
       this.ts.mutate(this, progress);
     });
   }
 
-  ngAfterViewInit(){
-  }
-
-  static makeFlow(amount: number, title: string, scale?: any) {
-    scale = scale || [1000000000, "מיל'"];
-    let billions = amount/scale[0];
-    let digits = billions < 5 ? 1 : 0;
-    let amountStr =  billions.toFixed(digits) + ' ' + scale[1];
-    title = title + ' ' + amountStr;
-    return new MushonKeyFlow(amount, title, null);
-  }
-
   makeDeficitCharts(data: any) {
 
-    let expenseChildren: Array<any> = _.sortBy(data.expenseChildren, (d: any) => -d.net_allocated)
+    let expenseChildren: Array<any> = _.sortBy(data.expenseChildren, (d: any) => -d.net_allocated);
     let semiExpenseRest = data.budget;
     let expenseRest = semiExpenseRest - _.sum(
         _.map(_.slice(expenseChildren, 1, 4),
@@ -751,8 +748,8 @@ export class HeroComponent {
       ], 'deficit', -100, 0.7
     );
 
-    let incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated)
-    let kidsNum = [1,2,3,4];
+    let incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated);
+    let kidsNum = [1, 2, 3, 4];
 
     let expandedIncomesFlowGroup = _.map(kidsNum, (k) => {
       let incomeRest = data.income - _.sum(
@@ -761,9 +758,9 @@ export class HeroComponent {
       );
       let flows = [];
       for (let i = 0 ; i < k ; i++ ) {
-        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, incomeChildren[i].title))
+        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, incomeChildren[i].title));
       }
-      if (k != 4) {
+      if (k !== 4) {
         flows.push(HeroComponent.makeFlow(incomeRest, '...'));
       }
       return new MushonKeyFlowGroup(
@@ -891,11 +888,11 @@ export class HeroComponent {
           false, [
             HeroComponent
               .makeFlow(data.net_allocated,
-                '…' + 'מתוך תקציב ' + data.hierarchy[data.hierarchy.length-1][1] + ': ')
+                '…' + 'מתוך תקציב ' + data.hierarchy[data.hierarchy.length - 1][1] + ': ')
           ], 'income', -100
         ),
       ],
-      data.title + ' '+data['nice-code'],
+      data.title + ' ' + data['nice-code'],
       200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
     );
     console.log(data);
@@ -912,7 +909,7 @@ export class HeroComponent {
         _.map(_.slice(children, 0, numToShow),
           (d: any) => d.total_amount)
       );
-    let scale = [1000000, 'מיליון ₪']
+    let scale = [1000000, 'מיליון ₪'];
     let flows = [];
     for (let i = 0 ; i < numToShow ; i++ ) {
       flows.push(HeroComponent.makeFlow(children[i].total_amount, children[i].entity_name, scale));
@@ -928,12 +925,12 @@ export class HeroComponent {
           false, [
             HeroComponent
               .makeFlow(budgetData.net_allocated,
-                '…' + 'מתוך תקציב ' + budgetData.hierarchy[budgetData.hierarchy.length-1][1] + ': ',
+                '…' + 'מתוך תקציב ' + budgetData.hierarchy[budgetData.hierarchy.length - 1][1] + ': ',
               scale)
           ], 'income', -100
         ),
       ],
-      budgetData.title + ' '+budgetData['nice-code'],
+      budgetData.title + ' ' + budgetData['nice-code'],
       200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
     );
     this.charts.push(chart);

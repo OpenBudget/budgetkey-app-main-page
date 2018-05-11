@@ -1,9 +1,3 @@
-import { OpaqueToken } from '@angular/core';
-
-export const MAPBOXGL_ACCESS_TOKEN = 'pk.eyJ1IjoibXVzaG9uIiwiYSI6IjY1bHhhTkEifQ.DhW2zcurHHBtmnc2FsMBqg';
-
-export const MAPBOXGL_TOKEN = new OpaqueToken('mapboxgl');
-
 export const VALUE_SCALE = {
   מיליארד: 1000000000,
   מיליון: 1000000,

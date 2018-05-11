@@ -69,7 +69,7 @@
     "karma-webpack": "^2.0.4",
     "less-loader": "^4.0.5",
     "lodash": "^4.17.2",
-    "mushonkey": "0.0.16",
+    "mushonkey": "^0.1.0",
     "node-fetch": "^1.7.3",
     "protractor": "^4.0.14",
     "raw-loader": "^0.5.1",

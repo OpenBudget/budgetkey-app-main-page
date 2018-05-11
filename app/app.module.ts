@@ -9,8 +9,9 @@ import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
 
 import { AppComponent }  from './app.component';
 import {
-  SummaryComponent, MapVisualizationComponent,
-  CategoryVisualizationComponent, CategoryVisualizationInfoPopupComponent,
+  SummaryComponent,
+  CategoryVisualizationComponent, 
+  CategoryVisualizationInfoPopupComponent,
   HeroComponent
 } from './components';
 
@@ -18,13 +19,8 @@ import { BudgetKeyMainPageService, UtilsService } from './services';
 
 import { KeysPipe } from './pipes';
 
-import { MAPBOXGL_TOKEN, MAPBOXGL_ACCESS_TOKEN } from './constants';
 import {MushonkeyModule} from "mushonkey";
 
-/* global mapboxgl */
-declare const mapboxgl: any;
-
-mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
 
 @NgModule({
   imports: [
@@ -38,7 +34,6 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
     KeysPipe,
     AppComponent,
     SummaryComponent,
-    MapVisualizationComponent,
     CategoryVisualizationComponent,
     CategoryVisualizationInfoPopupComponent,
     HeroComponent
@@ -46,7 +41,6 @@ mapboxgl.accessToken = MAPBOXGL_ACCESS_TOKEN;
   providers: [
     BudgetKeyMainPageService,
     UtilsService,
-    {provide: MAPBOXGL_TOKEN, useValue: mapboxgl}
   ],
   bootstrap: [ AppComponent ]
 })
