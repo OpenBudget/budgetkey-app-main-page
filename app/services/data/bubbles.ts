@@ -91,7 +91,7 @@ const SUPPORTS_BUBBLES_DATA = `
     'https://next.obudget.org/i/org/' || entity_kind || '/' || entity_id as href
   FROM raw_supports
   WHERE budget_code='` + BUDGET_CODE + `' 
-  AND year_paid=` + (YEAR - 1) + ` 
+  AND year_paid>=` + (YEAR - 3) + ` 
   AND entity_name is not null
   GROUP BY 1, 3 
   ORDER BY 2 desc
