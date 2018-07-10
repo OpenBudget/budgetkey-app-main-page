@@ -37,7 +37,7 @@ AND NOT ` + DEFICIT_FUNDING_CONDITION;
 
 const SQL_FUNC_BUBBLES_DATA = `
   SELECT 
-    func_cls_title_1->>0 AS bubble_group,
+    func_cls_title_1->>0 || ':budget/C' || ((func_cls_json->>0)::json->>0) || '/' || '`+YEAR+`' AS bubble_group,
     func_cls_title_2->>0 AS bubble_title,
     sum(net_allocated) AS total_amount,
     'budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as doc_id,
@@ -50,7 +50,7 @@ const SQL_FUNC_BUBBLES_DATA = `
 
 const SQL_ECON_BUBBLES_DATA = `
   SELECT 
-    econ_cls_title_1->>0 AS bubble_group,
+    econ_cls_title_1->>0 || ':budget/C' || ((econ_cls_json->>0)::json->>0) || '/' || '`+YEAR+`' AS bubble_group,
     econ_cls_title_2->>0 AS bubble_title,
     sum(net_allocated) AS total_amount,
     'https://next.obudget.org/i/budget/E' || ((econ_cls_json->>0)::json->>0) || ((econ_cls_json->>0)::json->>2) || '/' || '`+YEAR+`' as href
@@ -170,8 +170,11 @@ function fetch_data(sql: string) {
     .then((data: any) => {
       let result: any[] = [];
       _.each(data, (values: any, key: string) => {
+        let parts = key.split(':');
+        key = parts[0];
         result.push({
           name: key,
+          doc_id: parts[1],
           values: values,
           amount: _.sum(_.map(_.values(values), (v: any) => v.amount)),
           percent: 0.0

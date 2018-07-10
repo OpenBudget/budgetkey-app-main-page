@@ -70,7 +70,7 @@ export class CategoryVisualizationInfoPopupComponent implements OnInit {
             {{ formatPercents(category.percent) }}
             <span class="amount">{{ formatAmount(category.amount) }}</span>
           </span>
-          <span class="label">{{ category.name }}</span>
+          <span class="label"><a [href]='"/i/" + category.doc_id'>{{ category.name }}</a></span>
         </span>
       </div>
       <category-info-popup *ngIf="currentBubble" 
