@@ -12,8 +12,19 @@ import { UtilsService } from '../services';
       <div class="description">
         <div class="speech-bubble question">הי, מה זה האתר הזה?</div>
         <div class="speech-bubble answer">
-          אספנו והנגשנו ב״מפתח התקציב״ את כל המידע על תקציב המדינה ועל הוצאות הממשלה &ndash;<br/>
+          אספנו והנגשנו ב
+          <strong>״מפתח התקציב״</strong>
+           את כל המידע על תקציב המדינה ועל הוצאות הממשלה &ndash;<br/>
           כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;
+        </div>
+        <div class="speech-bubble answer">
+          מחפשים משהו מסוים? גשו ישר ל<a href='/s/'>חיפוש 
+            <span style='font-size:65%'><i class='glyphicon glyphicon-search'></i></span></a><br/>
+          אחרת מומלץ להמשיך לגלול <span style='font-size:65%'><i class='glyphicon glyphicon-hand-down'></i></span><br/>
+          <span style='font-size:65%'>
+            מחפשים את האתר הישן? הוא עדיין
+            <a href='http://old.obudget.org'>כאן</a>
+          </span><br/>
         </div>
       </div>
       <div class="row">
