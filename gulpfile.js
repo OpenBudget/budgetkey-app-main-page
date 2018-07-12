@@ -13,7 +13,8 @@ gulp.task('assets', ['assets:app', 'assets:vendor']);
 gulp.task('assets:app', function() {
   return gulp.src([
     './assets/**/*',
-    './favicon.ico'
+    './favicon.ico',
+    'robots.txt',
   ], {
     base: '.'
   })
