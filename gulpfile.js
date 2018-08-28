@@ -14,6 +14,7 @@ gulp.task('assets:app', function() {
   return gulp.src([
     './assets/**/*',
     './favicon.ico',
+    './opensearch.xml',
     'robots.txt',
   ], {
     base: '.'
