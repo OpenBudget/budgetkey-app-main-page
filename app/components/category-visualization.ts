@@ -317,7 +317,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
           left: Math.round((selfBounds.left + selfBounds.right) / 2 - parentBounds.left),
           top: Math.round(parentBounds.bottom - selfBounds.top + 10),
           value: datum.value,
-          percent: datum.value / root.value * 100,
+          percent: datum.value / root.value * that.category.percent,
         };
       })
       .on('click', function (datum: any) {
