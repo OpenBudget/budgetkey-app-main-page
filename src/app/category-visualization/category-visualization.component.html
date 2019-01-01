@@ -1,0 +1,14 @@
+<div #wrapper class="category-visualization" [ngClass]="theme">   
+  <svg #container width="300" height="230"></svg>
+  <div class="text-center">
+    <span class="legend">
+      <span class="value">
+        {{ formatPercents(category.percent) }}
+        <span class="amount">{{ formatAmount(category.amount) }}</span>
+      </span>
+      <span class="label"><a [href]='"/i/" + category.doc_id'>{{ category.name }}</a></span>
+    </span>
+  </div>
+  <category-visualization-info-popup *ngIf="currentBubble" 
+    [bubble]="currentBubble"></category-visualization-info-popup>
+</div>

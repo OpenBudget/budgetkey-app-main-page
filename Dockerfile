@@ -1,8 +1,11 @@
 FROM node:8-alpine
 
-COPY . /app/
 RUN apk add --update git
-RUN cd /app/ && npm install && npm run dist
+
+COPY . /app/
+RUN cd /app/ && \
+    npm install --no-audit && \
+    npm run build --prod
 
 EXPOSE 8000
 
