@@ -894,13 +894,10 @@ export class HeroComponent {
       data.title + ' ' + data['nice-code'],
       200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
     );
-    console.log(data);
     this.charts.push(chart);
   }
 
   makeSupportChart(supportData: any, budgetData: any) {
-    console.log(supportData);
-    console.log(budgetData);
     const numToShow = 5;
     const children: Array<any> = _.sortBy(supportData, (d: any) => -d.total_amount);
     const total = _.sum(_.map(children, (d) => d.total_amount));

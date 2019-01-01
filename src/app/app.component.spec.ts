@@ -9,7 +9,8 @@ import { CategoryVisualizationComponent } from './category-visualization/categor
 import { HeroComponent } from './hero/hero.component';
 import { CategoryVisualizationInfoPopupComponent } from './category-visualization-info-popup/category-visualization-info-popup.component';
 import { BUBBLES } from './constants';
-import * as bubbles from '../../bubbles.json';
+import { bubbles } from './bubbles';
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -28,7 +29,7 @@ describe('AppComponent', () => {
         HeroComponent
       ],
       providers: [
-        {provide: BUBBLES, useValue: bubbles.default}
+        {provide: BUBBLES, useValue: bubbles}
       ]
     }).compileComponents();
   }));

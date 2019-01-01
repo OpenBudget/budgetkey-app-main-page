@@ -22,6 +22,5 @@ export class AppComponent {
     this.funcCategories.forEach((category: any) => {
       this.totalAmount += category.amount;
     });
-    console.log(bubbles);
   }
 }
