@@ -1,4 +1,4 @@
-import {Component, ViewChild, ElementRef, EventEmitter, Renderer, Inject} from '@angular/core';
+import {Component, ViewChild, ElementRef, EventEmitter, Inject, HostListener} from '@angular/core';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import {
@@ -478,7 +478,7 @@ export class HeroComponent {
 
   @ViewChild('mushonkeyWrapper') mushonkeyComponentWrapper: ElementRef;
   @ViewChild('mushonkey') mushonkeyComponent: MushonkeyComponent;
-  @ViewChild('hero') heroComponent: ElementRef;
+  @ViewChild('hero') heroElement: ElementRef;
 
   private ts: TransitionSteps;
 
@@ -500,8 +500,7 @@ export class HeroComponent {
     return new MushonKeyFlow(amount, title, null);
   }
 
-  constructor(private renderer: Renderer,
-              @Inject(BUBBLES) private bubbles: any) {
+  constructor(@Inject(BUBBLES) private bubbles: any) {
     this.makeDeficitCharts(bubbles.deficitChart);
     _.map(bubbles.educationCharts, (c) => this.makeEducationCharts(c));
     this.makeSupportChart(bubbles.supportChart[0], bubbles.supportChart[1]);
@@ -703,30 +702,29 @@ export class HeroComponent {
       ]),
     ]);
 
-    this.renderer.listenGlobal('window', 'scroll',
-    // document.onscroll =
-      (ev: UIEvent) => {
-      setTimeout(() => {
-        const el = this.heroComponent.nativeElement;
-        const rectTop = el.getBoundingClientRect().top;
-        const offsetHeight = el.scrollHeight;
-        if ((rectTop < 0) && (rectTop > -offsetHeight)) {
-          const progress = -1 * rectTop / offsetHeight;
-          this.scroller.emit(progress);
-        } else if (rectTop > 0) {
-          this.scroller.emit(0);
-        } else {
-          this.scroller.emit(1);
-        }
-      }, 10);
-    });
-
     this.scroller.subscribe((progress: number) => {
       progress = 1.18 * progress - 0.06;
       progress = progress < 0 ? 0 : progress;
       progress = progress > 1 ? 1 : progress;
       this.ts.mutate(this, progress);
     });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    setTimeout(() => {
+      const el = this.heroElement.nativeElement;
+      const rectTop = el.getBoundingClientRect().top;
+      const offsetHeight = el.scrollHeight;
+      if ((rectTop < 0) && (rectTop > -offsetHeight)) {
+        const progress = -1 * rectTop / offsetHeight;
+        this.scroller.emit(progress);
+      } else if (rectTop > 0) {
+        this.scroller.emit(0);
+      } else {
+        this.scroller.emit(1);
+      }
+    }, 10);
   }
 
   makeDeficitCharts(data: any) {
