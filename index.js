@@ -4,10 +4,16 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const nunjucks = require('nunjucks');
-const bubbles = require('./bubbles.json');
+const get_cache = require('./cache');
 
 const basePath = process.env.BASE_PATH || '/';
 const rootPath = path.resolve(__dirname, './dist/budgetkey-app-main-page');
+
+let bubbles = {};
+get_cache()
+  .then((data) => {
+    bubbles = data;
+  });
 
 const app = express();
 app.use(basePath, express.static(rootPath, {
