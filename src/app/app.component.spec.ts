@@ -10,6 +10,7 @@ import { HeroComponent } from './hero/hero.component';
 import { CategoryVisualizationInfoPopupComponent } from './category-visualization-info-popup/category-visualization-info-popup.component';
 import { BUBBLES } from './constants';
 import { bubbles } from './bubbles';
+import { SpeechBubbleComponent } from './speech-bubble/speech-bubble.component';
 
 
 describe('AppComponent', () => {
@@ -19,14 +20,15 @@ describe('AppComponent', () => {
         BrowserModule,
         BudgetKeyCommonModule,
         BudgetkeyNg2AuthModule,
-        MushonkeyModule
+        MushonkeyModule,
       ],
       declarations: [
         AppComponent,
         MainPageSummaryComponent,
         CategoryVisualizationComponent,
         CategoryVisualizationInfoPopupComponent,
-        HeroComponent
+        HeroComponent,
+        SpeechBubbleComponent,
       ],
       providers: [
         {provide: BUBBLES, useValue: bubbles}
