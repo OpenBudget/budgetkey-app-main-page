@@ -8,6 +8,11 @@ import {
 import { BUBBLES } from '../constants';
 
 
+const CENTER_WIDTH = 200;
+const CENTER_HEIGHT = 80;
+const CHART_MARGIN = {top: 20, left: 20, right: 20, bottom: 20};
+const CENTER_VERTICAL_OFFSET = 100;
+
 function tweenie(t: number) {
   t = Math.abs(t - 0.5);
   t = 1 - t * 2;
@@ -790,53 +795,51 @@ export class HeroComponent {
       ], 'expenses', 20
     );
 
-    const margin = {top: 20, left: 20, right: 20, bottom: 20};
-    const centerVerticalOffset = 100;
     this.charts.push(new MushonKeyChart([
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT, true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         incomesFlowGroup,
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT, true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         incomesFlowGroup,
         expensesFlowGroup,
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[0],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[1],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[2],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         deficitFlowGroup,
@@ -844,7 +847,7 @@ export class HeroComponent {
         expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         deficitFlowGroup,
@@ -853,7 +856,7 @@ export class HeroComponent {
         expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         deficitFlowGroup,
@@ -862,7 +865,7 @@ export class HeroComponent {
         expandedIncomesFlowGroup[3],
       ],
       'תקציב המדינה',
-      200, 80, true, margin, centerVerticalOffset
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
 
   }
@@ -892,7 +895,7 @@ export class HeroComponent {
         ),
       ],
       data.title + ' ' + data['nice-code'],
-      200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN
     );
     this.charts.push(chart);
   }
@@ -927,7 +930,7 @@ export class HeroComponent {
         ),
       ],
       budgetData.title + ' ' + budgetData['nice-code'],
-      200, 80, true, {top: 20, left: 20, right: 20, bottom: 20}
+      CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN
     );
     this.charts.push(chart);
   }

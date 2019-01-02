@@ -1,0 +1,107 @@
+
+.hero {
+
+    height: 8000px;
+    width: 100vw;
+    background-image: linear-gradient(90deg, rgba(110, 196, 190, 0.2) 1px, transparent 1px), linear-gradient(rgba(110, 196, 190, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    margin-bottom: -50vh;
+      
+    .hero-wrapper {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-flow: column-reverse;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: hidden;
+
+        .subtitles {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: flex-end;    
+
+            speech-bubble:nth-of-type(1) {
+                opacity: 0.05;
+            }
+  
+            speech-bubble:nth-of-type(2) {
+                opacity: 0.2;
+            }
+
+        }
+
+        .chart {
+            flex: 0 0 auto;
+            direction: rtl;
+            width: 80vw;
+            height: 50vh;
+            z-index: -1;
+        
+            ::ng-deep .expenses {
+                stroke: lightblue;
+                text-anchor: end !important;
+            }
+        
+            ::ng-deep .income {
+                stroke: skyblue;
+                text-anchor: start !important;
+            }
+        
+            ::ng-deep .deficit {
+                stroke: violet;
+                text-anchor: start !important;
+            }
+        
+            ::ng-deep .debt {
+                stroke: darkviolet;
+                text-anchor: end !important;
+            }
+        
+            ::ng-deep .supports {
+                stroke: lightgreen;
+                stroke-dasharray: 10,1;
+                text-anchor: end !important;
+            }
+        
+            ::ng-deep .centerpiece-text {
+                fill: white;
+            }
+        
+            ::ng-deep .centerpiece {
+                fill: navyblue;
+            }
+        }
+    }
+    //   &.subtitles {
+    //     display: block;
+    //     min-height: 4em;
+    //     font-size: 1.5em;
+    //     color: #FF5A5F;
+    //     top: calc(~"100vh - 880px");
+    //     margin-top: -220px;
+  
+  
+    //     //.speech-bubble:nth-of-type(3) {
+    //     //  opacity: 0.2;
+    //     //}
+  
+    //     .subtitles-wrapper {
+    //       position: relative;
+    //       height: 500px;
+  
+    //       .inner-subtitles-wrapper {
+    //         position: absolute;
+    //         bottom: 0;
+    //         width: 600px;
+    //         right: 50%;
+    //         margin-right: -300px;
+    //       }
+    //     }
+    //   }
+  
+  
+  }
+  

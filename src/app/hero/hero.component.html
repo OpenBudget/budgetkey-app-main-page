@@ -1,25 +1,27 @@
-<div class="sticky step graph-bg text-center" data-id="hero" #hero>
-    <div class="sticky-wrapper subtitles"
-        [style.opacity]="textOpacity">
-        <div class="subtitles-wrapper">
-            <div class="inner-subtitles-wrapper"
-                [style.bottom]="dialogOfs + 'px'">
-                <div class="dialogLine speech-bubble" *ngFor="let text of dialogLines"
-                    [class.question]="text.direction == 'question'"
-                    [class.answer]="text.direction == 'answer'"
-                    [class.enter]="text['last']"
-                    [style.display]="text.content ? 'inherit' : 'none'"
-                    [innerHtml]="text.content || ''"
-                >
+<div class="hero" #hero>
+    <div class="hero-wrapper">
+        <div #mushonkeyWrapper
+            class="chart"
+            [style.opacity]="chartOpacity">
+            <mushonkey #mushonkey [chart]="chart" *ngIf="chart">
+
+            </mushonkey>
+        </div>
+        <div class="subtitles"
+            [style.opacity]="textOpacity">
+            <div class="subtitles-wrapper">
+                <div class="inner-subtitles-wrapper"
+                    [style.bottom]="dialogOfs + 'px'">
+                    <ng-container *ngFor="let text of dialogLines">
+                        <speech-bubble
+                            [kind]='text.direction'
+                            [content]="text.content || ''"
+                            [enter]="text['last']"
+                            [style.display]="text.content ? 'inherit' : 'none'"
+                        ></speech-bubble>
+                    </ng-container>
                 </div>
             </div>
         </div>
-    </div>
-    <div #mushonkeyWrapper
-        class="sticky-wrapper chart"
-        [style.opacity]="chartOpacity">
-        <mushonkey #mushonkey [chart]="chart" *ngIf="chart">
-
-        </mushonkey>
     </div>
 </div>

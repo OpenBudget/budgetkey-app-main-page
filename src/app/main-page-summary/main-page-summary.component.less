@@ -1,0 +1,19 @@
+.summary {
+    display: flex;
+    flex-flow: row;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 24px;
+
+    span {
+        white-space: nowrap;
+        &:nth-child(2), &:nth-child(4), &:nth-child(5) {
+            color: #FF5A5F;
+        }
+        &:nth-child(4) {
+            font-size: 48px;
+        }
+    }
+}
+  

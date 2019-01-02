@@ -1,0 +1,17 @@
+<div class='speech-bubble' 
+     *ngIf='!content'
+     [class.question]='kind==="question"'
+     [class.answer]='kind==="answer"'
+     [class.enter]='enter'
+  >
+  <ng-content>
+  </ng-content>
+</div>
+<div class='speech-bubble' 
+     *ngIf='content'
+     [innerHtml]='content'
+     [class.question]='kind==="question"'
+     [class.answer]='kind==="answer"'
+     [class.enter]='enter'
+  >
+</div>

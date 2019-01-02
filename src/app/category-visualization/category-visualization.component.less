@@ -1,0 +1,149 @@
+.color-theme(@bubbles-background, @text, @text-light, @legend-background, @popup-background) {
+    svg {
+      ::ng-deep .bubbles {
+        circle {
+          stroke: rgba(0, 0, 0, 0.1);
+          stroke-width: 1.5px;
+          fill: @bubbles-background;
+        }
+      }
+
+      ::ng-deep .legend-lines {
+        path {
+          stroke: @bubbles-background;
+        }
+        circle {
+          fill: @bubbles-background;
+        }
+      }
+
+      ::ng-deep .legend-labels {
+        text {
+          fill: @text;
+        }
+        text:first-child {
+          fill: @text-light;
+        }
+      }
+    }
+
+    .legend {
+      color: @legend-background;
+
+      .label, .value {
+        a {
+          color: @text;
+        }
+        color: @text;
+      }
+    }
+
+}
+
+
+.category-visualization {
+    display: inline-block;
+    position: relative;
+    opacity: 1;
+    transition: opacity 100ms ease 0ms;
+  
+    &.invisible {
+      visibility: visible;
+      opacity: 0;
+    }
+  
+    svg {
+      display: inline-block;
+      overflow: visible;
+      //margin-bottom: 30px;
+  
+      &:not(root) {
+        // Override Bootstrap rules
+        overflow: visible;
+      }
+  
+      ::ng-deep .bubbles {
+        circle {
+          fill-opacity: 0.85;
+          cursor: pointer;
+        }
+      }
+  
+      ::ng-deep .legend-lines {
+        path {
+          pointer-events: none;
+          stroke-opacity: 0.25;
+          fill: transparent;
+        }
+        circle {
+          pointer-events: none;
+          stroke: transparent;
+          fill-opacity: 0.25;
+        }
+      }
+  
+      ::ng-deep .legend-labels {
+        text {
+          pointer-events: none;
+          font-weight: bold;
+        }
+        text:first-child {
+  
+        }
+      }
+    }
+  
+    .legend {
+      display: inline-block;
+      background: currentColor;
+      border: 2px solid currentColor;
+      border-radius: 4px;
+      box-shadow: 0 0 3px currentColor;
+      font-size: 16px;
+  
+      .label {
+        display: table-cell;
+        vertical-align: middle;
+      }
+  
+      .value {
+        display: table-cell;
+        vertical-align: middle;
+        background: #fff;
+        border: 1px solid transparent;
+        border-radius: 2px;
+        font-size: 2em;
+        padding: 0 5px;
+  
+        .amount {
+          display: block;
+          font-size: 0.4em;
+          line-height: 1em;
+        }
+      }
+    }
+    
+    .color-theme(#ccc, #333, #999, #eee, #ccc);
+
+    &.blue {
+      .color-theme(#81B2EB, #5C7899, #7DAFE8, #EBF2FA, #D7E7FA);
+    }
+    &.tan {
+      .color-theme(#E3D5D5, #998282, #D1C2C2, #F7F2F2, #EDE4E4);
+    }
+    &.violet {
+      .color-theme(#B4A0DE, #7A6B99, #B4A0DE, #F1EDF7, #E4DCF5);
+    }
+    &.olive {
+      .color-theme(#ADC2AB, #768275, #A2B8A0, #ECF2EB, #D4E3D1);
+    }
+    &.orange {
+      .color-theme(#FFB98A, #A67453, #FFB17D, #FCF0E8, #FFD1B3);
+    }
+    &.yellow {
+      .color-theme(#FFF27D, #8C8231, #F7E734, #FCFADC, #FFF7B3);
+    }
+    &.mint {
+      .color-theme(#A1E3D8, #6D8F89, #8BD9CD, #EBF7F5, #CEF0EB);
+    }    
+  }

@@ -10,6 +10,7 @@ import { UtilsService } from '../utils.service';
 export class CategoryVisualizationInfoPopupComponent {
 
   @Input() bubble: any;
+  @Input() color: string;
 
   currentTab: any = 0;
 
