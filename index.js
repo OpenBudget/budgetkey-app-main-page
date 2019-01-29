@@ -9,10 +9,13 @@ const get_cache = require('./cache');
 const basePath = process.env.BASE_PATH || '/';
 const rootPath = path.resolve(__dirname, './dist/budgetkey-app-main-page');
 
-let bubbles = {};
+const cachedThemes = {};
+const cachedThemeJsons = {};
+
+let bubbles = '{}';
 get_cache()
   .then((data) => {
-    bubbles = data;
+    bubbles = JSON.stringify(data);
   });
 
 const app = express();
@@ -37,27 +40,32 @@ app.get(basePath + '*', function(req, res) {
 
   var theme = 'budgetkey';
   var themeFileName = `theme.${theme}.${lang}.json`;
-  let themeJson = null;
-  if (themeFileName) {
+  let toInject = cachedThemeJsons[themeFileName];
+  let themeJson = cachedThemes[themeFileName];;
+  if (!toInject) {
     // try the themes root directory first - this allows mount multiple themes in a single shared docker volume
     if (fs.existsSync(path.resolve('/themes', themeFileName))) {
       themeJson = JSON.parse(fs.readFileSync(path.resolve('/themes', themeFileName)));
-      // fallback to local file - for local development / testing
+    // fallback to local file - for local development / testing
     } else if (fs.existsSync(path.resolve(__dirname, themeFileName))) {
       themeJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, themeFileName)));
     }
     if (themeJson) {
       for (var key in themeJson) {
-        injectedScript += `${key}=${JSON.stringify(themeJson[key])};`;
-      }
-      injectedScript += `BUDGETKEY_THEME_ID=${JSON.stringify(req.query.theme)};`;
+        toInject += `${key}=${JSON.stringify(themeJson[key])};`;
+      }  
     }
+    cachedThemes[themeFileName] = themeJson;
+    cachedThemeJsons[themeFileName] = toInject;
   }
+  injectedScript += toInject;
+  injectedScript += `BUDGETKEY_THEME_ID=${JSON.stringify(req.query.theme)};`;
+
 
   let doc_id = req.params[0];
   res.render('index.html', {
       base: basePath,
-      bubbles: JSON.stringify(bubbles),
+      bubbles: bubbles,
       injectedScript: injectedScript,
       doc_id: doc_id
   });

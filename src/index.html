@@ -27,18 +27,9 @@
     <meta content="https://next.obudget.org/assets/img/obudget_key@2x.png" name="twitter:image:src">
 
     <link rel="canonical" href="https://next.obudget.org/"/>
-    <link rel="stylesheet" type="text/css" href="//next.obudget.org/_fonts/stylesheet.css"></link>
     <script>
       window.bubbles = {{ bubbles | safe }};
       {{ injectedScript | safe }}
-    </script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-10203855-10"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-10203855-10');
     </script>
     <script type="application/ld+json">
     {
@@ -66,4 +57,21 @@
   <body>
     <app-root></app-root>
   </body>
+  <script type="text/javascript">
+    /* Fonts */
+    var fa = document.createElement('link');
+    fa.rel = 'stylesheet';
+    fa.href = '//next.obudget.org/_fonts/stylesheet.css';
+    fa.type = 'text/css';
+    var defer = document.getElementsByTagName('link')[0];
+    defer.parentNode.insertBefore(fa, defer);
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-10203855-10"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-10203855-10');
+  </script>
 </html>
