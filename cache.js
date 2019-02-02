@@ -99,6 +99,12 @@ const SUPPORTS_BUBBLES_DATA = `
   ORDER BY 2 desc
 `;
 
+function sleep(ms) {
+  return new Promise(resolve=>{
+      setTimeout(resolve,ms)
+  })
+}
+
 
 function cached_get_url(url) {
   const filePath = 'build-cache/' + crypto.createHash('md5').update(url).digest('hex') + '.json';
@@ -117,6 +123,11 @@ function cached_get_url(url) {
               parsed = JSON.parse(body);
             } catch (e) {
               console.log('ERRORED', url);
+              return sleep(10000)
+                .then(() => {
+                  console.log('RETRYING', url);
+                  return cached_get_url(url);
+                });
               fs.writeFileSync('errd', body);
               throw e;
             }
