@@ -2,10 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { BUBBLES } from './constants';
 
 
-declare const TRANSLATIONS: any;
+const _TRANSLATIONS = window['TRANSLATIONS'] || {};
 
 export function __T(content) {
-  const ret = TRANSLATIONS[content];
+  const ret = _TRANSLATIONS[content];
   if (!ret) {
     return content;
   }
