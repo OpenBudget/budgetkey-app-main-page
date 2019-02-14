@@ -49,19 +49,40 @@ app.get(basePath + '*', function(req, res) {
     // fallback to local file - for local development / testing
     } else if (fs.existsSync(path.resolve(__dirname, themeFileName))) {
       themeJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, themeFileName)));
+    } else {
+      themeJson = {};
     }
+
     toInject = '';
-    if (themeJson) {
-      for (var key in themeJson) {
-        toInject += `${key}=${JSON.stringify(themeJson[key])};`;
-      }  
+    for (var key in themeJson) {
+      toInject += `${key}=${JSON.stringify(themeJson[key])};`;
     }
     cachedThemes[themeFileName] = themeJson;
     cachedThemeJsons[themeFileName] = toInject;
   }
+
   injectedScript += toInject;
   injectedScript += `BUDGETKEY_THEME_ID=${JSON.stringify(req.query.theme)};`;
 
+  var translationsFileName = `main_page.translations.${lang}.json`;
+  toInject = cachedThemeJsons[translationsFileName];
+  let translationsJson = cachedThemes[translationsFileName];;
+  if (!toInject) {
+    // try the themes root directory first - this allows mount multiple themes in a single shared docker volume
+    if (fs.existsSync(path.resolve('/themes', translationsFileName))) {
+      translationsJson = JSON.parse(fs.readFileSync(path.resolve('/themes', translationsFileName)));
+    // fallback to local file - for local development / testing
+    } else if (fs.existsSync(path.resolve(__dirname, translationsFileName))) {
+      translationsJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, translationsFileName)));
+    } else {
+      translationsJson = {};
+    }
+    toInject = `TRANSLATIONS=${JSON.stringify(translationsJson)};`;
+    cachedThemes[translationsFileName] = translationsJson;
+    cachedThemeJsons[translationsFileName] = toInject;  
+  }
+
+  injectedScript += toInject;
 
   let doc_id = req.params[0];
   res.render('index.html', {

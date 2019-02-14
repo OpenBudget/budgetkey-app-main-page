@@ -1,12 +1,12 @@
   <div [class]='"category-info-popup text-right step " + color' 
         [ngStyle]="{left: bubble.left + 'px', bottom: bubble.top + 'px'}" 
         data-id="category-visualisation">
-    <h3>{{ bubble.name }}</h3>
+    <h3>{{ __(bubble.name) }}</h3>
     <div class="brief">
       <span>{{ formatAmount(bubble.value) }} ₪</span>
       <span>( {{ formatPercents(bubble.percent) }} )</span>
     </div>
-    <div class="contents" *ngIf="currentTab == 0" [innerHtml]="bubble.explanation">       
+    <div class="contents" *ngIf="currentTab == 0" [innerHtml]="__(bubble.explanation)">
     </div>
     <div class="contents" *ngIf="currentTab == 1">
     </div>

@@ -6,7 +6,7 @@
         {{ formatPercents(category.percent) }}
         <span class="amount">{{ formatAmount(category.amount) }}</span>
       </span>
-      <span class="label"><a [href]='"/i/" + category.doc_id'>{{ category.name }}</a></span>
+      <span class="label"><a [href]='"/i/" + category.doc_id'>{{ __(category.name) }}</a></span>
     </span>
   </div>
   <category-visualization-info-popup *ngIf="currentBubble" 

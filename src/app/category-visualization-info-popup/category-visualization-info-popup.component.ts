@@ -1,5 +1,6 @@
 import { Component, Input} from '@angular/core';
 import { UtilsService } from '../utils.service';
+import { __T } from '../app.component';
 
 
 @Component({
@@ -13,6 +14,7 @@ export class CategoryVisualizationInfoPopupComponent {
   @Input() color: string;
 
   currentTab: any = 0;
+  __ = __T;
 
   constructor(private utils: UtilsService) {}
 

@@ -1,6 +1,18 @@
 import { Component, Inject } from '@angular/core';
 import { BUBBLES } from './constants';
 
+
+declare const TRANSLATIONS: any;
+
+export function __T(content) {
+  const ret = TRANSLATIONS[content];
+  if (!ret) {
+    return content;
+  }
+  return ret;
+}
+
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,6 +24,7 @@ export class AppComponent {
   public incomeCategories: any[];
   public totalAmount = 0;
   public year: number;
+  public __ = __T;
 
   constructor(@Inject(BUBBLES) private bubbles: any) {
     this.year = this.bubbles.year;

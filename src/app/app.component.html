@@ -1,21 +1,20 @@
 <budgetkey-container [showHeader]="true" [showSearchBar]="true">
     <div class='header'>
         <div class='bubbles'>
-            <speech-bubble [kind]='"question"'>הי, מה זה האתר הזה?</speech-bubble>
-            <speech-bubble [kind]='"answer"'>
-                אספנו והנגשנו ב
-                <strong>״מפתח התקציב״</strong>
-                    את כל המידע על תקציב המדינה ועל הוצאות הממשלה &ndash;<br/>
-                כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;
+            <speech-bubble [kind]='"question"'>
+                {{ __('הי, מה זה האתר הזה?') }}
             </speech-bubble>
             <speech-bubble [kind]='"answer"'>
-                מחפשים משהו מסוים? גשו ישר ל<a href='/s/'>חיפוש 
+                {{ __('אספנו והנגשנו ב') }}
+                <strong>{{ __('״מפתח התקציב״') }}</strong>
+                {{ __('את כל המידע על תקציב המדינה ועל הוצאות הממשלה') }} &ndash;<br/>
+                {{ __('כדי שנוכל לדעת מה עושים עם הכסף שלנו&hellip;') }}
+            </speech-bubble>
+            <speech-bubble [kind]='"answer"'>
+                {{ __('מחפשים משהו מסוים? גשו ישר ל') }}
+                <a href='/s/'>{{ __('חיפוש') }} 
                     <span style='font-size:65%'><i class='glyphicon glyphicon-search'></i></span></a><br/>
-                אחרת מומלץ להמשיך לגלול <span style='font-size:65%'><i class='glyphicon glyphicon-hand-down'></i></span><br/>
-                <span style='font-size:65%'>
-                    מחפשים את האתר הישן? הוא עדיין
-                    <a href='http://old.obudget.org'>כאן</a>
-                </span><br/>
+                {{ __('אחרת מומלץ להמשיך לגלול') }} <span style='font-size:65%'><i class='glyphicon glyphicon-hand-down'></i></span><br/>
             </speech-bubble>
         </div>
         <main-page-summary [amount]="totalAmount" [year]="year"></main-page-summary>
@@ -27,9 +26,11 @@
     </div>
     <div class="course">
         <div>
-            אבל איך בעצם בנוי תקציב המדינה?
+            {{__('אבל איך בעצם בנוי תקציב המדינה?')}}
         </div>
-        <div style="font-size: 50%">(כל מה שרציתם לדעת על התקציב ב-5 דקות!)</div>
+        <div style="font-size: 50%">
+            {{__('(כל מה שרציתם לדעת על התקציב ב-5 דקות!)')}}
+        </div>
         <div class="scroll-down">
             <svg width="30" viewBox="0 0 18 28">
                 <path d="M16.797 13.5c0 0.125-0.063 0.266-0.156 0.359l-7.281 7.281c-0.094 0.094-0.234 0.156-0.359 0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063-0.266 0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156 0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.0940.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094 0.094 0.156 0.234 0.156 0.359zM16.797 7.5c0 0.125-0.063 0.266-0.156 0.359l-7.281 7.281c-0.094 0.094-0.234 0.156-0.359 0.156s-0.266-0.063-0.359-0.156l-7.281-7.281c-0.094-0.094-0.156-0.234-0.156-0.359s0.063-0.266 0.156-0.359l0.781-0.781c0.094-0.094 0.219-0.156 0.359-0.156 0.125 0 0.266 0.063 0.359 0.156l6.141 6.141 6.141-6.141c0.094-0.094 0.234-0.156 0.359-0.156s0.266 0.063 0.359 0.156l0.781 0.781c0.094 0.094 0.156 0.234 0.156 0.359z"></path>
@@ -38,44 +39,46 @@
     </div>
     <the-hero></the-hero>           
     <div class="footer">
-        <speech-bubble [kind]='"question"'>אם יש לי עדיין שאלות, למי לפנות?</speech-bubble>
+        <speech-bubble [kind]='"question"'>
+            {{ __('אם יש לי עדיין שאלות, למי לפנות?') }}
+        </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="mailto:adam@obudget.org"
             target="_blank">
-                אם זו שאלה כללית שקשורה לתקציב נשמח לעזור
+                {{ __('אם זו שאלה כללית שקשורה לתקציב נשמח לעזור') }}
             </a>
         </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="http://www.hasadna.org.il/about-us/"
             target="_blank">
-            אם זו שאלה שקשורה לסדנא לידע ציבורי
+                {{ __('אם זו שאלה שקשורה לסדנא לידע ציבורי') }}
             </a>
         </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="http://www.hasadna.org.il/%D7%A6%D7%95%D7%A8-%D7%A7%D7%A9%D7%A8/"
             target="_blank">
-            אם את/ה עיתונאי/ת
+                {{ __('אם את/ה עיתונאי/ת') }}
             </a>
         </speech-bubble>
         <speech-bubble [kind]='"question"'>
-            איך אפשר לעזור לכם?
+            {{ __('איך אפשר לעזור לכם?') }}
         </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="http://www.hasadna.org.il/%D7%AA%D7%A8%D7%95%D7%9E%D7%94-2/"
             target="_blank">
-            אפשר לתרום לנו...
+            {{ __('אפשר לתרום לנו...') }}
             </a>
         </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="http://www.hasadna.org.il/%D7%94%D7%AA%D7%A0%D7%93%D7%91%D7%95%D7%AA/"
             target="_blank">
-            או לבוא להתנדב
+            {{ __('או לבוא להתנדב') }}
             </a>
         </speech-bubble>
         <speech-bubble [kind]='"answer"'>
             <a href="https://github.com/OpenBudget/BudgetKey"
             target="_blank">
-            או לשחק עם הקוד של האתר
+            {{ __('או לשחק עם הקוד של האתר') }}
             </a>
         </speech-bubble>
     </div>

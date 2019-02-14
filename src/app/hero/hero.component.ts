@@ -6,7 +6,7 @@ import {
   MushonkeyComponent
 } from 'mushonkey';
 import { BUBBLES } from '../constants';
-
+import { __T as __ } from '../app.component';
 
 const CENTER_WIDTH = 200;
 const CENTER_HEIGHT = 80;
@@ -283,154 +283,154 @@ function A(content: string) {
 }
 
 const dialog = [
-  Q('נו, אז תגידו - איך עובד תקציב המדינה?'),
-  A('זה בעצם די פשוט&#8230;'),
-  A('מצד אחד נכנס כסף - הכנסות'),
-  A('ומהצד השני יוצא כסף - הוצאות'),
+  Q(__('נו, אז תגידו - איך עובד תקציב המדינה?')),
+  A(__('זה בעצם די פשוט&#8230;')),
+  A(__('מצד אחד נכנס כסף - הכנסות')),
+  A(__('ומהצד השני יוצא כסף - הוצאות')),
 
-  Q('שניה רגע - מה הכוונה הכנסות? מאיפה מגיע הכסף?'),
-  A('בעיקר ממס הכנסה (של אנשים ושל חברות)'),
-  A('מס עקיף כמו מע״מ'),
-  A('עוד לא מעט מקורות...'),
-  A('אה, וגם אגרות!'),
+  Q(__('שניה רגע - מה הכוונה הכנסות? מאיפה מגיע הכסף?')),
+  A(__('בעיקר ממס הכנסה (של אנשים ושל חברות)')),
+  A(__('מס עקיף כמו מע״מ')),
+  A(__('עוד לא מעט מקורות...')),
+  A(__('אה, וגם אגרות!')),
 
-  Q('ואז את כל הכסף שנכנס אפשר לבזבז!'),
-  A('הממ... לא בדיוק'),
-  A('בעצם מוציאים קצת יותר כסף ממה שנכנס'),
+  Q(__('ואז את כל הכסף שנכנס אפשר לבזבז!')),
+  A(__('הממ... לא בדיוק')),
+  A(__('בעצם מוציאים קצת יותר כסף ממה שנכנס')),
 
-  Q('אז איך אנחנו לא נכנסים למינוס?'),
-  A('כי האוכלוסיה גדלה והמשק צומח'),
-  A('אז ההכנסות של השנה אחרי מכסות את הפער'),
-  A('דרך אגב,'),
-  A('ההפרש בין ההוצאות להכנסות נקרא ה״גירעון״.'),
+  Q(__('אז איך אנחנו לא נכנסים למינוס?')),
+  A(__('כי האוכלוסיה גדלה והמשק צומח')),
+  A(__('אז ההכנסות של השנה אחרי מכסות את הפער')),
+  A(__('דרך אגב,')),
+  A(__('ההפרש בין ההוצאות להכנסות נקרא ה״גירעון״.')),
 
-  Q('אוקיי&hellip;'),
-  Q('אבל מה עושים עם כל הכסף הזה?'),
-  Q('בטוח שהרוב הולך לביטחון, נכון?'),
-  A('דווקא לא &#x1f46e;&#x1f3fc;'),
-  A('ההוצאה הכי גדולה בתקציב היא החזר חובות'),
+  Q(__('אוקיי&hellip;')),
+  Q(__('אבל מה עושים עם כל הכסף הזה?')),
+  Q(__('בטוח שהרוב הולך לביטחון, נכון?')),
+  A(__('דווקא לא &#x1f46e;&#x1f3fc;')),
+  A(__('ההוצאה הכי גדולה בתקציב היא החזר חובות')),
 
-  Q('ואללה? &#x1F62E;'),
-  Q('זאת אומרת עדיין מחזירים הלוואות שלקחנו פעם?'),
-  Q('רגע, למה ״החזר חובות״ צבוע בצבע אחר?'),
-  A('אנחנו מפרידים בין החזר החובות לכל שאר ההוצאות'),
-  A('כי על התקציב של ״שאר ההוצאות״'),
-  A('יש הגבלות שמונעות ממנו לגדול'),
-  A('גם אם יש כסף בקופה&hellip;'),
+  Q(__('ואללה? &#x1F62E;')),
+  Q(__('זאת אומרת עדיין מחזירים הלוואות שלקחנו פעם?')),
+  Q(__('רגע, למה ״החזר חובות״ צבוע בצבע אחר?')),
+  A(__('אנחנו מפרידים בין החזר החובות לכל שאר ההוצאות')),
+  A(__('כי על התקציב של ״שאר ההוצאות״')),
+  A(__('יש הגבלות שמונעות ממנו לגדול')),
+  A(__('גם אם יש כסף בקופה&hellip;')),
 
-  Q('&#x1F914;'),
-  Q('טוב, חוץ מהחזר חובות, מה עוד יש בתקציב?'),
-  Q('איפה החרדים?'),
-  Q('ההתנחלויות?'),
-  Q('הערבים?'),
-  Q('הפריפריה???'),
-  A('רגע, רגע!'),
-  A('בגדול, התקציב מחולק למשרדי הממשלה השונים.'),
-  A('לכל משרד יש תקציב משלו,'),
-  A('שמתחלק בין היחידות השונות בתוך המשרד'),
-  A('וכן הלאה&hellip;'),
-  A('כך שאם רוצים לדעת כמה כסף ״הולך לפריפריה״'),
-  A('או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״'),
-  A('אז אין תשובה מוחלטת - כי אין משרדים כאלה'),
+  Q(__('&#x1F914;')),
+  Q(__('טוב, חוץ מהחזר חובות, מה עוד יש בתקציב?')),
+  Q(__('איפה החרדים?')),
+  Q(__('ההתנחלויות?')),
+  Q(__('הערבים?')),
+  Q(__('הפריפריה???')),
+  A(__('רגע, רגע!')),
+  A(__('בגדול, התקציב מחולק למשרדי הממשלה השונים.')),
+  A(__('לכל משרד יש תקציב משלו,')),
+  A(__('שמתחלק בין היחידות השונות בתוך המשרד')),
+  A(__('וכן הלאה&hellip;')),
+  A(__('כך שאם רוצים לדעת כמה כסף ״הולך לפריפריה״')),
+  A(__('או ״להתנחלויות״ או ״לערבים״ או ״לחרדים״')),
+  A(__('אז אין תשובה מוחלטת - כי אין משרדים כאלה')),
   Q('נראה לי שהגיע הזמן לדוגמה' +
     ' &#x1F605;'),
-  A('קדימה!'),
-  A('בוא נצלול לתוך תקציב משרד החינוך'),
-  Q('מה? איפה זה?'),
-  A('זה הקו המקווקו משמאל'),
-  A('רגע&hellip;'),
-  A('&hellip;'),
-  A('&hellip;'),
-  A('הופ!'),
-  A('תקציב משרד החינוך ב-2018'),
-  A('מעל 56 מיליארד שקלים'),
-  Q('הבנתי... אז זה התקציב של משרד החינוך?'),
-  A('כן, למשרדים הגדולים יש סעיף תקציבי משלהם'),
-  A('אבל לא לכל המשרדים הקטנים'),
-  A('(שבדרך כלל מוצמדים למשרד ראש הממשלה)'),
-  Q('איך מחלקים את הכסף בתוך המשרד?'),
-  A('לפי הנושאים הגדולים בהם המשרד מטפל'),
-  Q('נגיד, מה זה ״תכניות לימודים משלימות״?'),
-  A('שאלה טובה... בוא נבדוק!'),
-  A('צוללים פנימה עוד'),
-  A('3&hellip;'),
-  A('2&hellip;'),
-  A('1&hellip;'),
-  A('והופלה!'),
-  A('תקציב תכניות לימודים משלימות'),
-  A('בערך 4 מיליארד שקלים'),
-  Q('חחח.. "הופלה" &#x1F61C;'),
-  Q('וואו, יש כאן המון דברים!'),
-  Q('מעניין, מה זה המספר שיש ליד השם של הסעיף?'),
-  Q('ה-<code>24.06</code> הזה?'),
-  A('הבחנה טובה!'),
-  A('באמת לכל סעיף תקציבי יש מספר -'),
-  A('ככל שהסעיף יותר מפורט, המספר יותר ארוך'),
-  Q('סבבה'),
-  Q('אז מה עוד יש כאן? מה זה חינוך בלתי פורמאלי?'),
-  A('אין שום בעיה'),
-  A('שאלת שאלה'),
-  A('והנה התשובה :)'),
-  Q('התקציב הזה באמת מאוד מפורט'),
-  A('התקציב לחינוך בלתי פורמאלי'),
-  A('הוא כמעט מיליארד שקלים.'),
-  A('סעיפי התקציב שברמה הזאת נקראים ״תכניות״'),
-  A('לפעמים עושים שינויים בתקציב במהלך השנה'),
-  A('ואז מעבירים כסף מתכנית אחת לאחרת.'),
-  Q('זה קורה הרבה?'),
-  A('במהלך שנה יכולים להיות אלפי שינויים כאלה'),
-  A('שלפעמים משנים חלקים משמעותיים בתקציב!'),
-  Q('לא יאומן &#x1F612;'),
-  A('שנבדוק מה קורה בתוך ״תמיכה בתנועות נוער״?'),
-  Q('קדימה!'),
+  A(__('קדימה!')),
+  A(__('בוא נצלול לתוך תקציב משרד החינוך')),
+  Q(__('מה? איפה זה?')),
+  A(__('זה הקו המקווקו משמאל')),
+  A(__('רגע&hellip;')),
+  A(__('&hellip;')),
+  A(__('&hellip;')),
+  A(__('הופ!')),
+  A(__('תקציב משרד החינוך ב-2018')),
+  A(__('מעל 56 מיליארד שקלים')),
+  Q(__('הבנתי... אז זה התקציב של משרד החינוך?')),
+  A(__('כן, למשרדים הגדולים יש סעיף תקציבי משלהם')),
+  A(__('אבל לא לכל המשרדים הקטנים')),
+  A(__('(שבדרך כלל מוצמדים למשרד ראש הממשלה)')),
+  Q(__('איך מחלקים את הכסף בתוך המשרד?')),
+  A(__('לפי הנושאים הגדולים בהם המשרד מטפל')),
+  Q(__('נגיד, מה זה ״תכניות לימודים משלימות״?')),
+  A(__('שאלה טובה... בוא נבדוק!')),
+  A(__('צוללים פנימה עוד')),
+  A(__('3&hellip;')),
+  A(__('2&hellip;')),
+  A(__('1&hellip;')),
+  A(__('והופלה!')),
+  A(__('תקציב תכניות לימודים משלימות')),
+  A(__('בערך 4 מיליארד שקלים')),
+  Q(__('חחח.. "הופלה" &#x1F61C;')),
+  Q(__('וואו, יש כאן המון דברים!')),
+  Q(__('מעניין, מה זה המספר שיש ליד השם של הסעיף?')),
+  Q(__('ה-<code>24.06</code> הזה?')),
+  A(__('הבחנה טובה!')),
+  A(__('באמת לכל סעיף תקציבי יש מספר -')),
+  A(__('ככל שהסעיף יותר מפורט, המספר יותר ארוך')),
+  Q(__('סבבה')),
+  Q(__('אז מה עוד יש כאן? מה זה חינוך בלתי פורמאלי?')),
+  A(__('אין שום בעיה')),
+  A(__('שאלת שאלה')),
+  A(__('והנה התשובה :)')),
+  Q(__('התקציב הזה באמת מאוד מפורט')),
+  A(__('התקציב לחינוך בלתי פורמאלי')),
+  A(__('הוא כמעט מיליארד שקלים.')),
+  A(__('סעיפי התקציב שברמה הזאת נקראים ״תכניות״')),
+  A(__('לפעמים עושים שינויים בתקציב במהלך השנה')),
+  A(__('ואז מעבירים כסף מתכנית אחת לאחרת.')),
+  Q(__('זה קורה הרבה?')),
+  A(__('במהלך שנה יכולים להיות אלפי שינויים כאלה')),
+  A(__('שלפעמים משנים חלקים משמעותיים בתקציב!')),
+  Q(__('לא יאומן &#x1F612;')),
+  A(__('שנבדוק מה קורה בתוך ״תמיכה בתנועות נוער״?')),
+  Q(__('קדימה!')),
     // '&#x1F466;&#x1F3FD;' +
     // '&#x1F467;&#x1F3FE;'),
-  A('תקציב התמיכה בתנועות נוער'),
-  A('הוא כמעט מאה מיליון שקל.'),
-  A('הגענו!  ' +
+  A(__('תקציב התמיכה בתנועות נוער')),
+  A(__('הוא כמעט מאה מיליון שקל.')),
+  A(__('הגענו!  ') +
     '&#x1F389;'),
-  Q('לאן?'),
-  A('זאת הרמה הכי מפורטת של התקציב'),
-  A('שנקראת גם תקנה תקציבית'),
-  Q('אז מה קורה עם הכסף מכאן?'),
-  A('מכאן והלאה הכסף יוצא החוצה ' +
+  Q(__('לאן?')),
+  A(__('זאת הרמה הכי מפורטת של התקציב')),
+  A(__('שנקראת גם תקנה תקציבית')),
+  Q(__('אז מה קורה עם הכסף מכאן?')),
+  A(__('מכאן והלאה הכסף יוצא החוצה ') +
     '&#x1F4B8;'),
-  A('כמשכורת' +
+  A(__('כמשכורת') +
     ' &#x1F4B5;, ' +
-    'קניות' +
+    __('קניות') +
     ' &#x1F6CD;,' +
-    ' או - במקרה שלנו'),
-  A('לתמיכה בארגונים שונים '),
+    __(' או - במקרה שלנו')),
+  A(__('לתמיכה בארגונים שונים ')),
     // '&#x1F54D;&#x1F3DF;&#x1F3DB;&#x1F3D7;'),
-  A('כמו הנוער העובד והלומד'),
-  A('תנועת הצופים'),
-  A('או בני-עקיבא'),
-  Q('נראה לי שהבנתי את הרוב &#x1F60E;'),
-  Q('מה כדאי לי לעשות עכשיו?'),
-  A('להתחיל לחפור באתר כמובן &#x1F913;'),
-  A('הנה כמה כיוונים מעניינים:'),
+  A(__('כמו הנוער העובד והלומד')),
+  A(__('תנועת הצופים')),
+  A(__('או בני-עקיבא')),
+  Q(__('נראה לי שהבנתי את הרוב &#x1F60E;')),
+  Q(__('מה כדאי לי לעשות עכשיו?')),
+  A(__('להתחיל לחפור באתר כמובן &#x1F913;')),
+  A(__('הנה כמה כיוונים מעניינים:')),
   A('<a target="_blank" href="/s/?q=פעילות לעידוד עסקים קטנים ובינוניים&dd=supports">' +
-    'אילו סטארט-אפים מקבלים תמיכה מהמדען הראשי' +
+    __('אילו סטארט-אפים מקבלים תמיכה מהמדען הראשי') +
     '</a>?'),
-  A('כמה תקציבים מקבלת' +
-    '<a target="_blank" href="/i/org/municipality/500210315">' +
-    ' העיר שדרות' +
-    '</a>?' +
-    ' ומה לגבי ' +
-    '<a target="_blank" href="/i/org/municipality/500236112">' +
-    'קרית ארבע' +
+  A(__('כמה תקציבים מקבלת') +
+    '<a target="_blank" href="/i/org/municipality/500210315"> ' +
+    __('העיר שדרות') +
+    '</a>? ' +
+    __('ומה לגבי') +
+    ' <a target="_blank" href="/i/org/municipality/500236112">' +
+    __('קרית ארבע') +
     '</a>?'),
   A('<a target="_blank" href="/s/?q=%D7%96%D7%94%D7%95%D7%AA%20%D7%99%D7%94%D7%95%D7%93%D7%99%D7%AA&dd=entities">' +
-    'מהן העמותות המקדמות ׳זהות יהודית׳' +
+    __('מהן העמותות המקדמות ׳זהות יהודית׳') +
     '</a>?'),
   A('<a target="_blank" href="/i/org/association/580190080">' +
-    'כמה מכספי משלם המסים מקבל תיאטרון ״גשר״' +
+    __('כמה מכספי משלם המסים מקבל תיאטרון ״גשר״') +
     '</a>?'),
   A('<a target="_blank" href="/s/?q=%D7%9E%D7%95%D7%A1%D7%93%D7%95%D7%AA%20%D7%AA%D7%95%D7%A8%D7%A0%D7%99%D7%99%D7%9D&dd=budget">' +
-    'מה תקציב התמיכה בכוללים והישיבות' +
+    __('מה תקציב התמיכה בכוללים והישיבות') +
     '</a>?'),
-  A('בהצלחה!!!'),
-  Q('תודה! אלה היו חמש דקות ששינו את חיי &#x1F64F;'),
+  A(__('בהצלחה!!!')),
+  Q(__('תודה! אלה היו חמש דקות ששינו את חיי &#x1F64F;')),
 ];
 
 interface DialogBit {
@@ -487,7 +487,7 @@ export class HeroComponent {
 
   private ts: TransitionSteps;
 
-  text = 'זה בעצם די פשוט&#8230;';
+  text = __('זה בעצם די פשוט&#8230;');
   textOpacity = 1;
   chart: MushonKeyChart;
   chartOpacity = 0;
@@ -497,7 +497,7 @@ export class HeroComponent {
   scroller = new EventEmitter<Number>();
 
   static makeFlow(amount: number, title: string, scale?: any) {
-    scale = scale || [1000000000, `מיל'`];
+    scale = scale || [1000000000, __(`מיל'`)];
     const billions = amount / scale[0];
     const digits = billions < 5 ? 1 : 0;
     const amountStr =  billions.toFixed(digits) + ' ' + scale[1];
@@ -743,12 +743,12 @@ export class HeroComponent {
 
     const incomesFlowGroup = new MushonKeyFlowGroup(
       false, [
-        HeroComponent.makeFlow(data.income, 'הכנסות המדינה')
+        HeroComponent.makeFlow(data.income, __('הכנסות המדינה'))
       ], 'income', 20
     );
     const deficitFlowGroup = new MushonKeyFlowGroup(
       false, [
-        HeroComponent.makeFlow(data.budget - data.income, 'הגירעון')
+        HeroComponent.makeFlow(data.budget - data.income, __('הגירעון'))
       ], 'deficit', -100, 0.7
     );
 
@@ -762,7 +762,7 @@ export class HeroComponent {
       );
       const flows = [];
       for (let i = 0 ; i < k ; i++ ) {
-        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, incomeChildren[i].title));
+        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, __(incomeChildren[i].title)));
       }
       if (k !== 4) {
         flows.push(HeroComponent.makeFlow(incomeRest, '...'));
@@ -773,72 +773,72 @@ export class HeroComponent {
     });
     const expensesFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(data.budget + data.returns, 'הוצאות הממשלה')
+        HeroComponent.makeFlow(data.budget + data.returns, __('הוצאות הממשלה'))
       ], 'expenses', 20
     );
     const debtFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(data.returns, 'החזר חובות'),
+        HeroComponent.makeFlow(data.returns, __('החזר חובות')),
       ], 'debt', -100, 0.7
     );
     const semiExpandedExpensesFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(semiExpenseRest, 'הוצאות משרדי הממשלה')
+        HeroComponent.makeFlow(semiExpenseRest, __('הוצאות משרדי הממשלה'))
       ], 'expenses', 20
     );
     const expandedExpensesFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(expenseChildren[1].net_allocated, expenseChildren[1].title),
-        HeroComponent.makeFlow(expenseChildren[2].net_allocated, expenseChildren[2].title),
-        HeroComponent.makeFlow(expenseChildren[3].net_allocated, expenseChildren[3].title),
-        HeroComponent.makeFlow(expenseRest, 'משרדי ממשלה אחרים')
+        HeroComponent.makeFlow(expenseChildren[1].net_allocated, __(expenseChildren[1].title)),
+        HeroComponent.makeFlow(expenseChildren[2].net_allocated, __(expenseChildren[2].title)),
+        HeroComponent.makeFlow(expenseChildren[3].net_allocated, __(expenseChildren[3].title)),
+        HeroComponent.makeFlow(expenseRest, __('משרדי ממשלה אחרים'))
       ], 'expenses', 20
     );
 
     this.charts.push(new MushonKeyChart([
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT, true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         incomesFlowGroup,
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT, true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         incomesFlowGroup,
         expensesFlowGroup,
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[0],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[1],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[2],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
         expensesFlowGroup,
         expandedIncomesFlowGroup[3],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
@@ -846,7 +846,7 @@ export class HeroComponent {
         expensesFlowGroup,
         expandedIncomesFlowGroup[3],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
@@ -855,7 +855,7 @@ export class HeroComponent {
         semiExpandedExpensesFlowGroup,
         expandedIncomesFlowGroup[3],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
     this.charts.push(new MushonKeyChart([
@@ -864,7 +864,7 @@ export class HeroComponent {
         expandedExpensesFlowGroup,
         expandedIncomesFlowGroup[3],
       ],
-      'תקציב המדינה',
+      __('תקציב המדינה'),
       CENTER_WIDTH, CENTER_HEIGHT,  true, CHART_MARGIN, CENTER_VERTICAL_OFFSET
     ));
 

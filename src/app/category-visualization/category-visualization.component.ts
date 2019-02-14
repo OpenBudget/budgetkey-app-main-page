@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { UtilsService } from '../utils.service';
 import { CATEGORIES_THEMES } from '../constants';
+import { __T } from '../app.component';
 
 import * as _ from 'lodash';
 import * as d3 from 'd3';
@@ -16,6 +17,8 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
   @ViewChild('wrapper') rootElement: ElementRef;
   @ViewChild('container') svg: ElementRef;
+
+  __ = __T;
 
   theme = '';
   currentBubble: any;
@@ -109,7 +112,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
 
         const tempText = containerForLabel.append('text');
         const tempTextNode: any = tempText.node();
-        const words = (<any>datum.data).name.split(/\s+/);
+        const words = __T((<any>datum.data).name).split(/\s+/);
         let current: string[] = [];
         while (words.length > 0) {
           let word = words.shift();

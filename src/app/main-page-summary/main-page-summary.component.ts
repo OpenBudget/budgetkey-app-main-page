@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Input } from '@angular/core';
 import { UtilsService } from '../utils.service';
+import { __T } from '../app.component';
 
 @Component({
   selector: 'main-page-summary',
@@ -12,6 +13,7 @@ export class MainPageSummaryComponent {
   @Input() year = 0;
 
   private _isCollapsed = false;
+  __ = __T;
 
   isActive = false;
 
