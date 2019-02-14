@@ -120,7 +120,9 @@ function cached_get_url(url) {
           .then((body) => {
             let parsed;
             try {
+              console.log('TRYING', url);
               parsed = JSON.parse(body);
+              console.log('OK', url);
             } catch (e) {
               console.log('ERRORED', url);
               return sleep(10000)
