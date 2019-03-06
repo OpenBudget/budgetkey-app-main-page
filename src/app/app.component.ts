@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit, HostListener } from '@angular/core';
 import { BUBBLES } from './constants';
 
 
@@ -18,13 +18,14 @@ export function __T(content) {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public funcCategories: any[];
   public econCategories: any[];
   public incomeCategories: any[];
   public totalAmount = 0;
   public year: number;
   public __ = __T;
+  public adVisible = false;
 
   constructor(@Inject(BUBBLES) private bubbles: any) {
     this.year = this.bubbles.year;
@@ -35,5 +36,14 @@ export class AppComponent {
     this.funcCategories.forEach((category: any) => {
       this.totalAmount += category.amount;
     });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event) {
+    this.adVisible = window.scrollY < 30;
+  }
+
+  ngOnInit() {
+    this.adVisible = true;
   }
 }

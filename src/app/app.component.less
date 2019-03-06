@@ -2,6 +2,33 @@
     display: flex;
     flex-flow: column;
     align-items: center;
+    position: relative;
+}
+
+.ad {
+  position: fixed;
+  left: 0;
+  border-top-right-radius: 10px;
+  background-color: #009adf;  
+  padding: 5px 10px;
+  bottom: -40px;
+  transition-property: bottom;
+  transition-delay: 0s;
+  transition-duration: 1s;
+  z-index: 100;
+  span {
+    font-size: 16px;
+    color: white;  
+  }
+
+  &.active {
+    bottom: 0px;
+    transition-delay: 3s;
+  }
+
+  .budgetism {
+    font-family: Heebo, sans-serif;
+  }
 }
 
 .header, .footer {

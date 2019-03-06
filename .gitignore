@@ -44,3 +44,5 @@ Thumbs.db
 
 build-cache/*json
 theme*.json
+main_page.translations*.json
+
