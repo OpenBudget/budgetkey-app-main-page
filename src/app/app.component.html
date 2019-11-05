@@ -1,4 +1,4 @@
-<budgetkey-container [showHeader]="true" [showSearchBar]="true">
+<budgetkey-container [showHeader]="true" [showSearchBar]="false">
     <div class='ad' [class.active]='adVisible'>
         <a href='https://act.obudget.org' target='_blank'>
             <span>נפתח מחזור חדש לקורס </span>
@@ -21,11 +21,15 @@
                 {{ __('מחפשים משהו מסוים? גשו ישר ל') }}
                 <a href='/s/'>{{ __('חיפוש') }} 
                     <span style='font-size:65%'><i class='glyphicon glyphicon-search'></i></span></a><br/>
+                <budgetkey-search-bar [searchTerm]=""
+                        (navigate)="onNavigate($event)"
+                        [allowSubscribe]="false"
+                ></budgetkey-search-bar>
             </speech-bubble>
             <speech-bubble kind='answer'>
                 {{ __('רוצים ללמוד לעומק איך עובד תקציב המדינה?') }}<br/>
                 {{ __('הרשמו לקורס המקוון שלנו - ') }}
-                <a href='https://act.obudget.org' target='_blank'><span class='budgetism'>{{ __('תקציביזם') }}</span>!</a>
+                <a href='https://act.obudget.org' target='_blank'><span class='budgetism'>{{ __('תקציביזם') }}</span></a>
             </speech-bubble>
             <speech-bubble kind='answer'>
                 {{ __('אחרת מומלץ להמשיך לגלול') }} <span style='font-size:65%'><i class='glyphicon glyphicon-hand-down'></i></span><br/>

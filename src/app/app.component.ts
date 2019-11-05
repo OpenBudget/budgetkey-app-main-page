@@ -46,4 +46,9 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.adVisible = true;
   }
+
+  onNavigate(url: string) {
+    window.location.href = url;
+  }
+
 }
