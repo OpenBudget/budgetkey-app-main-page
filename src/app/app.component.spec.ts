@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { BudgetKeyCommonModule } from 'budgetkey-ng2-components';
+import { BudgetKeyCommonModule, LANG_TOKEN, THEME_ID_TOKEN } from 'budgetkey-ng2-components';
 import { BrowserModule } from '@angular/platform-browser';
 import { BudgetkeyNg2AuthModule } from 'budgetkey-ng2-auth';
 import { MushonkeyModule } from 'mushonkey';
@@ -31,6 +31,8 @@ describe('AppComponent', () => {
         SpeechBubbleComponent,
       ],
       providers: [
+        {provide: THEME_ID_TOKEN, useValue: 'budgetkey'},
+        {provide: LANG_TOKEN, useValue: 'he'},
         {provide: BUBBLES, useValue: bubbles}
       ]
     }).compileComponents();
