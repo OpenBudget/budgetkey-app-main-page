@@ -26,7 +26,7 @@
     "bootstrap": "^3.4.1",
     "bootstrap-rtl": "^3.3.4",
     "budgetkey-ng2-auth": "^1.1.0",
-    "budgetkey-ng2-components": "^0.3.15",
+    "budgetkey-ng2-components": "^0.3.16",
     "core-js": "^2.6.11",
     "crypto": "^1.0.1",
     "d3": "^5.14.2",
