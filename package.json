@@ -31,7 +31,7 @@
     "crypto": "^1.0.1",
     "d3": "^5.14.2",
     "fs": "0.0.1-security",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mushonkey": "^0.2.0",
     "node-fetch": "^2.6.0",
     "nunjucks": "^3.2.0",
