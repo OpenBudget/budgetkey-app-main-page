@@ -12,6 +12,7 @@ const CENTER_WIDTH = 200;
 const CENTER_HEIGHT = 80;
 const CHART_MARGIN = {top: 20, left: 20, right: 20, bottom: 20};
 const CENTER_VERTICAL_OFFSET = 100;
+const EDUCATION_TARGET = '0020670142';
 
 function tweenie(t: number) {
   t = Math.abs(t - 0.5);
@@ -342,38 +343,38 @@ const dialog = [
   A(__('&hellip;')),
   A(__('&hellip;')),
   A(__('הופ!')),
-  A(__('תקציב משרד החינוך ב-2018')),
-  A(__('מעל 56 מיליארד שקלים')),
+  A(__('תקציב משרד החינוך ב-2020')),
+  A(__('מעל 67 מיליארד שקלים')),
   Q(__('הבנתי... אז זה התקציב של משרד החינוך?')),
   A(__('כן, למשרדים הגדולים יש סעיף תקציבי משלהם')),
   A(__('אבל לא לכל המשרדים הקטנים')),
   A(__('(שבדרך כלל מוצמדים למשרד ראש הממשלה)')),
   Q(__('איך מחלקים את הכסף בתוך המשרד?')),
   A(__('לפי הנושאים הגדולים בהם המשרד מטפל')),
-  Q(__('נגיד, מה זה ״תכניות לימודים משלימות״?')),
+  Q(__('נגיד, מה זה  פעולות משלימות לקידום ?')),
   A(__('שאלה טובה... בוא נבדוק!')),
   A(__('צוללים פנימה עוד')),
   A(__('3&hellip;')),
   A(__('2&hellip;')),
   A(__('1&hellip;')),
   A(__('והופלה!')),
-  A(__('תקציב תכניות לימודים משלימות')),
-  A(__('בערך 4 מיליארד שקלים')),
+  A(__('תקציב ״פעולות משלימות לקידום״')),
+  A(__('בערך 7 מיליארד שקלים')),
   Q(__('חחח.. "הופלה" &#x1F61C;')),
   Q(__('וואו, יש כאן המון דברים!')),
   Q(__('מעניין, מה זה המספר שיש ליד השם של הסעיף?')),
-  Q(__('ה-<code>24.06</code> הזה?')),
+  Q(__('ה-<code>20.67</code> הזה?')),
   A(__('הבחנה טובה!')),
   A(__('באמת לכל סעיף תקציבי יש מספר -')),
   A(__('ככל שהסעיף יותר מפורט, המספר יותר ארוך')),
   Q(__('סבבה')),
-  Q(__('אז מה עוד יש כאן? מה זה חינוך בלתי פורמאלי?')),
+  Q(__('אז מה עוד יש כאן? מה זה ״פעילויות ופרוייקטים״?')),
   A(__('אין שום בעיה')),
   A(__('שאלת שאלה')),
   A(__('והנה התשובה :)')),
   Q(__('התקציב הזה באמת מאוד מפורט')),
-  A(__('התקציב לחינוך בלתי פורמאלי')),
-  A(__('הוא כמעט מיליארד שקלים.')),
+  A(__('התקציב לפעילויות ופרוייקטים')),
+  A(__('הוא בערך חמישה מיליארד שקלים.')),
   A(__('סעיפי התקציב שברמה הזאת נקראים ״תכניות״')),
   A(__('לפעמים עושים שינויים בתקציב במהלך השנה')),
   A(__('ואז מעבירים כסף מתכנית אחת לאחרת.')),
@@ -386,7 +387,7 @@ const dialog = [
     // '&#x1F466;&#x1F3FD;' +
     // '&#x1F467;&#x1F3FE;'),
   A(__('תקציב התמיכה בתנועות נוער')),
-  A(__('הוא כמעט מאה מיליון שקל.')),
+  A(__('הוא כמעט מאה וחמישים מיליון שקל.')),
   A(__('הגענו!') +
     ' &#x1F389;'),
   Q(__('לאן?')),
@@ -628,7 +629,7 @@ export class HeroComponent {
           new TransitionStep([
             new UpdateMushonkey(chartIdx),
             new ConnectorShow(),
-            new ConnectorToSublevel('expenses', 4, true),
+            new ConnectorToSublevel('expenses', 3, true),
             new TransitionStep([ new Filler(4), ]),
             new ChartIntroduce(false),
           ]),
@@ -648,7 +649,7 @@ export class HeroComponent {
         new TransitionSteps([
           new TransitionStep([
             new UpdateMushonkey(chartIdx),
-            new ConnectorToSublevel('expenses', 1, true),
+            new ConnectorToSublevel('expenses', 0, true),
             new ChartIntroduce(false),
           ]),
           new TransitionStep([
@@ -672,7 +673,7 @@ export class HeroComponent {
           new TransitionStep([ new UpdateMushonkey(chartIdx), new Filler(3) ]),
           new TransitionStep([
             new UpdateMushonkey(chartIdx),
-            new ConnectorToSublevel('expenses', 2, true),
+            new ConnectorToSublevel('expenses', 3, true),
             new ChartIntroduce(false),
           ]),
           new TransitionStep([
@@ -733,12 +734,11 @@ export class HeroComponent {
   }
 
   makeDeficitCharts(data: any) {
-
-    const expenseChildren: Array<any> = _.sortBy(data.expenseChildren, (d: any) => -d.net_allocated);
+    const expenseChildren: Array<any> = _.sortBy(data.expenseChildren, (d: any) => -d.net_revised || -d.net_allocated);
     const semiExpenseRest = data.budget;
     const expenseRest = semiExpenseRest - _.sum(
         _.map(_.slice(expenseChildren, 1, 4),
-          (d: any) => d.net_allocated)
+          (d: any) => d.net_revised || d.net_allocated)
     );
 
     const incomesFlowGroup = new MushonKeyFlowGroup(
@@ -752,17 +752,17 @@ export class HeroComponent {
       ], 'deficit', -100, 0.7
     );
 
-    const incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_allocated);
+    const incomeChildren: Array<any> = _.sortBy(data.incomeChildren, (d: any) => -d.net_amount);
     const kidsNum = [1, 2, 3, 4];
 
     const expandedIncomesFlowGroup = _.map(kidsNum, (k) => {
       const incomeRest = data.income - _.sum(
         _.map(_.slice(incomeChildren, 0, k),
-          (d: any) => d.net_allocated)
+          (d: any) => d.net_revised || d.net_allocated)
       );
       const flows = [];
       for (let i = 0 ; i < k ; i++ ) {
-        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_allocated, __(incomeChildren[i].title)));
+        flows.push(HeroComponent.makeFlow(incomeChildren[i].net_amount, __(incomeChildren[i].title)));
       }
       if (k !== 4) {
         flows.push(HeroComponent.makeFlow(incomeRest, '...'));
@@ -788,9 +788,9 @@ export class HeroComponent {
     );
     const expandedExpensesFlowGroup = new MushonKeyFlowGroup(
       true, [
-        HeroComponent.makeFlow(expenseChildren[1].net_allocated, __(expenseChildren[1].title)),
-        HeroComponent.makeFlow(expenseChildren[2].net_allocated, __(expenseChildren[2].title)),
-        HeroComponent.makeFlow(expenseChildren[3].net_allocated, __(expenseChildren[3].title)),
+        HeroComponent.makeFlow(expenseChildren[1].net_revised || expenseChildren[1].net_allocated, __(expenseChildren[1].title)),
+        HeroComponent.makeFlow(expenseChildren[2].net_revised || expenseChildren[2].net_allocated, __(expenseChildren[2].title)),
+        HeroComponent.makeFlow(expenseChildren[3].net_revised || expenseChildren[3].net_allocated, __(expenseChildren[3].title)),
         HeroComponent.makeFlow(expenseRest, __('משרדי ממשלה אחרים'))
       ], 'expenses', 20
     );
@@ -871,15 +871,17 @@ export class HeroComponent {
   }
 
   makeEducationCharts(data: any) {
-    const numToShow = 5;
-    const children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_allocated);
-    const rest = data.net_allocated - _.sum(
-        _.map(_.slice(children, 0, numToShow),
-          (d: any) => d.net_allocated)
-      );
+    const numToShow = 3;
+    const children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_revised || -d.net_allocated);
+    let rest = (data.net_revised || data.net_allocated);
     const flows = [];
-    for (let i = 0 ; i < numToShow ; i++ ) {
-      flows.push(HeroComponent.makeFlow(children[i].net_allocated, children[i].title));
+    for (let child of children) {
+      if (flows.length < numToShow || EDUCATION_TARGET.indexOf(child.code) === 0) {
+        flows.push(HeroComponent.makeFlow(child.net_revised || child.net_allocated, child.title));
+      }
+      rest -= (child.net_revised || child.net_allocated);
+    }
+    for (let i = 0 ; i < Math.min(numToShow, children.length) ; i++ ) {
     }
     flows.push(HeroComponent.makeFlow(rest, 'אחרים...'));
     const chart = new MushonKeyChart([
@@ -889,7 +891,7 @@ export class HeroComponent {
         new MushonKeyFlowGroup(
           false, [
             HeroComponent
-              .makeFlow(data.net_allocated,
+              .makeFlow(data.net_revised || data.net_allocated,
                 '…' + 'מתוך תקציב ' + data.hierarchy[data.hierarchy.length - 1][1] + ': ')
           ], 'income', -100
         ),
@@ -923,7 +925,7 @@ export class HeroComponent {
         new MushonKeyFlowGroup(
           false, [
             HeroComponent
-              .makeFlow(budgetData.net_allocated,
+              .makeFlow(budgetData.net_revised || budgetData.net_allocated,
                 '…' + 'מתוך תקציב ' + budgetData.hierarchy[budgetData.hierarchy.length - 1][1] + ': ',
               scale)
           ], 'income', -100

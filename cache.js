@@ -7,8 +7,8 @@ const _ = require('lodash');
 
 const API_URL = 'https://next.obudget.org/api/query?query=';
 const DOC_URL = 'https://next.obudget.org/get/';
-const YEAR = 2019;
-const BUDGET_CODE = '0020460418';
+const YEAR = 2020;
+const BUDGET_CODE = '0020670142';
 
 const RETURNS_CONDITION = `
 ((code LIKE '0084%%') AND NOT ((econ_cls_json->>0)::jsonb->>2='226'))
@@ -31,7 +31,7 @@ const DEFICIT_FUNDING_CONDITION = `
 ((func_cls_json->>0)::jsonb->>2='86')
 `;
 
-const INCOME_CONDITION = `length(code) = 10 AND year = ` + YEAR + `
+const INCOME_CONDITION = `length(code) = 10 AND year = ` + (YEAR - 1) + `
 AND code LIKE '0000%%'
 AND NOT ` + DEFICIT_FUNDING_CONDITION;
 
@@ -39,7 +39,7 @@ const SQL_FUNC_BUBBLES_DATA = `
   SELECT
     func_cls_title_1->>0 || ':budget/C' || ((func_cls_json->>0)::json->>0) || '/' || '` + YEAR + `' AS bubble_group,
     func_cls_title_2->>0 AS bubble_title,
-    sum(net_allocated) AS total_amount,
+    sum(coalesce(net_revised, net_allocated)) AS total_amount,
     'budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '` + YEAR + `' as doc_id,
     'https://next.obudget.org/i/budget/C' || ((func_cls_json->>0)::json->>0) || ((func_cls_json->>0)::json->>2) || '/' || '`
     + YEAR + `' as href
@@ -53,13 +53,13 @@ const SQL_ECON_BUBBLES_DATA = `
   SELECT
     econ_cls_title_1->>0 || ':budget/C' || ((econ_cls_json->>0)::json->>0) || '/' || '` + YEAR + `' AS bubble_group,
     econ_cls_title_2->>0 AS bubble_title,
-    sum(net_allocated) AS total_amount,
+    sum(coalesce(net_revised, net_allocated)) AS total_amount,
     'https://next.obudget.org/i/budget/E' || ((econ_cls_json->>0)::json->>0) || ((econ_cls_json->>0)::json->>2) || '/' || '`
     + YEAR + `' as href
   FROM raw_budget
   WHERE ` + EXPENSES_CONDITION + `
   GROUP BY 1, 2, 4
-  HAVING sum(net_allocated) > 0
+  HAVING sum(coalesce(net_revised, net_allocated)) > 0
   ORDER BY 1, 2
 `;
 
@@ -67,19 +67,19 @@ const SQL_INCOME_BUBBLES_DATA = `
   SELECT
     (hierarchy->>1)::jsonb->>1 AS bubble_group,
     (hierarchy->>2)::jsonb->>1 AS bubble_title,
-    sum(net_allocated) AS total_amount,
+    sum(coalesce(net_revised, net_allocated)) AS total_amount,
     'https://next.obudget.org/i/budget/' || ((hierarchy->>2)::jsonb->>0) || '/' || '` + YEAR + `' as href
   FROM raw_budget
   WHERE ` + INCOME_CONDITION + `
   GROUP BY 1, 2, 4
-  HAVING sum(net_allocated) > 0
+  HAVING sum(coalesce(net_revised, net_allocated)) > 0
   ORDER BY 1, 2
 `;
 
 const SQL_INCOME_FUNCTIONS = `
   SELECT
     func_cls_title_2->>0 as title,
-    sum(net_allocated) as net_allocated
+    sum(coalesce(net_revised, net_allocated)) as net_amount
   FROM raw_budget
   WHERE ` + INCOME_CONDITION + `
   GROUP BY 1
@@ -232,14 +232,14 @@ function fetch_doc(doc) {
 function deficitChart() {
   return Promise.all([
     fetch_doc('budget/00/' + YEAR),
-    fetch_sql(`select sum(net_allocated) from raw_budget
+    fetch_sql(`select sum(coalesce(net_revised, net_allocated)) from raw_budget
                where ` + EXPENSES_CONDITION),
-    fetch_sql(`select sum(net_allocated) from raw_budget
+    fetch_sql(`select sum(coalesce(net_revised, net_allocated)) from raw_budget
                where ` + INCOME_CONDITION),
-    fetch_sql(`select sum(net_allocated) from raw_budget
+    fetch_sql(`select sum(coalesce(net_revised, net_allocated)) from raw_budget
                where length(code) = 10 AND year = ` + YEAR + `
                AND ` + RETURNS_CONDITION),
-    fetch_sql(`select sum(net_allocated) from raw_budget
+    fetch_sql(`select sum(coalesce(net_revised, net_allocated)) from raw_budget
                where length(code) = 10 AND year = ` + YEAR + `
                AND ` + DEFICIT_FUNDING_CONDITION),
     fetch_sql(SQL_INCOME_FUNCTIONS),
@@ -258,8 +258,8 @@ function deficitChart() {
 function educationBudgetChart() {
   return Promise.all([
     fetch_doc('budget/0020/' + YEAR),
-    fetch_doc('budget/002046/' + YEAR),
-    fetch_doc('budget/00204604/' + YEAR),
+    fetch_doc('budget/002067/' + YEAR),
+    fetch_doc('budget/00206701/' + YEAR),
   ]);
 }
 
