@@ -875,7 +875,7 @@ export class HeroComponent {
     const children: Array<any> = _.sortBy(data.children, (d: any) => -d.net_revised || -d.net_allocated);
     let rest = (data.net_revised || data.net_allocated);
     const flows = [];
-    for (let child of children) {
+    for (const child of children) {
       if (flows.length < numToShow || EDUCATION_TARGET.indexOf(child.code) === 0) {
         flows.push(HeroComponent.makeFlow(child.net_revised || child.net_allocated, child.title));
       }
