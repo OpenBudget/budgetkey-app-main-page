@@ -7,7 +7,7 @@ const _ = require('lodash');
 
 const API_URL = 'https://next.obudget.org/api/query?query=';
 const DOC_URL = 'https://next.obudget.org/get/';
-const YEAR = 2020;
+const YEAR = 2022;
 const BUDGET_CODE = '0020670142';
 
 const RETURNS_CONDITION = `
