@@ -41,7 +41,7 @@ app.get(basePath + '*', function(req, res) {
   var theme = 'budgetkey';
   var themeFileName = `theme.${theme}.${lang}.json`;
   let toInject = cachedThemeJsons[themeFileName];
-  let themeJson = cachedThemes[themeFileName];;
+  let themeJson;
   if (!toInject) {
     // try the themes root directory first - this allows mount multiple themes in a single shared docker volume
     if (fs.existsSync(path.resolve('/themes', themeFileName))) {
@@ -66,7 +66,7 @@ app.get(basePath + '*', function(req, res) {
 
   var translationsFileName = `main_page.translations.${lang}.json`;
   toInject = cachedThemeJsons[translationsFileName];
-  let translationsJson = cachedThemes[translationsFileName];;
+  let translationsJson;
   if (!toInject) {
     // try the themes root directory first - this allows mount multiple themes in a single shared docker volume
     if (fs.existsSync(path.resolve('/themes', translationsFileName))) {
