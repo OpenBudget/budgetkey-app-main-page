@@ -17,6 +17,7 @@ const RETURNS_CONDITION = `
 const GOV_INDUSTIES_CONDITION = `
 (code LIKE '0089%%' OR
  code LIKE '0091%%' OR
+ code LIKE '0093%%' OR
  code LIKE '0094%%' OR
  code LIKE '0095%%' OR
  code LIKE '0098%%')
