@@ -11,7 +11,7 @@ const YEAR = 2022;
 const BUDGET_CODE = '0020670142';
 
 const RETURNS_CONDITION = `
-((code LIKE '0084%%') AND NOT ((econ_cls_json->>0)::jsonb->>2='226'))
+((code LIKE '0084%%') AND NOT ((econ_cls_json->>0)::jsonb->>2='266'))
 `;
 
 const GOV_INDUSTIES_CONDITION = `
