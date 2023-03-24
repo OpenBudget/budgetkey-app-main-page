@@ -38,8 +38,8 @@ export class AppComponent implements OnInit {
     this.funcCategories.forEach((category: any) => {
       this.totalAmount += category.amount;
     });
-    this.proposalAmount = bubbles.proposalAmount[0] && bubbles.proposalAmount[0].total_amount;
-    this.prevProposalAmount = bubbles.prevProposalAmount[0] && bubbles.prevProposalAmount[0].total_amount;
+    this.proposalAmount = bubbles.proposalAmount;
+    this.prevProposalAmount = bubbles.prevProposalAmount;
   }
 
   @HostListener('window:scroll', ['$event'])

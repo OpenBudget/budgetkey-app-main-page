@@ -29,7 +29,7 @@ export class CategoryVisualizationComponent implements OnInit, AfterViewInit {
   }
 
   formatAmount(value: number): string {
-    return this.utils.formatNumber(value / 1000000000, 2) + __T('מיליארד') + ' ₪';
+    return this.utils.formatNumber(value / 1000000000, 2) + ' ' + __T('מיליארד') + ' ₪';
   }
 
   constructor(private utils: UtilsService) {}

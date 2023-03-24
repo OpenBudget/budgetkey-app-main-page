@@ -39,15 +39,6 @@ const INCOME_CONDITION = `length(code) = 10 AND year = ` + (YEAR - 1) + `
 AND code LIKE '0000%%'
 AND NOT ` + DEFICIT_FUNDING_CONDITION;
 
-const SQL_TOTAL_PROPOSAL_DATA = `
-SELECT sum(net_allocated) AS total_amount
-    FROM raw_budget
-    WHERE length(code) = 8 and year = ` + PROPOSAL_YEAR + TOTAL_BUDGET_CONDITION;
-const SQL_TOTAL_PREV_PROPOSAL_DATA = `
-SELECT sum(net_allocated) AS total_amount
-    FROM raw_budget
-    WHERE length(code) = 8 and year = ` + (PROPOSAL_YEAR-1) + TOTAL_BUDGET_CONDITION;
-
 const SQL_FUNC_BUBBLES_DATA = `
   SELECT
     func_cls_title_1->>0 || ':budget/C' || ((func_cls_json->>0)::json->>0) || '/' || '` + YEAR + `' AS bubble_group,
@@ -118,6 +109,13 @@ function sleep(ms) {
   })
 }
 
+function sql_total_amount(year) {
+  const SQL = `
+    SELECT sum(net_allocated) AS total_amount
+        FROM raw_budget
+        WHERE length(code) = 8 and year = ` + year + TOTAL_BUDGET_CONDITION;
+  return fetch_sql(SQL).then(data => data[0].total_amount);
+}
 
 function cached_get_url(url) {
   const filePath = 'build-cache/' + crypto.createHash('md5').update(url).digest('hex') + '.json';
@@ -239,7 +237,14 @@ function fetch_data(sql) {
 function fetch_doc(doc) {
   const url = DOC_URL + doc;
   return cached_get_url(url)
-    .then((data => data.value));
+    .then((data => data.value))
+    .then((data => {
+      if (data.__redirect) {
+        return fetch_doc(data.__redirect);
+      } else {
+        return data;
+      }
+    }));
 }
 
 function deficitChart() {
@@ -309,8 +314,8 @@ function get_cache() {
       deficitChart(),
       educationBudgetChart(),
       supportsChart(),
-      fetch_sql(SQL_TOTAL_PROPOSAL_DATA),
-      fetch_sql(SQL_TOTAL_PREV_PROPOSAL_DATA),
+      sql_total_amount(PROPOSAL_YEAR),
+      sql_total_amount(YEAR),
     ]).then((data) => {
       ret = {
         year: YEAR,
