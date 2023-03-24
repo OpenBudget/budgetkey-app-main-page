@@ -1,3 +1,9 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
 .summary {
     display: flex;
     flex-flow: row;
@@ -5,6 +11,7 @@
     justify-content: center;
     flex-wrap: wrap;
     font-size: 24px;
+    height: 54px;
 
     span {
         white-space: nowrap;
@@ -16,4 +23,43 @@
         }
     }
 }
-  
+
+.proposal {
+    display: flex;
+    flex-flow: row;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 18px;
+    height: 28px;
+
+    span {
+        white-space: nowrap;
+        &:nth-child(2), &:nth-child(4), &:nth-child(5) {
+            color: #FF5A5F;
+        }
+        &:nth-child(4) {
+            font-size: 24px;
+        }
+    }
+}
+
+
+.prev-proposal {
+    display: flex;
+    flex-flow: row;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 16px;
+
+    span {
+        white-space: nowrap;
+        &:nth-child(2), &:nth-child(3), &:nth-child(5) {
+            color: #FF5A5F;
+        }
+        &:nth-child(2) {
+            font-size: 20px;
+        }
+    }
+}

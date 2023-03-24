@@ -8,6 +8,7 @@ const _ = require('lodash');
 const API_URL = 'https://next.obudget.org/api/query?query=';
 const DOC_URL = 'https://next.obudget.org/get/';
 const YEAR = 2022;
+const PROPOSAL_YEAR = 2023;
 const BUDGET_CODE = '0020670142';
 
 const RETURNS_CONDITION = `
@@ -23,10 +24,12 @@ const GOV_INDUSTIES_CONDITION = `
  code LIKE '0098%%')
 `;
 
-const EXPENSES_CONDITION = `length(code) = 10 AND year = ` + YEAR + `
+const TOTAL_BUDGET_CONDITION = `
 AND NOT code LIKE '0000%%'
 AND NOT ` + GOV_INDUSTIES_CONDITION + `
 AND NOT ` + RETURNS_CONDITION;
+
+const EXPENSES_CONDITION = `length(code) = 10 AND year = ` + YEAR + TOTAL_BUDGET_CONDITION;
 
 const DEFICIT_FUNDING_CONDITION = `
 ((func_cls_json->>0)::jsonb->>2='86')
@@ -35,6 +38,15 @@ const DEFICIT_FUNDING_CONDITION = `
 const INCOME_CONDITION = `length(code) = 10 AND year = ` + (YEAR - 1) + `
 AND code LIKE '0000%%'
 AND NOT ` + DEFICIT_FUNDING_CONDITION;
+
+const SQL_TOTAL_PROPOSAL_DATA = `
+SELECT sum(net_allocated) AS total_amount
+    FROM raw_budget
+    WHERE length(code) = 8 and year = ` + PROPOSAL_YEAR + TOTAL_BUDGET_CONDITION;
+const SQL_TOTAL_PREV_PROPOSAL_DATA = `
+SELECT sum(net_allocated) AS total_amount
+    FROM raw_budget
+    WHERE length(code) = 8 and year = ` + (PROPOSAL_YEAR-1) + TOTAL_BUDGET_CONDITION;
 
 const SQL_FUNC_BUBBLES_DATA = `
   SELECT
@@ -296,7 +308,9 @@ function get_cache() {
       fetch_data(SQL_INCOME_BUBBLES_DATA),
       deficitChart(),
       educationBudgetChart(),
-      supportsChart()
+      supportsChart(),
+      fetch_sql(SQL_TOTAL_PROPOSAL_DATA),
+      fetch_sql(SQL_TOTAL_PREV_PROPOSAL_DATA),
     ]).then((data) => {
       ret = {
         year: YEAR,
@@ -305,7 +319,9 @@ function get_cache() {
         income: data[2],
         deficitChart: data[3],
         educationCharts: data[4],
-        supportChart: data[5]
+        supportChart: data[5],
+        proposalAmount: data[6],
+        prevProposalAmount: data[7],
       };
       return fetchExplanations(data[0]);
     }).then((exp) => {

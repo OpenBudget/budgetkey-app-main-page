@@ -5,3 +5,17 @@
     <span>{{ formatValue(amount) }}</span>&nbsp;
     <span>{{ __(valueSuffix(amount)) }} ₪</span>
 </div>
+<div class='proposal' *ngIf='proposalAmount && proposalAmount>0'>
+    <span>{{ __('הצעת תקציב המדינה לשנת') }}</span>&nbsp;
+    <span>{{year + 1}}</span>&nbsp;
+    <span>{{ __('היא') }}</span>&nbsp;
+    <span>{{ formatValue(proposalAmount) }}</span>&nbsp;
+    <span>{{ __(valueSuffix(proposalAmount)) }} ₪</span>
+</div>
+<div class='prev-proposal' *ngIf='proposalAmount && proposalAmount>0'>
+    <span>({{ __('לעומת תקציב מקורי של') }}</span>&nbsp;
+    <span>{{ formatValue(prevProposalAmount) }}</span>&nbsp;
+    <span>{{ __(valueSuffix(prevProposalAmount)) }} ₪</span>&nbsp;
+    <span>{{ __('בשנת') }}</span>&nbsp;
+    <span>{{year}})</span>
+</div>

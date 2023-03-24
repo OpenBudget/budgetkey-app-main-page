@@ -10,6 +10,8 @@ import { __T } from '../app.component';
 })
 export class MainPageSummaryComponent {
   @Input() amount = 0;
+  @Input() proposalAmount = 0;
+  @Input() prevProposalAmount = 0;
   @Input() year = 0;
 
   private _isCollapsed = false;

@@ -23,6 +23,8 @@ export class AppComponent implements OnInit {
   public econCategories: any[];
   public incomeCategories: any[];
   public totalAmount = 0;
+  public proposalAmount = 0;
+  public prevProposalAmount = 0;
   public year: number;
   public __ = __T;
   public adVisible = false;
@@ -36,6 +38,8 @@ export class AppComponent implements OnInit {
     this.funcCategories.forEach((category: any) => {
       this.totalAmount += category.amount;
     });
+    this.proposalAmount = bubbles.proposalAmount[0] && bubbles.proposalAmount[0].total_amount;
+    this.prevProposalAmount = bubbles.prevProposalAmount[0] && bubbles.prevProposalAmount[0].total_amount;
   }
 
   @HostListener('window:scroll', ['$event'])
